@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4F1C86">
+  <meta charset="UTF-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <title>Sistema de Colaboradores</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body>
+  <div>
+    <button onclick="mostrarSecao('bancoHoras')">Banco de Horas</button>
+    <button onclick="mostrarSecao('requisicoes')">Requisições</button>
+  </div>
+
+  <div id="bancoHoras" class="secao">
+    <h1>Buscar Colaborador por Matrícula</h1>
+    <input type="text" id="matricula" placeholder="Digite parte da matrícula"><br>
+    <button onclick="buscarPorMatricula()">Buscar</button>
+    <div id="resultado"></div>
+  </div>
+
+  <div id="requisicoes" class="secao">
+    <h1>Requisições de EPI</h1>
+    <input type="text" placeholder="Digite o nome do colaborador" id="nomeColaborador" oninput="sugerirColaboradores()">
+    <div id="sugestoesColaborador" class="sugestoes"></div>
+
+    <input type="text" placeholder="Digite o nome do EPI" id="epiInput" oninput="sugerirEPIs()">
+    <div id="sugestoesEPI" class="sugestoes"></div>
+
+    <ul id="itensRequisicao"></ul>
+    <button onclick="criarRequisicao()">Criar Requisição</button>
+    <div id="listaRequisicoes"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
