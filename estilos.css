@@ -84,7 +84,7 @@ li {
   background-color: white;
   border: 1px solid #ccc;
   z-index: 1000;
-  max-height: 150px;
+  max-height: 450px;
   overflow-y: auto;
   width: 100%;
   max-width: 400px;
@@ -132,4 +132,5 @@ li {
     padding: 10px;
     font-size: 1.95rem;
   }
+
 }
