@@ -11,7 +11,8 @@
 </head>
 
 <body>
-  <div>
+
+  <div class="menu">
     <button onclick="mostrarSecao('bancoHoras')">Banco de Horas</button>
     <button onclick="mostrarSecao('requisicoes')">Requisições</button>
   </div>
@@ -24,10 +25,10 @@
   </div>
 
   <div id="requisicoes" class="secao">
-    <h1>Requisições de EPI</h1>
+    <h1>Requisições</h1>
     <input type="text" placeholder="Digite o nome do colaborador" id="nomeColaborador" oninput="sugerirColaboradores()">
     <div id="sugestoesColaborador" class="sugestoes"></div>
-
+    <br>
     <input type="text" placeholder="Digite o nome do EPI" id="epiInput" oninput="sugerirEPIs()">
     <div id="sugestoesEPI" class="sugestoes"></div>
 

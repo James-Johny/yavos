@@ -150,7 +150,7 @@ function sugerirEPIs() {
 function adicionarItemEPI(epi) {
     const lista = document.getElementById("itensRequisicao");
     const li = document.createElement("li");
-    li.innerHTML = `<label><input type="checkbox"> [${epi.codigo}] - ${epi.descricao}</label>`;
+    li.innerHTML = `<label>${epi.codigo} - ${epi.descricao}</label>`;
     lista.appendChild(li);
 }
 
