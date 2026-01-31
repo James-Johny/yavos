@@ -18,15 +18,16 @@
   </div>
 
   <div id="bancoHoras" class="secao">
-    <h1>Buscar Colaborador por Matrícula</h1>
-    <input type="text" id="matricula" placeholder="Digite parte da matrícula"><br>
-    <button onclick="buscarPorMatricula()">Buscar</button>
+    <input type="text" onfocus="this.value='';" id="buscaColaborador" placeholder="Digite parte do nome ou matrícula"
+      oninput="sugerirColaboradorUnificado('buscaColaborador', 'sugestoesBancoHoras')">
+    <div id="sugestoesBancoHoras" class="sugestoes"></div>
+    <button onclick="buscarBancoHoras()">Buscar</button>
     <div id="resultado"></div>
   </div>
 
-  <div id="requisicoes" class="secao">
-    <h1>Requisições</h1>
-    <input type="text" placeholder="Digite o nome do colaborador" id="nomeColaborador" oninput="sugerirColaboradores()">
+  <div id="requisicoes" class="secao" onload="carregarRequisicoes();">
+    <input type="text" onfocus="this.value='';" id="buscaRequisicao" placeholder="Digite o nome do colaborador"
+      oninput="sugerirColaboradorUnificado('buscaRequisicao', 'sugestoesColaborador')">
     <div id="sugestoesColaborador" class="sugestoes"></div>
     <br>
     <input type="text" placeholder="Digite o nome do EPI" id="epiInput" oninput="sugerirEPIs()">

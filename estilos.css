@@ -1,6 +1,13 @@
 /* Estilo base */
+@font-face {
+  font-family: "CotySans";
+  src: url("CotySans-Regular-v1008.ttf");
+}
+body, input, button, li, ul, h1, h2 {
+	font-family:"CotySans";
+}
 body {
-  font-family: Arial, sans-serif;
+  font-family: "CotySans", sans-serif;
   margin: 20px;
   padding: 0;
   box-sizing: border-box;
@@ -34,12 +41,15 @@ button:hover {
 
 .secao {
   display: none;
+  flex-flow: column;
+  justify-items: center;
   margin-top: 20px;
 }
+
 #itensRequisicao {
   font-size: 2rem;
 }
-#resultado, #listaRequisicoes {
+#listaRequisicoes {
   margin-top: 0px;
   padding: 0px;
   border-left: 5px solid #4F1C86;
@@ -50,10 +60,10 @@ button:hover {
   overflow-x: auto;
   font-size: 2rem;
 }
-
-.positivo { color: rgb(105, 179, 105); }
-.negativo { color: red; }
-.neutro { color: black; }
+ 
+.positivo { color: rgb(0, 94, 0); }
+.debito, .negativo { color: rgb(245, 0, 0); }
+.neutro { color: rgb(3, 3, 3); }
 
 .tarefa {
   margin-top: 20px;
@@ -63,9 +73,35 @@ button:hover {
   background-color: #fff;
   font-size: 2rem;
 }
+table {
+  color: rgb(15, 15, 15);
+  background-color: black;
+  width: 100%;
+  border-radius: 5px;
+}
+
+tr, td {
+  margin: 3px;
+  padding: 3px;
+}
+
+
+table tr:nth-child(even) {
+  background-color: #d5afff;
+}
+
+table tr:nth-child(odd) {
+  background-color: #b67df3;
+}
 
 li {
     list-style: none;
+    padding: 3px;
+    margin: 2px;
+}
+li::marker {
+  content: "→ ";
+  color: #3a1466;
 }
 .tarefa h3 {
   margin-bottom: 10px;
@@ -89,6 +125,7 @@ li {
   width: 100%;
   max-width: 400px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  display: none;
 }
 
 .sugestoes button {
@@ -129,8 +166,14 @@ li {
   }
 
   #resultado, #listaRequisicoes {
-    padding: 10px;
+    padding: 0px;
     font-size: 1.95rem;
+    margin-left: 0;
   }
-
+}
+#buscaRequisicao::before {
+  display: none;
+}
+.spanButton:hover {
+  cursor: pointer;
 }
