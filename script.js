@@ -43,59 +43,59 @@ fetch("bancodehoras.pdf")
     textoPDF = paginas.join("\n");
 
     // Extrai colaboradores
-const regexUnica = /(\d{7,}) - ([A-Z\sÇÃÕÂÊÁÉÍÓÚà-ú\-']+)\s+([-\d:]+)\s+([-\d:]+)\s+([-\d:]+)\s+([-\d:]+)|(\d{12,}) - ([A-Z\sÇÃÕÂÊÁÉÍÓÚà-ú\']+)/g;
+    const regexUnica = /(\d{7,}) - ([A-Z\sÇÃÕÂÊÁÉÍÓÚà-ú\-']+)\s+([-\d:]+)\s+([-\d:]+)\s+([-\d:]+)\s+([-\d:]+)|(\d{12,}) - ([A-Z\sÇÃÕÂÊÁÉÍÓÚà-ú\']+)/g;
 
-let match;
-let dadosSetor = { cdc: "Não Identificado", setor: "Não Identificado" };
-colaboradoresPDF = [];
+    let match;
+    let dadosSetor = { cdc: "Não Identificado", setor: "Não Identificado" };
+    colaboradoresPDF = [];
 
-function formatarCDC(cdc) {
-   if (cdc.startsWith("60006005000")) {
-    return cdc.slice(11);
-  }
-  return cdc;
-}
+    function formatarCDC(cdc) {
+      if (cdc.startsWith("60006005000")) {
+        return cdc.slice(11);
+      }
+      return cdc;
+    }
 
-function formatarMatricula(matricula) {
-  if (matricula.startsWith("6005") || matricula.startsWith("2009")) {
-    return matricula.slice(4);
-  }
-  return matricula;
-}
+    function formatarMatricula(matricula) {
+      if (matricula.startsWith("6005") || matricula.startsWith("2009")) {
+        return matricula.slice(4);
+      }
+      return matricula;
+    }
 
-while ((match = regexUnica.exec(textoPDF)) !== null) {
-  // 1. Identificação do Setor (Header do grupo no PDF)
-  if (match[7]) {
-    dadosSetor = {
-      cdc: match[7].trim(),
-      setor: match[8].trim()
-    };
-  } 
-  
-  // 2. Identificação do Colaborador
-  else if (match[1]) {
-    const matriculaLimpa = formatarMatricula(match[1].trim());
+    while ((match = regexUnica.exec(textoPDF)) !== null) {
+      // 1. Identificação do Setor (Header do grupo no PDF)
+      if (match[7]) {
+        dadosSetor = {
+          cdc: match[7].trim(),
+          setor: match[8].trim()
+        };
+      }
 
-    // BUSCA A FUNÇÃO NO CSV:
-    // Procuramos no array colaboradoresCSV alguém que tenha a mesma matrícula
-    const dadosNoCSV = colaboradoresCSV.find(c => formatarMatricula(c.matricula) === matriculaLimpa);
+      // 2. Identificação do Colaborador
+      else if (match[1]) {
+        const matriculaLimpa = formatarMatricula(match[1].trim());
 
-    colaboradoresPDF.push({
-      cdc: formatarCDC(dadosSetor.cdc),
-      setor: dadosSetor.setor,
-      matricula: matriculaLimpa,
-      nome: match[2].trim(),
-      // Se achar no CSV, usa a função de lá. Se não, usa um texto padrão.
-      funcao: dadosNoCSV ? dadosNoCSV.funcao : "Função não encontrada",
-      saldoAnterior: match[3].trim(),
-      horasCredito: match[4].trim(),
-      horasDebito: match[5].trim(),
-      saldoAtual: match[6].trim()
-    });
-  }
-}
+        // BUSCA A FUNÇÃO NO CSV:
+        // Procuramos no array colaboradoresCSV alguém que tenha a mesma matrícula
+        const dadosNoCSV = colaboradoresCSV.find(c => formatarMatricula(c.matricula) === matriculaLimpa);
 
-console.log(colaboradoresPDF);
+        colaboradoresPDF.push({
+          cdc: formatarCDC(dadosSetor.cdc),
+          setor: dadosSetor.setor,
+          matricula: matriculaLimpa,
+          nome: match[2].trim(),
+          // Se achar no CSV, usa a função de lá. Se não, usa um texto padrão.
+          funcao: dadosNoCSV ? dadosNoCSV.funcao : "Função não encontrada",
+          saldoAnterior: match[3].trim(),
+          horasCredito: match[4].trim(),
+          horasDebito: match[5].trim(),
+          saldoAtual: match[6].trim()
+        });
+      }
+    }
+
+    console.log(colaboradoresPDF);
 
     document.getElementById("resultado").innerHTML = "<p>PDF carregado com sucesso. Digite uma matrícula para buscar.</p>";
   })
@@ -114,6 +114,11 @@ function mostrarSecao(secaoId) {
   document.querySelectorAll(".secao").forEach(div => div.style.display = "none");
   document.getElementById(secaoId).style.display = "flex";
 }
+
+
+
+
+
 
 // Carrega CSV de EPIs
 fetch("listaepis.csv")
@@ -474,6 +479,62 @@ function carregarRequisicoes() {
     container.insertAdjacentHTML("beforeend", html);
   });
 }
+
+// parte do QR Code/Código de barras e Câmera
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const resultado = document.getElementById("resultado")
+
+navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+  .then(stream => {
+    video.srcObject = stream;
+    video.setAttribute("playsinline", true); //ios
+    video.play();
+    iniciarLeitura();
+  })
+  .catch(err => console.error("Erro ao acessar a câmera:", err));
+
+function lerQRCode() {
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const code = jsQR(imageData.data, canvas.width, canvas.height);
+  if (code) {
+    resultado.textContent = "QR Code: " + code.data;
+  }
+}
+
+function iniciarLeitura() {
+  Quagga.init({
+    inputStream: {
+      type: "LiveStream",
+      target: video,
+      constraints: {
+        facingMode: "environment"
+      }
+    },
+    decoder: {
+      readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"]
+    }
+  }, err => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    Quagga.start();
+  });
+
+  Quagga.onDetected(result => {
+    if (result && result.codeResult) {
+      resultado.textContent = "Código de Barras: " + result.codeResult.code;
+    }
+  });
+
+  // Loop para verificar QR Code
+  setInterval(lerQRCode, 500);
+}
+
 
 window.onload = () => {
   mostrarSecao('requisicoes');

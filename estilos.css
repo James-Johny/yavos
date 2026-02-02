@@ -39,6 +39,7 @@ button:hover {
   background-color: #3a1466;
 }
 
+
 .secao {
   display: none;
   flex-flow: column;
@@ -85,6 +86,9 @@ tr, td {
   padding: 3px;
 }
 
+#codigos {
+  display: none;
+}
 
 table tr:nth-child(even) {
   background-color: #d5afff;
