@@ -95,9 +95,6 @@ tr, td {
       object-fit: cover; /* câmera em tela cheia */
     }
     #resultado {
-      position: absolute;
-      top: 20px;
-      left: 20px;
       color: #0e460e;
       font-size: 20px;
       background: rgba(0,0,0,0.5);

@@ -487,45 +487,51 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const resultado = document.getElementById("resultado");
 
-// Acesso à câmera em tela cheia
+const btnCapturar = document.getElementById("btnCapturar");
+const btnProcessar = document.getElementById("btnProcessar");
+
+// Acesso à câmera
 navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
   .then(stream => {
     video.srcObject = stream;
     video.play();
-    video.onloadedmetadata = () => {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      processarFrame(); // inicia loop de leitura
-    };
   })
   .catch(err => console.error("Erro ao acessar câmera:", err));
 
-// Função de loop para processar cada frame
-function processarFrame() {
+// Captura o frame atual da câmera
+btnCapturar.addEventListener("click", () => {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  resultado.textContent = "Imagem capturada. Agora clique em 'Processar'.";
+});
+
+// Processa o conteúdo do canvas
+btnProcessar.addEventListener("click", () => {
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
   // --- QR Code ---
   const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
   if (qrCode) {
-    resultado.textContent = "QR Code: " + qrCode.data;
-  } else {
-    // --- Código de Barras ---
-    Quagga.decodeSingle({
-      src: canvas.toDataURL("image/png"),
-      numOfWorkers: 0,
-      decoder: {
-        readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"]
-      }
-    }, result => {
-      if (result && result.codeResult) {
-        resultado.textContent = "Código de Barras: " + result.codeResult.code;
-      }
-    });
+    resultado.textContent = "QR Code detectado: " + qrCode.data;
+    return;
   }
 
-  requestAnimationFrame(processarFrame); // continua loop
-}
+  // --- Código de Barras ---
+  Quagga.decodeSingle({
+    src: canvas.toDataURL("image/png"),
+    numOfWorkers: 0,
+    decoder: {
+      readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"]
+    }
+  }, result => {
+    if (result && result.codeResult) {
+      resultado.textContent = "Código de Barras detectado: " + result.codeResult.code;
+    } else {
+      resultado.textContent = "Nenhum código detectado.";
+    }
+  });
+});
 
 
 window.onload = () => {
