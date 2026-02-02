@@ -484,37 +484,38 @@ function carregarRequisicoes() {
 
 const video = document.getElementById("video");
 const output = document.getElementById("output");
-const btnIniciar = document.getElementById("btnIniciar");
-const btnParar = document.getElementById("btnParar");
+const btnAcessar = document.getElementById("btnAcessar");
 
 let codeReader = null;
 let controls = null;
 
-btnIniciar.addEventListener("click", async () => {
+btnAcessar.addEventListener("click", async () => {
   try {
     codeReader = new ZXing.BrowserMultiFormatReader();
+
     controls = await codeReader.decodeFromVideoDevice(
       null, // usa câmera padrão
       video,
       (result, err) => {
         if (result) {
-          output.textContent = "Código detectado: " + result.getText();
+          // Exibe o texto do código
+          output.textContent = 
+            "Código detectado (" + result.getBarcodeFormat() + "):\n" + result.getText();
+
+          // Para leitura e fecha câmera
+          if (controls) {
+            controls.stop();
+          }
         }
         if (err && !(err instanceof ZXing.NotFoundException)) {
           console.error(err);
         }
       }
     );
+
     output.textContent = "Leitura iniciada. Aponte para um QR ou código de barras.";
   } catch (err) {
-    output.textContent = "Erro ao iniciar leitura: " + err.message;
-  }
-});
-
-btnParar.addEventListener("click", () => {
-  if (controls) {
-    controls.stop();
-    output.textContent = "Leitura parada.";
+    output.textContent = "Erro ao acessar câmera: " + err.message;
   }
 });
 
