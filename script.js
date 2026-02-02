@@ -486,49 +486,46 @@ const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const resultado = document.getElementById("resultado");
-const btnCapturar = document.getElementById("btnCapturar");
 
-// Acesso à câmera
+// Acesso à câmera em tela cheia
 navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
   .then(stream => {
     video.srcObject = stream;
-    video.setAttribute("playsinline", true); // iOS
     video.play();
     video.onloadedmetadata = () => {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      btnCapturar.disabled = false; // só habilita quando vídeo estiver pronto
+      processarFrame(); // inicia loop de leitura
     };
   })
   .catch(err => console.error("Erro ao acessar câmera:", err));
 
-// Função para capturar e processar QR Code e Código de Barras
-btnCapturar.addEventListener("click", () => {
+// Função de loop para processar cada frame
+function processarFrame() {
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-  // --- Processar QR Code ---
+  // --- QR Code ---
   const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
   if (qrCode) {
     resultado.textContent = "QR Code: " + qrCode.data;
-    return;
+  } else {
+    // --- Código de Barras ---
+    Quagga.decodeSingle({
+      src: canvas.toDataURL("image/png"),
+      numOfWorkers: 0,
+      decoder: {
+        readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"]
+      }
+    }, result => {
+      if (result && result.codeResult) {
+        resultado.textContent = "Código de Barras: " + result.codeResult.code;
+      }
+    });
   }
 
-  // --- Processar Código de Barras com QuaggaJS ---
-  Quagga.decodeSingle({
-    src: canvas.toDataURL("image/png"), // imagem capturada
-    numOfWorkers: 0,
-    decoder: {
-      readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"]
-    }
-  }, result => {
-    if (result && result.codeResult) {
-      resultado.textContent = "Código de Barras: " + result.codeResult.code;
-    } else {
-      resultado.textContent = "Nenhum código detectado.";
-    }
-  });
-});
+  requestAnimationFrame(processarFrame); // continua loop
+}
 
 
 window.onload = () => {
