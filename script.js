@@ -482,59 +482,47 @@ function carregarRequisicoes() {
 
 // parte do QR Code/Código de barras e Câmera
 
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const resultado = document.getElementById("resultado");
+(async function() {
+    const video = document.getElementById('video');
+    const output = document.getElementById('output');
 
-const btnCapturar = document.getElementById("btnCapturar");
-const btnProcessar = document.getElementById("btnProcessar");
-
-// Acesso à câmera
-navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-  .then(stream => {
-    video.srcObject = stream;
-    video.play();
-  })
-  .catch(err => console.error("Erro ao acessar câmera:", err));
-
-// Captura o frame atual da câmera
-btnCapturar.addEventListener("click", () => {
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  resultado.textContent = "Imagem capturada. Agora clique em 'Processar'.";
-});
-
-// Processa o conteúdo do canvas
-btnProcessar.addEventListener("click", () => {
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-  // --- QR Code ---
-  const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
-  if (qrCode) {
-    resultado.textContent = "QR Code detectado: " + qrCode.data;
-    return;
-  }
-
-  // --- Código de Barras ---
-  Quagga.decodeSingle({
-    src: canvas.toDataURL("image/png"),
-    numOfWorkers: 0,
-    inputStream: {
-      size: canvas.width + "x" + canvas.height
-    },
-    decoder: {
-      readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"]
+    try {
+        // Solicita acesso à câmera
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        video.srcObject = stream;
+    } catch (err) {
+        output.textContent = "Erro ao acessar a câmera: " + err.message;
+        return;
     }
-  }, result => {
-    if (result && result.codeResult) {
-      resultado.textContent = "Código de Barras detectado: " + result.codeResult.code;
-    } else {
-      resultado.textContent = "Nenhum código detectado.";
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    function scanQRCode() {
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            // Ajusta tamanho do canvas para o vídeo
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Captura os dados da imagem
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, canvas.width, canvas.height);
+
+            if (code) {
+                output.textContent = "QR Code detectado: " + code.data;
+            }
+        }
+        requestAnimationFrame(scanQRCode);
     }
-  });
-});
+
+    scanQRCode();
+})();
+
+
+
+
+
 
 
 window.onload = () => {
