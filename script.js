@@ -488,6 +488,20 @@ function carregarRequisicoes() {
     const fileInput = document.getElementById('fileInput');
     const preview = document.getElementById('preview');
 
+    // Canvas para processar e desenhar
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Função para desenhar o quadrado no QR Code
+    function drawLine(begin, end, color) {
+        ctx.beginPath();
+        ctx.moveTo(begin.x, begin.y);
+        ctx.lineTo(end.x, end.y);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = color;
+        ctx.stroke();
+    }
+
     // ======== LEITURA PELA CÂMERA ========
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
@@ -495,9 +509,6 @@ function carregarRequisicoes() {
     } catch (err) {
         output.textContent = "Erro ao acessar a câmera: " + err.message;
     }
-
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
 
     function scanQRCode() {
         if (video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -509,6 +520,12 @@ function carregarRequisicoes() {
             const code = jsQR(imageData.data, canvas.width, canvas.height);
 
             if (code) {
+                // Desenha o quadrado verde em volta do QR Code
+                drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#00FF00");
+                drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#00FF00");
+                drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#00FF00");
+                drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#00FF00");
+
                 output.textContent = "QR Code detectado: " + code.data;
             }
         }
@@ -526,7 +543,6 @@ function carregarRequisicoes() {
             preview.src = reader.result;
             preview.style.display = "block";
 
-            // Quando a imagem carregar, processa o QR Code
             preview.onload = function() {
                 canvas.width = preview.width;
                 canvas.height = preview.height;
@@ -536,6 +552,12 @@ function carregarRequisicoes() {
                 const code = jsQR(imageData.data, canvas.width, canvas.height);
 
                 if (code) {
+                    // Desenha o quadrado verde
+                    drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#00FF00");
+                    drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#00FF00");
+                    drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#00FF00");
+                    drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#00FF00");
+
                     output.textContent = "QR Code detectado: " + code.data;
                 } else {
                     output.textContent = "Nenhum QR Code encontrado na imagem.";
@@ -545,7 +567,6 @@ function carregarRequisicoes() {
         reader.readAsDataURL(file);
     });
 })();
-
 
 
 

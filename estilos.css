@@ -113,20 +113,20 @@ td {
   display: none;
 }
 
-video, img {
+video,
+img {
   width: 300px;
   border: 2px solid #333;
   margin-top: 10px;
 }
 
-
 #output {
   margin-top: 15px;
-  font-weight: bold;
   font-size: 18px;
+  font-weight: bold;
 }
 
-input[type="file"]{
+input[type="file"] {
   margin-top: 15px;
 }
 
