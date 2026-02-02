@@ -422,7 +422,7 @@ function buscarBancoHoras() {
       <tr><td><strong>Setor:</strong></td><td>${descreverCDC(colaborador.cdc) || "Local"}</td></tr>
       <tr><td><strong>Função:</strong></td> <td>${colaborador.funcao || "Cargo"}</td></tr>
       <tr><td><strong>Matrícula:</strong> </td> <td>${colaborador.matricula}</td></tr>
-      <tr><td><strong>Saldo Atual:</strong> </td> <td><span class="${corHora(colaborador.saldoAtual)}">${colaborador.saldoAtual}</span></td></tr>
+      <tr class="${corHora(colaborador.saldoAtual)}" style="background-color: #4F1C86;"><td><strong>Saldo Atual:</strong> </td> <td><span class="${corHora(colaborador.saldoAtual)}">${colaborador.saldoAtual}</span></td></tr>
       <tr><td><strong>Saldo Anterior:</strong> </td> <td><span class="${corHora(colaborador.saldoAnterior)}">${colaborador.saldoAnterior}</span></td></tr>
       <tr><td><strong>Horas Crédito:</strong> </td> <td><span class="${corHora(colaborador.horasCredito)}">${colaborador.horasCredito}</span></td></tr>
       <tr><td><strong>Horas Débito:</strong> </td> <td><span class="debito">${colaborador.horasDebito}</span></td></tr>
@@ -498,15 +498,15 @@ let resultados = []; // array para salvar códigos lidos
 function processarCodigo(valor) {
   const partes = valor.split("]");
 
-  const ud = partes[0].slice(-10); // últimos 10 dígitos
-  const sku = partes[1].slice(1);  // remove o primeiro "0"
-  const lote = partes[2].slice(1); // remove o primeiro "1"
-  const validadeRaw = partes[3].slice(1); // remove o primeiro "1"
+  const ud = partes[0].slice(-10);
+  const sku = partes[1].slice(2);
+  const lote = partes[2].slice(1);
+  const validadeRaw = partes[3].slice(1);
   const validade = validadeRaw.slice(0,2) + "." + validadeRaw.slice(2,4) + "." + validadeRaw.slice(4);
-  const quantidadeRaw = partes[4].slice(1); // remove o primeiro "3"
-  const quantidade = quantidadeRaw.slice(-3); // últimos 3 dígitos
-  const ordem = partes[5].slice(2); // remove "91"
-  const codigo = partes[6]; // último bloco
+  const quantidadeRaw = partes[4].slice(1);
+  const quantidade = quantidadeRaw.slice(-3);
+  const ordem = partes[5].slice(2);
+  const codigo = partes[6];
 
   return (
     "UD número: " + ud + "\n" +
