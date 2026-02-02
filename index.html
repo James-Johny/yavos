@@ -5,8 +5,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4F1C86">
   <meta charset="UTF-8">
-  <script src="https://unpkg.com/quagga/dist/quagga.min.js"></script>
-  <script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
+  <script src="https://unpkg.com/@zxing/library@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <title>Sistema de Colaboradores</title>
   <link rel="stylesheet" href="estilos.css">
@@ -43,15 +42,14 @@
 
   <div id="codigos" class="secao">
     <video id="video" autoplay playsinline></video>
-    <canvas id="canvas" width="640" height="480"></canvas>
 
     <div>
-      <button id="btnCapturar">Capturar Imagem</button>
-      <button id="btnProcessar">Processar Código</button>
+      <button id="btnIniciar">Iniciar Leitura</button>
+      <button id="btnParar">Parar Leitura</button>
     </div>
 
-    <div id="output">Aponte para um código e capture.</div>
-    >
+    <div id="output">Clique em "Iniciar Leitura".</div>
+
   </div>
 
   <script src="script.js"></script>

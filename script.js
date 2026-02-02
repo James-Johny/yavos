@@ -480,59 +480,42 @@ function carregarRequisicoes() {
   });
 }
 
-// parte do QR Code/Código de barras e Câmera
+// ==============  parte do QR Code/Código de barras e Câmera
 
 const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
 const output = document.getElementById("output");
+const btnIniciar = document.getElementById("btnIniciar");
+const btnParar = document.getElementById("btnParar");
 
-const btnCapturar = document.getElementById("btnCapturar");
-const btnProcessar = document.getElementById("btnProcessar");
+let codeReader = null;
+let controls = null;
 
-// Acesso à câmera
-navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-  .then(stream => {
-    video.srcObject = stream;
-    video.play();
-  })
-  .catch(err => output.textContent = "Erro ao acessar câmera: " + err.message);
-
-// Captura o frame atual da câmera
-btnCapturar.addEventListener("click", () => {
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  output.textContent = "Imagem capturada. Agora clique em 'Processar'.";
+btnIniciar.addEventListener("click", async () => {
+  try {
+    codeReader = new ZXing.BrowserMultiFormatReader();
+    controls = await codeReader.decodeFromVideoDevice(
+      null, // usa câmera padrão
+      video,
+      (result, err) => {
+        if (result) {
+          output.textContent = "Código detectado: " + result.getText();
+        }
+        if (err && !(err instanceof ZXing.NotFoundException)) {
+          console.error(err);
+        }
+      }
+    );
+    output.textContent = "Leitura iniciada. Aponte para um QR ou código de barras.";
+  } catch (err) {
+    output.textContent = "Erro ao iniciar leitura: " + err.message;
+  }
 });
 
-// Processa o conteúdo do canvas
-btnProcessar.addEventListener("click", () => {
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-  let resultadoTexto = "";
-
-  // --- QR Code ---
-  const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
-  if (qrCode) {
-    resultadoTexto += "QR Code detectado:\n" + qrCode.data + "\n\n";
+btnParar.addEventListener("click", () => {
+  if (controls) {
+    controls.stop();
+    output.textContent = "Leitura parada.";
   }
-
-  // --- Código de Barras ---
-  Quagga.decodeSingle({
-    src: canvas.toDataURL("image/png"),
-    numOfWorkers: 0,
-    decoder: {
-      readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"]
-    }
-  }, result => {
-    if (result && result.codeResult) {
-      resultadoTexto += "Código de Barras detectado:\n" + result.codeResult.code;
-    } else if (!qrCode) {
-      resultadoTexto = "Nenhum código detectado.";
-    }
-    output.textContent = resultadoTexto;
-  });
 });
 
 

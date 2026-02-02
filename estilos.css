@@ -118,16 +118,11 @@ td {
       height: 60%;
       object-fit: cover;
     }
-    canvas {
-      border: 1px solid #ccc;
-      margin-top: 10px;
-      max-width: 100%;
-    }
     #output {
       margin-top: 15px;
-      color: #00ff00;
+      color: #000000;
       font-size: 18px;
-      white-space: pre-line; /* permite múltiplas linhas */
+      white-space: pre-line;
     }
 
 input[type="file"] {
