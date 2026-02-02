@@ -492,7 +492,32 @@ const btnAcessar = document.getElementById("btnAcessar");
 
 let codeReader = null;
 let controls = null;
-let resultados = []; // array para salvar códigos
+let resultados = []; // array para salvar códigos lidos
+
+// Função para processar e formatar o código
+function processarCodigo(valor) {
+  const partes = valor.split("]");
+
+  const ud = partes[0].slice(-10); // últimos 10 dígitos
+  const sku = partes[1].slice(1);  // remove o primeiro "0"
+  const lote = partes[2].slice(1); // remove o primeiro "1"
+  const validadeRaw = partes[3].slice(1); // remove o primeiro "1"
+  const validade = validadeRaw.slice(0,2) + "." + validadeRaw.slice(2,4) + "." + validadeRaw.slice(4);
+  const quantidadeRaw = partes[4].slice(1); // remove o primeiro "3"
+  const quantidade = quantidadeRaw.slice(-3); // últimos 3 dígitos
+  const ordem = partes[5].slice(2); // remove "91"
+  const codigo = partes[6]; // último bloco
+
+  return (
+    "UD número: " + ud + "\n" +
+    "SKU: " + sku + "\n" +
+    "Lote: " + lote + "\n" +
+    "Validade: " + validade + "\n" +
+    "Quantidade: " + quantidade + "\n" +
+    "Número da ordem: " + ordem + "\n" +
+    "Código: " + codigo
+  );
+}
 
 btnAcessar.addEventListener("click", async () => {
   try {
@@ -509,14 +534,13 @@ btnAcessar.addEventListener("click", async () => {
           // Salva no array
           resultados.push(valor);
 
-          // Divide em partes de 4 caracteres
-          const partes = valor.match(/.{1,4}/g);
+          // Processa e formata
+          const textoFormatado = processarCodigo(valor);
 
           // Exibe resultado
           output.textContent =
-            "Código detectado (" + tipo + "):\n" +
-            valor + "\n\n" +
-            "Dividido em partes:\n" + partes.join(" | ") + "\n\n" +
+            "Código detectado (" + tipo + "):\n\n" +
+            textoFormatado + "\n\n" +
             "Array atual:\n" + JSON.stringify(resultados);
 
           // Fecha câmera
