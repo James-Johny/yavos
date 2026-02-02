@@ -486,54 +486,43 @@ const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const resultado = document.getElementById("resultado")
+const btnCapturar = document.getElementById("btnCapturar");
 
 navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
   .then(stream => {
     video.srcObject = stream;
-    video.setAttribute("playsinline", true); //ios
+    video.setAttribute("playsinline", true); // iOS
     video.play();
-    iniciarLeitura();
   })
-  .catch(err => console.error("Erro ao acessar a câmera:", err));
+  .catch(err => console.error("Erro ao acessar câmera:", err));
 
-function lerQRCode() {
+// Função para capturar e processar QR Code e Código de Barras
+btnCapturar.addEventListener("click", () => {
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const code = jsQR(imageData.data, canvas.width, canvas.height);
-  if (code) {
-    resultado.textContent = "QR Code: " + code.data;
-  }
-}
 
-function iniciarLeitura() {
-  Quagga.init({
-    inputStream: {
-      type: "LiveStream",
-      target: video,
-      constraints: {
-        facingMode: "environment"
-      }
-    },
+  // --- Processar QR Code ---
+  const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
+  if (qrCode) {
+    resultado.textContent = "QR Code: " + qrCode.data;
+    return; // se achou QR Code, já mostra
+  }
+
+  // --- Processar Código de Barras com QuaggaJS ---
+  Quagga.decodeSingle({
+    src: canvas.toDataURL(), // imagem capturada
+    numOfWorkers: 0, // necessário para rodar inline
     decoder: {
       readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"]
     }
-  }, err => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    Quagga.start();
-  });
-
-  Quagga.onDetected(result => {
+  }, result => {
     if (result && result.codeResult) {
       resultado.textContent = "Código de Barras: " + result.codeResult.code;
+    } else {
+      resultado.textContent = "Nenhum código detectado.";
     }
   });
-
-  // Loop para verificar QR Code
-  setInterval(lerQRCode, 500);
-}
+});
 
 
 window.onload = () => {
