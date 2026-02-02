@@ -42,11 +42,16 @@
   </div>
 
   <div id="codigos" class="secao">
-    <canvas id="canvas"></canvas>
-    <div id="output"></div>
     <video id="video" autoplay playsinline></video>
-    <input type="file" id="fileInput">
-    <img id="preview" style="display:none;">
+    <canvas id="canvas" width="640" height="480"></canvas>
+
+    <div>
+      <button id="btnCapturar">Capturar Imagem</button>
+      <button id="btnProcessar">Processar Código</button>
+    </div>
+
+    <div id="output">Aponte para um código e capture.</div>
+    >
   </div>
 
   <script src="script.js"></script>
