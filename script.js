@@ -521,6 +521,9 @@ btnProcessar.addEventListener("click", () => {
   Quagga.decodeSingle({
     src: canvas.toDataURL("image/png"),
     numOfWorkers: 0,
+    inputStream: {
+      size: canvas.width + "x" + canvas.height
+    },
     decoder: {
       readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"]
     }

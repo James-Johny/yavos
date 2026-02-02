@@ -3,9 +3,17 @@
   font-family: "CotySans";
   src: url("CotySans-Regular-v1008.ttf");
 }
-body, input, button, li, ul, h1, h2 {
-	font-family:"CotySans";
+
+body,
+input,
+button,
+li,
+ul,
+h1,
+h2 {
+  font-family: "CotySans";
 }
+
 body {
   font-family: "CotySans", sans-serif;
   margin: 20px;
@@ -13,12 +21,15 @@ body {
   box-sizing: border-box;
   background-color: #f5f5f5;
 }
+
 .menu {
   display: flex;
   flex-wrap: wrap;
   flex-flow: column;
 }
-input, button {
+
+input,
+button {
   margin: 10px 0;
   padding: 10px;
   font-size: 2rem;
@@ -50,6 +61,7 @@ button:hover {
 #itensRequisicao {
   font-size: 2rem;
 }
+
 #listaRequisicoes {
   margin-top: 0px;
   padding: 0px;
@@ -61,10 +73,19 @@ button:hover {
   overflow-x: auto;
   font-size: 2rem;
 }
- 
-.positivo { color: rgb(0, 94, 0); }
-.debito, .negativo { color: rgb(245, 0, 0); }
-.neutro { color: rgb(3, 3, 3); }
+
+.positivo {
+  color: rgb(0, 94, 0);
+}
+
+.debito,
+.negativo {
+  color: rgb(245, 0, 0);
+}
+
+.neutro {
+  color: rgb(3, 3, 3);
+}
 
 .tarefa {
   margin-top: 20px;
@@ -74,6 +95,7 @@ button:hover {
   background-color: #fff;
   font-size: 2rem;
 }
+
 table {
   color: rgb(15, 15, 15);
   background-color: black;
@@ -81,7 +103,8 @@ table {
   border-radius: 5px;
 }
 
-tr, td {
+tr,
+td {
   margin: 3px;
   padding: 3px;
 }
@@ -89,18 +112,24 @@ tr, td {
 #codigos {
   display: none;
 }
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* câmera em tela cheia */
-    }
-    #resultado {
-      color: #0e460e;
-      font-size: 20px;
-      background: rgba(0,0,0,0.5);
-      padding: 10px;
-      border-radius: 5px;
-    }
+
+video {
+  width: 100%;
+  height: 60%;
+  object-fit: cover;
+}
+
+canvas {
+  border: 1px solid #ccc;
+  margin-top: 10px;
+}
+
+#resultado {
+  margin-top: 15px;
+  color: #00ff00;
+  font-size: 18px;
+}
+
 
 
 table tr:nth-child(even) {
@@ -112,26 +141,30 @@ table tr:nth-child(odd) {
 }
 
 li {
-    list-style: none;
-    padding: 3px;
-    margin: 2px;
+  list-style: none;
+  padding: 3px;
+  margin: 2px;
 }
+
 li::marker {
   content: "→ ";
   color: #3a1466;
 }
+
 .tarefa h3 {
   margin-bottom: 10px;
   font-size: 2.1rem;
 }
+
 .cb {
-    position: absolute;
-    margin-top: 0;
-    margin-left: 0;
-    width: 20px;
-    height: 20px;
-    font-size: 2rem;
+  position: absolute;
+  margin-top: 0;
+  margin-left: 0;
+  width: 20px;
+  height: 20px;
+  font-size: 2rem;
 }
+
 .sugestoes {
   position: absolute;
   background-color: white;
@@ -141,14 +174,14 @@ li::marker {
   overflow-y: auto;
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   display: none;
 }
 
 .sugestoes button {
   display: block;
   width: 100%;
-  text-align: left;  
+  text-align: left;
   color: #3a1466;
   padding: 8px;
   background-color: #eee;
@@ -167,7 +200,8 @@ li::marker {
     margin: 10px;
   }
 
-  input, button {
+  input,
+  button {
     font-size: 3rem;
     padding: 8px;
     max-width: 90dvw;
@@ -182,15 +216,18 @@ li::marker {
     max-width: 80dvw;
   }
 
-  #resultado, #listaRequisicoes {
+  #resultado,
+  #listaRequisicoes {
     padding: 0px;
     font-size: 1.95rem;
     margin-left: 0;
   }
 }
+
 #buscaRequisicao::before {
   display: none;
 }
+
 .spanButton:hover {
   cursor: pointer;
 }
