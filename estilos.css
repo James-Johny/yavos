@@ -113,16 +113,12 @@ td {
   display: none;
 }
 
-video {
+video, img {
   width: 300px;
   border: 2px solid #333;
   margin-top: 10px;
 }
 
-canvas {
-  border: 1px solid #ccc;
-  margin-top: 10px;
-}
 
 #output {
   margin-top: 15px;
@@ -130,7 +126,9 @@ canvas {
   font-size: 18px;
 }
 
-
+input[type="file"]{
+  margin-top: 15px;
+}
 
 table tr:nth-child(even) {
   background-color: #d5afff;

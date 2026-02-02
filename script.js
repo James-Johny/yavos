@@ -485,14 +485,15 @@ function carregarRequisicoes() {
 (async function() {
     const video = document.getElementById('video');
     const output = document.getElementById('output');
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
 
+    // ======== LEITURA PELA CÂMERA ========
     try {
-        // Solicita acesso à câmera
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         video.srcObject = stream;
     } catch (err) {
         output.textContent = "Erro ao acessar a câmera: " + err.message;
-        return;
     }
 
     const canvas = document.createElement('canvas');
@@ -500,12 +501,10 @@ function carregarRequisicoes() {
 
     function scanQRCode() {
         if (video.readyState === video.HAVE_ENOUGH_DATA) {
-            // Ajusta tamanho do canvas para o vídeo
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // Captura os dados da imagem
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const code = jsQR(imageData.data, canvas.width, canvas.height);
 
@@ -515,8 +514,36 @@ function carregarRequisicoes() {
         }
         requestAnimationFrame(scanQRCode);
     }
-
     scanQRCode();
+
+    // ======== LEITURA POR IMAGEM ========
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function() {
+            preview.src = reader.result;
+            preview.style.display = "block";
+
+            // Quando a imagem carregar, processa o QR Code
+            preview.onload = function() {
+                canvas.width = preview.width;
+                canvas.height = preview.height;
+                ctx.drawImage(preview, 0, 0, canvas.width, canvas.height);
+
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, canvas.width, canvas.height);
+
+                if (code) {
+                    output.textContent = "QR Code detectado: " + code.data;
+                } else {
+                    output.textContent = "Nenhum QR Code encontrado na imagem.";
+                }
+            };
+        };
+        reader.readAsDataURL(file);
+    });
 })();
 
 
