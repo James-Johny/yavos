@@ -482,12 +482,17 @@ function carregarRequisicoes() {
 
 // ==============  parte do QR Code/Código de barras e Câmera
 
+
+
+
+
 const video = document.getElementById("video");
 const output = document.getElementById("output");
 const btnAcessar = document.getElementById("btnAcessar");
 
 let codeReader = null;
 let controls = null;
+let resultados = []; // array para salvar códigos
 
 btnAcessar.addEventListener("click", async () => {
   try {
@@ -498,13 +503,26 @@ btnAcessar.addEventListener("click", async () => {
       video,
       (result, err) => {
         if (result) {
-          // Exibe o texto do código
-          output.textContent = 
-            "Código detectado (" + result.getBarcodeFormat() + "):\n" + result.getText();
+          const valor = result.getText();
+          const tipo = result.getBarcodeFormat();
 
-          // Para leitura e fecha câmera
+          // Salva no array
+          resultados.push(valor);
+
+          // Divide em partes de 4 caracteres
+          const partes = valor.match(/.{1,4}/g);
+
+          // Exibe resultado
+          output.textContent =
+            "Código detectado (" + tipo + "):\n" +
+            valor + "\n\n" +
+            "Dividido em partes:\n" + partes.join(" | ") + "\n\n" +
+            "Array atual:\n" + JSON.stringify(resultados);
+
+          // Fecha câmera
           if (controls) {
             controls.stop();
+            controls = null;
           }
         }
         if (err && !(err instanceof ZXing.NotFoundException)) {
