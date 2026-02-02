@@ -485,14 +485,20 @@ function carregarRequisicoes() {
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const resultado = document.getElementById("resultado")
+const resultado = document.getElementById("resultado");
 const btnCapturar = document.getElementById("btnCapturar");
 
+// Acesso à câmera
 navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
   .then(stream => {
     video.srcObject = stream;
     video.setAttribute("playsinline", true); // iOS
     video.play();
+    video.onloadedmetadata = () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      btnCapturar.disabled = false; // só habilita quando vídeo estiver pronto
+    };
   })
   .catch(err => console.error("Erro ao acessar câmera:", err));
 
@@ -505,13 +511,13 @@ btnCapturar.addEventListener("click", () => {
   const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
   if (qrCode) {
     resultado.textContent = "QR Code: " + qrCode.data;
-    return; // se achou QR Code, já mostra
+    return;
   }
 
   // --- Processar Código de Barras com QuaggaJS ---
   Quagga.decodeSingle({
-    src: canvas.toDataURL(), // imagem capturada
-    numOfWorkers: 0, // necessário para rodar inline
+    src: canvas.toDataURL("image/png"), // imagem capturada
+    numOfWorkers: 0,
     decoder: {
       readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"]
     }
