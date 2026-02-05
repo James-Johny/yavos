@@ -139,11 +139,11 @@ input[type="file"] {
 }
 
 table tr:nth-child(even) {
-  background-color: #5e5e5e;
+  background-color: #D6D6D6;
 }
 
 table tr:nth-child(odd) {
-  background-color: #d5adff;
+  background-color: #FBBDFF;
 }
 
 li {
@@ -236,4 +236,5 @@ li::marker {
 
 .spanButton:hover {
   cursor: pointer;
+
 }
