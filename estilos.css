@@ -51,6 +51,7 @@ button:hover {
 
 
 .secao {
+  position: relative;
   display: flex;
   flex-flow: column wrap;
   align-items: center;
@@ -177,13 +178,25 @@ li::marker {
 
 .sugestoes {
   position: absolute;
+  top: 12rem;
   background-color: white;
   border: 1px solid #ccc;
   z-index: 1000;
   max-height: 450px;
   overflow-y: auto;
-  width: 100%;
-  max-width: 400px;
+  min-width: fit-content;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: none;
+}
+.sugestoesCl {
+  position: absolute;
+  top: 12rem;
+  background-color: white;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  max-height: 450px;
+  overflow-y: auto;
+  min-width: fit-content;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   display: none;
 }
