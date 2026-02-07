@@ -249,7 +249,7 @@ function criarRequisicao() {
   }
 
 
-  const titulo = `${colaborador.nome} - ${colaborador.matricula}`;
+  const titulo = `${colaborador.nome} - ${colaborador.matricula} - ${colaborador.cdc}`;
   const id = `req-${Date.now()}`;
   const itens = Array.from(document.querySelectorAll("#itensRequisicao li")).map(li => li.textContent);
   const editar = `<span class="spanButton" onclick="toggleEditor('${id}')">✏️</span>`;
@@ -259,7 +259,7 @@ function criarRequisicao() {
   <div id="${id}" class="tarefa">
     <h3>${titulo} ${editar} ${apagar} </h3>
     <ul id="itens-${id}">
-      ${itens.map(item => `<li><label>${item}</label></li>`).join("")}
+    ${itens.map(item => `<li><label>${item}</label></li>`).join("")}
     </ul>
     <div id="editor-${id}" style="display:none;">
       <input type="text" id="novoItem-${id}" placeholder="Adicionar novo item" oninput="sugerirEPIs('novoItem-${id}','sugestoes-${id}')">
@@ -284,6 +284,7 @@ function criarRequisicao() {
   document.getElementById("itensRequisicao").innerHTML = "";
   document.getElementById("buscaRequisicao").value = "";
 }
+
 
 
 function toggleEditor(id) {

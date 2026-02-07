@@ -49,6 +49,9 @@ button:hover {
   background-color: #3a1466;
 }
 
+.resultado {
+  width: fit-content;
+}
 
 .secao {
   position: relative;
@@ -105,12 +108,10 @@ button:hover {
 table {
   color: #000000;
   background-color: black;
-  width: 100%;
   border-radius: 5px;
   font-size: 2rem;
   font-weight: bolder;  
 }
-
 tr,
 td {
   margin: 3px;
@@ -240,6 +241,7 @@ li::marker {
     padding: 0px;
     font-size: 1.95rem;
     margin-left: 0;
+    width: fit-content;
   }
 }
 
