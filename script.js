@@ -480,9 +480,9 @@ function carregarRequisicoes() {
               </li>
             `).join("")}
           </ul>
-        </div>
+        </div><div class="editar">
         <button onclick="toggleEditor('${req.id}')">Editar</button>
-        <button onclick="removerRequisicao('${req.id}')">Remover</button>
+        <button onclick="removerRequisicao('${req.id}')">Remover</button></div>
       </div>
     `;
     container.insertAdjacentHTML("beforeend", html);
