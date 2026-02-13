@@ -66,15 +66,15 @@ button:hover {
 }
 
 #listaRequisicoes {
-  display: flexbox;
+  display: flex;
   flex-flow: column wrap;
-  margin-top: 0px;
-  padding: 0px;
+  margin-top: 0;
+  padding: 0;
   border-left: 5px solid #4F1C86;
   background-color: #d4c3e6;
   border-radius: 8px;
   color: black;
-  max-width: min-content;
+  max-width: fit-content;
   overflow-x: auto;
   font-size: 2rem;
 }
@@ -253,3 +253,4 @@ li::marker {
   cursor: pointer;
 
 }
+
