@@ -5,7 +5,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4F1C86">
   <meta charset="UTF-8">
-  <script src="https://unpkg.com/@zxing/library@latest"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <title>Sistema de Colaboradores</title>
   <link rel="stylesheet" href="estilos.css">
@@ -41,14 +41,21 @@
   </div>
 
   <div id="codigos" class="secao">
-    <video id="video" autoplay playsinline></video>
 
-    <div>
-      <button id="btnAcessar">Acessar Câmera</button>
+
+
+    <div class="container">
+      <h2>Scanner de Logística</h2>
+
+      <div id="reader"></div>
+
+      <div class="controls">
+        <button id="btnAcessar">Iniciar Leitura</button>
+        <button id="btnFechar">Parar Câmera</button>
+      </div>
+
+      <div id="output">Aguardando comando...</div>
     </div>
-
-    <div id="output">Clique em "Acessar Câmera".</div>
-
 
   </div>
 

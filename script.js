@@ -228,7 +228,7 @@ function adicionarItemEPI(epi) {
   const lista = document.getElementById("itensRequisicao");
   const li = document.createElement("li");
   console.log(epi);
-  li.innerHTML = `<label>${epi.codigo} - ${epi.descricao}`;
+  li.innerHTML = `<label class="new-item">${epi.codigo} - ${epi.descricao}`;
   lista.appendChild(li);
 }
 
@@ -236,31 +236,36 @@ function criarRequisicao() {
   const entrada = document.getElementById("buscaRequisicao").value.trim().toLowerCase();
   const todos = [...colaboradoresCSV, ...colaboradoresPDF];
   let colaborador = null;
+  let colaboradorManual = entrada.toUpperCase();
 
   if (/^\d+$/.test(entrada)) {
-    colaborador = todos.find(c => c.matricula.includes(entrada));
-  } else {
-    colaborador = todos.find(c => c.nome.toLowerCase() === entrada);
+    colaborador = todos.find(c => c.matricula.includes(entrada) || c.nome.toLowerCase() === entrada);
+  }else {
+    colaboradorManual = entrada.toUpperCase().split(",").map(item => item.trim());
+    const [nome, matricula, cdc] = colaboradorManual;
+    colaborador = {nome, matricula, cdc};
+     /*colaborador = todos.find(c => c.nome.toLowerCase() === entrada) || */
   }
 
-  if (!colaborador) {
+  /*if (!colaborador) {
     alert("Colaborador não encontrado.");
     return;
-  }
+  }*/
 
 
   const titulo = `${colaborador.nome} - ${colaborador.matricula} - ${colaborador.cdc}`;
   const id = `req-${Date.now()}`;
   const itens = Array.from(document.querySelectorAll("#itensRequisicao li")).map(li => li.textContent);
-  const editar = `<span class="spanButton" onclick="toggleEditor('${id}')">✏️</span>`;
-  const apagar = `<span class="spanButton" onclick="removerRequisicao('${id}')">🧼</span>`;
+  const editar = `<button onclick="toggleEditor('${id}')">Editar</button>`;
+  const apagar = `<button onclick="removerRequisicao('${id}')">Remover</button>`;
 
   const html = `
   <div id="${id}" class="tarefa">
-    <h3>${titulo} ${editar} ${apagar} </h3>
+    <h3>${titulo}</h3>
     <ul id="itens-${id}">
     ${itens.map(item => `<li><label>${item}</label></li>`).join("")}
     </ul>
+    <p class="editar">${editar} ${apagar}</p>
     <div id="editor-${id}" style="display:none;">
       <input type="text" id="novoItem-${id}" placeholder="Adicionar novo item" oninput="sugerirEPIs('novoItem-${id}','sugestoes-${id}')">
       <div id="sugestoes-${id}" class="sugestoes" style="display:none;"></div>
@@ -269,7 +274,7 @@ function criarRequisicao() {
         ${itens.map((item, index) => `
           <li>
             <label>${item}</label>
-            <span class="spanButton" onclick="removerItem('${id}', ${index})">🗑️</span>
+            <span class="spanButton" onclick="removerItem('${id}', ${index})">🗑️ Excluir</span>
           </li>
         `).join("")}
       </ul>
@@ -496,80 +501,67 @@ function carregarRequisicoes() {
 
 
 
-const video = document.getElementById("video");
+
+
+
 const output = document.getElementById("output");
-const btnAcessar = document.getElementById("btnAcessar");
+let html5QrCode;
 
-let codeReader = null;
-let controls = null;
-let resultados = []; // array para salvar códigos lidos
+// Função para processar sua string específica com "]"
+function processarDados(decodedText) {
+    if (!decodedText.includes("]")) return "Código: " + decodedText;
 
-// Função para processar e formatar o código
-function processarCodigo(valor) {
-  const partes = valor.split("]");
-
-  const ud = partes[0].slice(-10);
-  const sku = partes[1].slice(2);
-  const lote = partes[2].slice(1);
-  const validadeRaw = partes[3].slice(1);
-  const validade = validadeRaw.slice(0, 2) + "." + validadeRaw.slice(2, 4) + "." + validadeRaw.slice(4);
-  const quantidadeRaw = partes[4].slice(1);
-  const quantidade = quantidadeRaw.slice(-3);
-  const ordem = partes[5].slice(2);
-  const codigo = partes[6];
-
-  return (
-    "UD número: " + ud + "\n" +
-    "SKU: " + sku + "\n" +
-    "Lote: " + lote + "\n" +
-    "Validade: " + validade + "\n" +
-    "Quantidade: " + quantidade + "\n" +
-    "Número da ordem: " + ordem + "\n" +
-    "Código: " + codigo
-  );
+    const partes = decodedText.split("]");
+    try {
+        return `PALLET: ${partes[0].slice(-10)}
+SKU: ${partes[1].slice(2)}
+Lote: ${partes[2].slice(2)}
+Validade: ${partes[3].slice(2)}
+Qtd: ${partes[4].slice(5, -3)}
+Ordem: ${partes[5].slice(7)}`;
+    } catch (e) {
+        return "Erro na formatação: " + decodedText;
+    }
 }
 
-btnAcessar.addEventListener("click", async () => {
-  try {
-    codeReader = new ZXing.BrowserMultiFormatReader();
+async function iniciarScanner() {
+    // 1. Cria a instância do scanner
+    html5QrCode = new Html5Qrcode("reader");
 
-    controls = await codeReader.decodeFromVideoDevice(
-      null, // usa câmera padrão
-      video,
-      (result, err) => {
-        if (result) {
-          const valor = result.getText();
-          const tipo = result.getBarcodeFormat();
+    const config = { 
+        fps: 15, // Velocidade de quadros
+        qrbox: { width: 250, height: 250 }, // Área de foco
+        aspectRatio: 1.0 
+    };
 
-          // Salva no array
-          resultados.push(valor);
+    try {
+        // 2. Inicia usando a câmera traseira ("environment")
+        await html5QrCode.start(
+            { facingMode: "environment" }, 
+            config, 
+            (decodedText) => {
+                // Sucesso na leitura
+                output.textContent = "LIDO COM SUCESSO:\n" + processarDados(decodedText);
+                pararScanner(); // Para após ler (opcional)
+                if (navigator.vibrate) navigator.vibrate(200); // Feedback tátil
+            }
+        );
+        output.textContent = "Escaneando... Aponte para o código.";
+    } catch (err) {
+        output.textContent = "Erro ao iniciar: " + err;
+    }
+}
 
-          // Processa e formata
-          const textoFormatado = processarCodigo(valor);
+function pararScanner() {
+    if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+            output.textContent += "\nCâmera encerrada.";
+        }).catch(err => console.error("Erro ao parar:", err));
+    }
+}
 
-          // Exibe resultado
-          output.textContent =
-            "Código detectado (" + tipo + "):\n\n" +
-            textoFormatado + "\n\n" +
-            "Array atual:\n" + JSON.stringify(resultados);
-
-          // Fecha câmera
-          if (controls) {
-            controls.stop();
-            controls = null;
-          }
-        }
-        if (err && !(err instanceof ZXing.NotFoundException)) {
-          console.error(err);
-        }
-      }
-    );
-
-    output.textContent = "Leitura iniciada. Aponte para um QR ou código de barras.";
-  } catch (err) {
-    output.textContent = "Erro ao acessar câmera: " + err.message;
-  }
-});
+document.getElementById("btnAcessar").onclick = iniciarScanner;
+document.getElementById("btnFechar").onclick = pararScanner;
 
 
 

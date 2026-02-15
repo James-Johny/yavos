@@ -3,22 +3,14 @@
   font-family: "CotySans";
   src: url("CotySans-Regular-v1008.ttf");
 }
+:root :is(p, input, button, div) {
+    font-family: "CotySans";
 
-body,
-input,
-button,
-li,
-ul,
-h1,
-h2 {
-  font-family: "CotySans";
 }
-
-body {
-  font-family: "CotySans", sans-serif;
+:root {
+  font-family: "CotySans";
   margin: 20px;
   padding: 0;
-  box-sizing: border-box;
   background-color: #f5f5f5;
 }
 
@@ -32,8 +24,7 @@ button {
   margin: 10px 0;
   padding: 10px;
   font-size: 2rem;
-  width: 100%;
-  max-width: 400px;
+  width: 48rem;
   box-sizing: border-box;
 }
 
@@ -54,7 +45,6 @@ button:hover {
 }
 
 .secao {
-  position: relative;
   display: flex;
   flex-flow: column wrap;
   align-items: center;
@@ -95,7 +85,17 @@ button:hover {
 .neutro {
   color: rgb(3, 3, 3);
 }
-
+.editar button {
+  border: 3px solid #4F1C86;
+  background-color: #ffffff;
+  color: #3a1466;
+  width: 23rem;
+}
+.editar button:hover {
+  background-color: #4F1C86;
+  border: 3px solid black;
+  color: black;
+}
 .tarefa {
   margin-top: 20px;
   padding: 10px;
@@ -103,6 +103,7 @@ button:hover {
   border-radius: 6px;
   background-color: #fff;
   font-size: 2rem;
+  width: 48rem;
 }
 
 table {
@@ -122,23 +123,57 @@ td {
   display: none;
 }
 
+#video-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    border: 4px solid #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    overflow: hidden;
+    background: #000;
+}
+
 video {
-  width: 100%;
-  height: 60%;
-  object-fit: cover;
+    width: 100%;
+    display: block;
 }
 
 #output {
-  margin-top: 15px;
-  color: #000000;
-  font-size: 28px;
-  white-space: pre-line;
+    white-space: pre-wrap;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 460px;
+    margin-top: 15px;
+    border-left: 5px solid #007bff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-size: 2.8rem;
+    line-height: 1.5;
 }
 
-
-input[type="file"] {
-  margin-top: 15px;
+.controls {
+    margin: 20px;
+    display: flex;
+    flex-flow: column wrap;
+    gap: 15px;
 }
+
+#btnAcessar {
+    background-color: #28a745;
+    color: white;
+}
+
+#btnFechar {
+    background-color: #dc3545;
+    color: white;
+}
+
+button:active {
+    opacity: 0.8;
+}
+
 
 table tr:nth-child(even) {
   background-color: #c2c2c2;
@@ -175,19 +210,6 @@ li::marker {
 
 .sugestoes {
   position: absolute;
-  top: 12rem;
-  background-color: white;
-  border: 1px solid #ccc;
-  z-index: 1000;
-  max-height: 450px;
-  overflow-y: auto;
-  min-width: fit-content;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  display: none;
-}
-.sugestoesCl {
-  position: absolute;
-  top: 12rem;
   background-color: white;
   border: 1px solid #ccc;
   z-index: 1000;
@@ -200,7 +222,7 @@ li::marker {
 
 .sugestoes button {
   display: block;
-  width: 100%;
+  font-size: 2.5rem;
   text-align: left;
   color: #3a1466;
   padding: 8px;
