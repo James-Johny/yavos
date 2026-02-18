@@ -240,11 +240,11 @@ function criarRequisicao() {
 
   if (/^\d+$/.test(entrada)) {
     colaborador = todos.find(c => c.matricula.includes(entrada) || c.nome.toLowerCase() === entrada);
-  }else {
+  } else {
     colaboradorManual = entrada.toUpperCase().split(",").map(item => item.trim());
     const [nome, matricula, cdc] = colaboradorManual;
-    colaborador = {nome, matricula, cdc};
-     /*colaborador = todos.find(c => c.nome.toLowerCase() === entrada) || */
+    colaborador = { nome, matricula, cdc };
+    /*colaborador = todos.find(c => c.nome.toLowerCase() === entrada) || */
   }
 
   /*if (!colaborador) {
@@ -507,57 +507,60 @@ function carregarRequisicoes() {
 const output = document.getElementById("output");
 let html5QrCode;
 
-// Função para processar sua string específica com "]"
 function processarDados(decodedText) {
-    if (!decodedText.includes("]")) return "Código: " + decodedText;
+  if (!decodedText.includes("]")) return "Código: " + decodedText;
 
-    const partes = decodedText.split("]");
-    try {
-        return `PALLET: ${partes[0].slice(-10)}
+  const partes = decodedText.split("]");
+  try {
+    const qtdBruta = partes[4].slice(1, -3);
+
+    const qtdFormatada = Number(qtdBruta).toString();
+
+    return `PALLET: ${partes[0].slice(-10)}
 SKU: ${partes[1].slice(2)}
 Lote: ${partes[2].slice(2)}
 Validade: ${partes[3].slice(2)}
-Qtd: ${partes[4].slice(5, -3)}
+Qtd: ${qtdFormatada}
 Ordem: ${partes[5].slice(7)}`;
-    } catch (e) {
-        return "Erro na formatação: " + decodedText;
-    }
+  } catch (e) {
+    return `LOTE: ${partes[0].slice(2)}
+        VALIDADE: ${partes[1].slice(2, -2)}
+        VOLUME: ${partes[2].slice(2)}
+        SKU: ${partes[3].slice(2)}`;
+  }
 }
 
 async function iniciarScanner() {
-    // 1. Cria a instância do scanner
-    html5QrCode = new Html5Qrcode("reader");
+  html5QrCode = new Html5Qrcode("reader");
 
-    const config = { 
-        fps: 15, // Velocidade de quadros
-        qrbox: { width: 250, height: 250 }, // Área de foco
-        aspectRatio: 1.0 
-    };
+  const config = {
+    fps: 15,
+    qrbox: { width: 250, height: 250 },
+    aspectRatio: 1.0
+  };
 
-    try {
-        // 2. Inicia usando a câmera traseira ("environment")
-        await html5QrCode.start(
-            { facingMode: "environment" }, 
-            config, 
-            (decodedText) => {
-                // Sucesso na leitura
-                output.textContent = "LIDO COM SUCESSO:\n" + processarDados(decodedText);
-                pararScanner(); // Para após ler (opcional)
-                if (navigator.vibrate) navigator.vibrate(200); // Feedback tátil
-            }
-        );
-        output.textContent = "Escaneando... Aponte para o código.";
-    } catch (err) {
-        output.textContent = "Erro ao iniciar: " + err;
-    }
+  try {
+    await html5QrCode.start(
+      { facingMode: "environment" },
+      config,
+      (decodedText) => {
+        output.textContent = "LIDO COM SUCESSO:\n" + processarDados(decodedText);
+        pararScanner();
+        if (navigator.vibrate) navigator.vibrate(200);
+      }
+    );
+    output.textContent = "Escaneando... Aponte para o código.";
+  } catch (err) {
+    output.textContent = "Erro ao iniciar: " + err;
+  }
 }
 
 function pararScanner() {
-    if (html5QrCode) {
-        html5QrCode.stop().then(() => {
-            output.textContent += "\nCâmera encerrada.";
-        }).catch(err => console.error("Erro ao parar:", err));
-    }
+  if (html5QrCode) {
+    html5QrCode.stop().then(() => {
+      output.textContent += "\nCâmera encerrada.";
+    }).catch(err => console.error("Erro ao parar:", err));
+  }
 }
 
 document.getElementById("btnAcessar").onclick = iniciarScanner;
