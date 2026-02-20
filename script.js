@@ -239,7 +239,7 @@ function criarRequisicao() {
   let colaboradorManual = entrada.toUpperCase().split(",").map(item => item.trim());
 
   if (!colaboradorManual) {
-    colaborador = todos.find(c => c.nome.toLowerCase() == entrada );
+    colaborador = todos.find(c => c.nome.toUpperCase() == entrada );
   } else {
     const [nome, matricula, cdc] = colaboradorManual;
     colaborador = { nome, matricula, cdc };
@@ -407,7 +407,7 @@ function sugerirColaboradorUnificado(inputId, sugestaoId) {
 
     btn.innerHTML = `${c.nome} - ${c.matricula} <br> ${c.funcao} - ${descreverCDC(c.cdc)}`;
     btn.onclick = () => {
-      document.getElementById(inputId).value = c.nome;
+      document.getElementById(inputId).value = `${c.nome}, ${c.matricula}, ${c.cdc}`;
       sugestoesDiv.innerHTML = "";
       sugestoesDiv.style.display = "none";
     };

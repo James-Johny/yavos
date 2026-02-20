@@ -125,13 +125,15 @@ button:hover {
   background-color: #ffffff;
   color: #3a1466;
   width: 23rem;
+  box-shadow: none;
 }
 
 .editar button:hover {
-  background-color: #4F1C86;
+  background-color: #008d07;
   border: 3px solid black;
   color: black;
 }
+
 
 .tarefa {
   margin-top: 20px;
