@@ -235,22 +235,31 @@ function adicionarItemEPI(epi) {
 function criarRequisicao() {
   const entrada = document.getElementById("buscaRequisicao").value.trim().toLowerCase();
   const todos = [...colaboradoresCSV, ...colaboradoresPDF];
-  let colaborador = null;
-  let colaboradorManual = entrada.toUpperCase();
+  let colaborador = [];
+  let colaboradorManual = entrada.toUpperCase().split(",").map(item => item.trim());
 
-  if (/^\d+$/.test(entrada)) {
-    colaborador = todos.find(c => c.matricula.includes(entrada) || c.nome.toLowerCase() === entrada);
+  if (!colaboradorManual) {
+    colaborador = todos.find(c => c.nome.toLowerCase() == entrada );
   } else {
-    colaboradorManual = entrada.toUpperCase().split(",").map(item => item.trim());
     const [nome, matricula, cdc] = colaboradorManual;
     colaborador = { nome, matricula, cdc };
-    /*colaborador = todos.find(c => c.nome.toLowerCase() === entrada) || */
   }
 
-  /*if (!colaborador) {
+
+  /* if (/^\d+$/.test(entrada)) {
+     colaborador = todos.find(c => c.nome.toLowerCase() == entrada /*|| c.matricula.includes(entrada) );
+   } else {
+     colaboradorManual = entrada.toUpperCase().split(",").map(item => item.trim());
+     const [nome, matricula, cdc] = colaboradorManual;
+     colaborador = { nome, matricula, cdc };
+         console.log("MATRICULA: ", colaborador.matricula);
+     colaborador = todos.find(c => c.nome.toLowerCase() === entrada);
+   }
+*/
+  if (!colaborador) {
     alert("Colaborador não encontrado.");
     return;
-  }*/
+  }
 
 
   const titulo = `${colaborador.nome} - ${colaborador.matricula} - ${colaborador.cdc}`;
@@ -535,7 +544,7 @@ async function iniciarScanner() {
 
   const config = {
     fps: 15,
-    qrbox: { width: 250, height: 250 },
+    qrbox: { width: 500, height: 500 },
     aspectRatio: 1.0
   };
 
@@ -569,6 +578,20 @@ document.getElementById("btnFechar").onclick = pararScanner;
 
 
 
+
+// LOADER //
+
+window.addEventListener("load", function () {
+  const loader = document.getElementById("loader");
+
+  // Adiciona um pequeno delay opcional para não dar "flash" se a net for muito rápida
+  setTimeout(() => {
+    loader.style.opacity = "0.5"; // Faz o fade-out
+    setTimeout(() => {
+      loader.style.display = "flex"; // Remove do layout
+    }, 5000);
+  }, 2000);
+});
 
 
 
