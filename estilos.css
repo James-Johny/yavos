@@ -10,42 +10,26 @@
 }
 
 :root {
+  --purple1: #4F1C86;
+  --purple2: #612d9c;
+  --purple3: #3a1466;
+  --shadow1: hsla(0, 0%, 0%, 0.356);
+  --white1: #fff;
+  --white2: #f5f5f5;
+  --white3: #CCC;
+  --black1: #3f3f3f;
+  --black2: hsla(0, 0%, 0%, 0.205);
+  --primary: #007bff;
+  --danger: #dc3545;
+}
+
+:root {
   font-family: "CotySans";
   margin: 20px;
   padding: 0;
-  background-color: #f5f5f5;
-}
-/*********************   LOADER   ***********************/
-#loader {
-  color: #612d9c;
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  background-color: #ffffff; /* Cor de fundo da tela de load */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999; /* Garante que fique no topo */
-  transition: opacity 0.5s ease; /* Efeito suave ao sumir */
+  background-color: var(--white2);
 }
 
-/* Um exemplo simples de animação de girar */
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #3a1466;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/*************************************/
 .menu {
   display: flex;
   flex-flow: column wrap;
@@ -62,21 +46,18 @@ button {
 }
 
 button {
-  background-color: #4F1C86;
-  box-shadow: inset 15px 15px 8px 10px #612d9c, 2px 2px 2px 2px black;
-  color: white;
+  background-color: var(--purple1);
+  box-shadow: inset 5px 5px 8px 10px var(--black2), 2px 2px 2px 2px var(--black1);
+  color: var(--white1);
   border: none;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #3a1466;
-  box-shadow: inset 15px 15px 8px 10px #2e065c;
+  background-color: var(--purple3);
+  box-shadow: inset 5px 5px 8px 10px var(--shadow1);
 }
 
-.resultado {
-  width: fit-content;
-}
 
 .secao {
   display: flex;
@@ -94,7 +75,7 @@ button:hover {
   flex-flow: column wrap;
   margin-top: 0;
   padding: 0;
-  border-left: 5px solid #4F1C86;
+  border-left: 5px solid var(--purple1);
   background-color: #d4c3e6;
   border-radius: 8px;
   color: black;
@@ -121,17 +102,17 @@ button:hover {
 }
 
 .editar button {
-  border: 3px solid #4F1C86;
-  background-color: #ffffff;
-  color: #3a1466;
+  border: 3px solid var(--purple1);
+  background-color: var(--white1);
+  color: var(--purple1);
   width: 23rem;
   box-shadow: none;
 }
 
 .editar button:hover {
-  background-color: #008d07;
-  border: 3px solid black;
-  color: black;
+  background-color: var(--purple3);
+  border: 3px solid var(--black1);
+  color: var(--white1);
 }
 
 
@@ -211,6 +192,9 @@ video {
   box-shadow: none;
 }
 
+span:hover {
+  cursor: pointer;
+}
 
 button:active {
   opacity: 0.8;
@@ -251,15 +235,17 @@ li::marker {
 }
 
 .sugestoes {
+  margin-top: 12rem;
   position: absolute;
-  background-color: white;
+  background-color: var(--white1);
   border: 1px solid #ccc;
   z-index: 1000;
   max-height: 450px;
   overflow-y: auto;
-  min-width: fit-content;
+  min-width: 50rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   display: none;
+  border-radius: 9px;
 }
 
 .sugestoes button {
@@ -274,8 +260,137 @@ li::marker {
   box-shadow: none;
 }
 
+.adicionar {
+  color: var(--white1);
+  max-width: 48rem;
+}
+
 .sugestoes button:hover {
   background-color: #ddd;
+}
+
+#video {
+  width: 48rem;
+  border-radius: 12px;
+  background: #000;
+  margin: 0 auto;
+  display: block;
+}
+
+.acoes-camera {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 450px;
+  margin: 15px auto;
+}
+
+.radio-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+  width: 100%;
+}
+
+.radio-btn {
+  flex: 1;
+  background-color: var(--white1);
+  border: 3px solid var(--purple1);
+  color: var(--purple1);
+  padding: 15px;
+  text-align: center;
+  border-radius: 10px;
+  font-size: 2.2rem;
+  /* Seguindo seu padrão de 2rem+ */
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Esconde o círculo padrão do rádio */
+.radio-btn input[type="radio"] {
+  display: none;
+}
+
+/* Estilo quando o rádio está selecionado */
+.radio-btn:has(input:checked) {
+  background-color: var(--purple1);
+  color: var(--white1);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.radio-btn:active {
+  opacity: 0.8;
+}
+
+
+.linha-card {
+  margin-top: 20px;
+  margin-left: -10px;
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.linha-card h2 {
+  margin-top: 0;
+  border-bottom: 2px solid var(--purple1);
+  color: var(--purple1);
+}
+
+.sub-secao {
+  justify-content: center;
+  align-items: center;
+  width: 46rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.box {
+  width: 20rem;
+  background: var(--white2);
+  padding: 10px;
+  border: 1px dashed var(--white3);
+  text-align: center;
+}
+
+.box h4 {
+  margin: 5px 0;
+  font-size: 12px;
+  color: var(--purple1);
+}
+
+.img-fixa {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #ddd;
+}
+
+.os-container {
+  grid-column: span 2;
+  margin-top: 15px;
+}
+
+.os-grid {
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.os-img {
+  width: 10rem;
+  height: 10rem;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
 /* Responsividade para telas menores */
@@ -289,7 +404,7 @@ li::marker {
   button {
     font-size: 3rem;
     padding: 8px;
-    max-width: 90dvw;
+    max-width: 50rem;
     width: 800px;
   }
 
@@ -317,4 +432,110 @@ li::marker {
 .spanButton:hover {
   cursor: pointer;
 
+}
+
+
+
+/* Seus estilos base permanecem... */
+
+/* --- NOVOS ESTILOS INTEGRADOS --- */
+
+.radio-group {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0;
+  width: 100%;
+  max-width: 800px;
+}
+
+.radio-btn {
+  flex: 1;
+  background-color: var(--white1);
+  border: 3px solid var(--purple1);
+  color: var(--purple1);
+  padding: 15px;
+  text-align: center;
+  border-radius: 10px;
+  font-size: 2rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.radio-btn input[type="radio"] {
+  display: none;
+}
+
+.radio-btn:has(input:checked) {
+  background-color: var(--purple1);
+  color: var(--white1);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.linha-card {
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  width: 95%;
+  max-width: 850px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-left: 15px solid var(--purple1);
+}
+
+.box {
+  position: relative;
+  background: #f0f0f0;
+  border: 2px dashed var(--purple1);
+  border-radius: 8px;
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.btn-del {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: var(--danger);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  width: 60px;
+  height: 60px;
+  font-size: 2.5rem;
+  z-index: 10;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  max-width: 95%;
+  max-height: 90%;
+  border: 3px solid white;
+}
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  color: white;
+  font-size: 8rem;
 }

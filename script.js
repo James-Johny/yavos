@@ -235,14 +235,14 @@ function adicionarItemEPI(epi) {
 function criarRequisicao() {
   const entrada = document.getElementById("buscaRequisicao").value.trim().toLowerCase();
   const todos = [...colaboradoresCSV, ...colaboradoresPDF];
-  let colaborador = [];
+  let colaborador = null;
   let colaboradorManual = entrada.toUpperCase().split(",").map(item => item.trim());
 
-  if (!colaboradorManual) {
-    colaborador = todos.find(c => c.nome.toUpperCase() == entrada );
+  if (colaboradorManual.length === 2) {
+    const [nome, matricula] = colaboradorManual;
+    colaborador = { nome, matricula };
   } else {
-    const [nome, matricula, cdc] = colaboradorManual;
-    colaborador = { nome, matricula, cdc };
+    colaborador = todos.find(c => c.nome.toLowerCase() === entrada);
   }
 
 
@@ -262,7 +262,7 @@ function criarRequisicao() {
   }
 
 
-  const titulo = `${colaborador.nome} - ${colaborador.matricula} - ${colaborador.cdc}`;
+  const titulo = `${colaborador.nome} - ${colaborador.matricula}`;
   const id = `req-${Date.now()}`;
   const itens = Array.from(document.querySelectorAll("#itensRequisicao li")).map(li => li.textContent);
   const editar = `<button onclick="toggleEditor('${id}')">Editar</button>`;
@@ -407,7 +407,7 @@ function sugerirColaboradorUnificado(inputId, sugestaoId) {
 
     btn.innerHTML = `${c.nome} - ${c.matricula} <br> ${c.funcao} - ${descreverCDC(c.cdc)}`;
     btn.onclick = () => {
-      document.getElementById(inputId).value = `${c.nome}, ${c.matricula}, ${c.cdc}`;
+      document.getElementById(inputId).value = `${c.nome}`;
       sugestoesDiv.innerHTML = "";
       sugestoesDiv.style.display = "none";
     };
@@ -484,14 +484,14 @@ function carregarRequisicoes() {
           ${req.itens.map(item => `<li><label>${item}</label></li>`).join("")}
         </ul>
         <div id="editor-${req.id}" style="display:none;">
-          <input type="text" id="novoItem-${req.id}" placeholder="Adicionar novo item" oninput="sugerirEPIs('novoItem-${req.id}','sugestoes-${req.id}')">
+          <input class="adicionar" type="text" id="novoItem-${req.id}" placeholder="Adicionar novo item" oninput="sugerirEPIs('novoItem-${req.id}','sugestoes-${req.id}')">
           <div id="sugestoes-${req.id}" class="sugestoes" style="display:none;"></div>
-          <button onclick="adicionarItem('${req.id}')">Adicionar</button>
+          <button class="adicionar" onclick="adicionarItem('${req.id}')">Adicionar</button>
           <ul id="remover-${req.id}">
             ${req.itens.map((item, index) => `
               <li>
-                <button onclick="removerItem('${req.id}', ${index})">🗑️</button>
                 <label>${item}</label>
+                <span onclick="removerItem('${req.id}', ${index})">🗑️</span>
               </li>
             `).join("")}
           </ul>
@@ -578,22 +578,148 @@ document.getElementById("btnFechar").onclick = pararScanner;
 
 
 
-
-// LOADER //
-
-window.addEventListener("load", function () {
-  const loader = document.getElementById("loader");
-
-  // Adiciona um pequeno delay opcional para não dar "flash" se a net for muito rápida
-  setTimeout(() => {
-    loader.style.opacity = "0.5"; // Faz o fade-out
-    setTimeout(() => {
-      loader.style.display = "flex"; // Remove do layout
-    }, 5000);
-  }, 2000);
-});
+// ************ PARTE DO CÓDIGO PARA IMAGENS DO HORA-A-HORA ************* //
 
 
+let dbImagens;
+let streamAtivo = null;
+
+// 1. Inicializa Banco de Dados
+const reqDB = indexedDB.open("InspecaoTecnica_DB", 3);
+reqDB.onupgradeneeded = e => {
+    const db = e.target.result;
+    if (!db.objectStoreNames.contains("fotos")) {
+        db.createObjectStore("fotos", { keyPath: "chave" });
+    }
+};
+reqDB.onsuccess = e => {
+    dbImagens = e.target.result;
+    renderizarEstruturaEFotos(); // Só mostra o que tem foto ao carregar
+};
+
+// 2. Controle da Câmera (Melhor Resolução)
+async function iniciarCamera() {
+    const video = document.getElementById('video');
+    try {
+        streamAtivo = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+        });
+        video.srcObject = streamAtivo;
+        document.getElementById('area-camera').style.display = 'block';
+        document.getElementById('btnAbrir').style.display = 'none';
+        document.getElementById('btnFecharCam').style.display = 'block';
+    } catch (err) { alert("Câmera não disponível: " + err); }
+}
+
+function pararCamera() {
+    if (streamAtivo) { streamAtivo.getTracks().forEach(t => t.stop()); streamAtivo = null; }
+    document.getElementById('area-camera').style.display = 'none';
+    document.getElementById('btnAbrir').style.display = 'block';
+    document.getElementById('btnFecharCam').style.display = 'none';
+}
+
+// 3. Captura e Processamento
+function tirarFoto() {
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const linha = document.querySelector('input[name="linha"]:checked').value;
+    const tipo = document.querySelector('input[name="tipo"]:checked').value;
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+
+    canvas.toBlob(blob => {
+        const chave = (tipo === 'os') ? `${linha}-os-${Date.now()}` : `${linha}-${tipo}`;
+        const tx = dbImagens.transaction("fotos", "readwrite");
+        tx.objectStore("fotos").put({ chave, linha, tipo, data: blob });
+        tx.oncomplete = () => renderizarEstruturaEFotos();
+    }, 'image/jpeg', 0.85);
+}
+
+// 4. Renderização Dinâmica (Só exibe linhas com foto)
+function renderizarEstruturaEFotos() {
+    const container = document.getElementById('container-linhas');
+    container.innerHTML = ""; 
+
+    const store = dbImagens.transaction("fotos", "readonly").objectStore("fotos");
+    const fotosMap = new Map();
+
+    store.openCursor().onsuccess = e => {
+        const cursor = e.target.result;
+        if (cursor) {
+            const foto = cursor.value;
+            if (!fotosMap.has(foto.linha)) fotosMap.set(foto.linha, []);
+            fotosMap.get(foto.linha).push(foto);
+            cursor.continue();
+        } else {
+            // Desenha apenas as linhas que possuem fotos no banco
+            Array.from(fotosMap.keys()).sort().forEach(linhaKey => {
+                const card = criarCardHTML(linhaKey);
+                container.appendChild(card);
+                
+                fotosMap.get(linhaKey).forEach(foto => {
+                    exibirFotoNoCard(foto);
+                });
+            });
+        }
+    };
+}
+
+function criarCardHTML(l) {
+    const sec = document.createElement('section');
+    sec.className = 'linha-card';
+    sec.innerHTML = `
+        <h2>${l.replace('L', 'LINHA ')}</h2>
+        <div class="sub-secao">
+            <div class="box" id="box-${l}-caderno"><h4>CADERNO</h4></div>
+            <div class="box" id="box-${l}-quadro"><h4>QUADRO</h4></div>
+        </div>
+        <div id="grid-${l}-os" style="display:grid; grid-template-columns: 1fr 1fr 1fr; justify-content:center; gap:5px; margin-top:15px;"></div>
+    `;
+    return sec;
+}
+
+function exibirFotoNoCard(foto) {
+    const url = URL.createObjectURL(foto.data);
+    const btn = `<button class="btn-del" onclick="apagarFoto('${foto.chave}')">🗑️</button>`;
+    const imgHtml = `${btn}<img src="${url}" onclick="abrirZoom('${url}')" style="width:100%; height:100%; object-fit:cover; cursor:pointer;">`;
+
+    if (foto.tipo === 'os') {
+        const div = document.createElement('div');
+        div.className = 'box'; div.style.width = '180px'; div.style.height = '180px';
+        div.innerHTML = imgHtml;
+        document.getElementById(`grid-${foto.linha}-os`).appendChild(div);
+    } else {
+        const box = document.getElementById(`box-${foto.linha}-${foto.tipo}`);
+        if(box) box.innerHTML = imgHtml;
+    }
+}
+
+// 5. Funções de Apoio
+function apagarFoto(chave) {
+    if (confirm("Apagar imagem?")) {
+        const tx = dbImagens.transaction("fotos", "readwrite");
+        tx.objectStore("fotos").delete(chave);
+        tx.oncomplete = () => renderizarEstruturaEFotos();
+    }
+}
+
+function abrirZoom(url) {
+    document.getElementById('imgZoom').src = url;
+    document.getElementById('modalZoom').style.display = "flex";
+}
+
+function mostrarSecao(id) {
+    document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
+    document.getElementById(id).style.display = 'flex';
+    if (id !== 'hora-a-hora') pararCamera();
+    if (id === 'hora-a-hora') renderizarEstruturaEFotos();
+}
+
+
+
+// ****************** CARREGA REQUISIÇOES *************** //
 
 window.onload = () => {
   mostrarSecao('requisicoes');

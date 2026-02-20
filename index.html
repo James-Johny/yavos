@@ -17,6 +17,7 @@
     <button onclick="mostrarSecao('bancoHoras')">Banco de Horas</button>
     <button onclick="mostrarSecao('requisicoes')">Requisições</button>
     <button onclick="mostrarSecao('codigos')">Leitor de Códigos</button>
+    <button onclick="mostrarSecao('hora-a-hora')">Hora A Hora</button>
   </div>
 
   <div id="bancoHoras" class="secao">
@@ -58,9 +59,67 @@
 
   </div>
 
-  <div id="loader">
-    <div class="spinner"></div>
-    <p>Carregando...</p>
+
+  <div class="secao" id="hora-a-hora">
+
+
+    <div class="controles">
+      <button id="btnAbrir" onclick="iniciarCamera()" style="background-color: var(--primary);">Abrir Câmera</button>
+      <button id="btnFecharCam" class="btn-danger" style="display:none; background-color: var(--danger);"
+        onclick="pararCamera()">Fechar Câmera</button>
+    </div>
+
+    <section id="area-camera" style="display:none;">
+      <video id="video" autoplay playsinline></video>
+      <div class="acoes-camera">
+        <div class="radio-group">
+          <label class="radio-btn"><input type="radio" name="linha" value="L01" checked> L01</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L02"> L02</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L03"> L03</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L05"> L05</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L06"> L06</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L07"> L07</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L08"> L08</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L09"> L09</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L10"> L10</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L11"> L11</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L12"> L12</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L13"> L13</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L22"> L22</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L24"> L24</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L26"> L26</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L27"> L27</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L35"> L35</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L37"> L37</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L46"> L46</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L55"> L55</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L56"> L56</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L59"> L59</label>
+        </div>
+
+
+        <div class="radio-group">
+          <label class="radio-btn"><input type="radio" name="tipo" value="caderno" checked> Caderno</label>
+          <label class="radio-btn"><input type="radio" name="tipo" value="quadro"> Quadro</label>
+          <label class="radio-btn"><input type="radio" name="tipo" value="os"> O.S.</label>
+        </div>
+
+        <button onclick="tirarFoto()" style="background-color: var(--primary); margin-top: 15px;">📸 CAPTURAR
+          IMAGEM</button>
+      </div>
+    </section>
+
+    <div id="container-linhas">
+    </div>
+
+    <div id="modalZoom" class="modal" onclick="this.style.display='none'">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="imgZoom">
+    </div>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+
+
   </div>
 
   <script src="script.js"></script>
