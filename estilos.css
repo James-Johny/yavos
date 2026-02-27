@@ -10,17 +10,27 @@
 }
 
 :root {
+  --verde1: #28a745;
   --purple1: #4F1C86;
   --purple2: #612d9c;
   --purple3: #3a1466;
+  --purple4: #eed7ff;
+  --blue1: #b1edf1;
   --shadow1: hsla(0, 0%, 0%, 0.356);
   --white1: #fff;
   --white2: #f5f5f5;
   --white3: #CCC;
   --black1: #3f3f3f;
   --black2: hsla(0, 0%, 0%, 0.205);
-  --primary: #007bff;
+  --primary: #0b87da;
   --danger: #dc3545;
+  --novacor: #d8bbe0;
+  --cor-positivo: #072bf5;
+  --cor-negativo: #ff0000;
+  --cor-neutro: #000;
+  --tr-even: #e0e0e0;
+  --tr-odd: #ffffff;
+  --lista-requisições-bg: #d4c3e6;
 }
 
 :root {
@@ -59,6 +69,7 @@ button:hover {
 }
 
 
+
 .secao {
   display: flex;
   flex-flow: column wrap;
@@ -76,35 +87,35 @@ button:hover {
   margin-top: 0;
   padding: 0;
   border-left: 5px solid var(--purple1);
-  background-color: #d4c3e6;
+  background-color: var(--lista-requisições-bg);
   border-radius: 8px;
-  color: black;
+  color: var(--cor-neutro);
   max-width: fit-content;
   overflow-x: auto;
   font-size: 2rem;
 }
 
 .positivo {
-  color: rgb(29, 145, 29);
+  color: var(--cor-positivo);
   font-style: bold;
   font-weight: bolder;
 }
 
 .debito,
 .negativo {
-  color: rgb(245, 0, 0);
+  color: var(--cor-negativo);
   font-style: bold;
   font-weight: bolder;
 }
 
 .neutro {
-  color: rgb(3, 3, 3);
+  color: var(--cor-neutro);
 }
 
+
+
 .editar button {
-  border: 3px solid var(--purple1);
-  background-color: var(--white1);
-  color: var(--purple1);
+  border: 3px solid var(--black1);
   width: 23rem;
   box-shadow: none;
 }
@@ -125,10 +136,14 @@ button:hover {
   font-size: 2rem;
   width: 48rem;
 }
-
+.tarefa:target {
+  border-color: var(--purple1);
+  box-shadow: 0 0 10px var(--purple1);
+  background-color: var(--purple4);
+}
 table {
-  color: #000000;
-  background-color: black;
+  color: var(--cor-neutro);
+  background-color: var(--cor-neutro);
   border-radius: 5px;
   font-size: 2rem;
   font-weight: bolder;
@@ -152,12 +167,12 @@ video {
 
 #output {
   white-space: pre-wrap;
-  background: #ffffff;
+  background: var(--white1);
   padding: 20px;
   border-radius: 8px;
   width: 48rem;
   margin-top: 15px;
-  border-left: 5px solid #007bff;
+  border-left: 5px solid var(--purple1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   font-size: 2.8rem;
   line-height: 1.5;
@@ -202,11 +217,11 @@ button:active {
 
 
 table tr:nth-child(even) {
-  background-color: #c2c2c2;
+  background-color: var(--tr-even);
 }
 
 table tr:nth-child(odd) {
-  background-color: #ffffff;
+  background-color: var(--tr-odd);
 }
 
 li {
@@ -217,7 +232,7 @@ li {
 
 li::marker {
   content: "→ ";
-  color: #3a1466;
+  color: var(--purple1);
 }
 
 .tarefa h3 {
@@ -238,7 +253,7 @@ li::marker {
   margin-top: 12rem;
   position: absolute;
   background-color: var(--white1);
-  border: 1px solid #ccc;
+  border: 1px solid var(--white3);
   z-index: 1000;
   max-height: 450px;
   overflow-y: auto;
@@ -252,7 +267,7 @@ li::marker {
   display: block;
   font-size: 2.5rem;
   text-align: left;
-  color: #3a1466;
+  color: var(--purple1);
   padding: 8px;
   background-color: #eee;
   border: none;
@@ -266,13 +281,13 @@ li::marker {
 }
 
 .sugestoes button:hover {
-  background-color: #ddd;
+  background-color: var(--white3);
 }
 
 #video {
   width: 48rem;
   border-radius: 12px;
-  background: #000;
+  background: var(--cor-neutro);
   margin: 0 auto;
   display: block;
 }
@@ -434,8 +449,6 @@ li::marker {
 
 }
 
-
-
 /* Seus estilos base permanecem... */
 
 /* --- NOVOS ESTILOS INTEGRADOS --- */
@@ -477,7 +490,7 @@ li::marker {
 .linha-card {
   align-items: center;
   justify-content: center;
-  background: white;
+  background: var(--novacor);
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 30px;
@@ -489,7 +502,7 @@ li::marker {
 
 .box {
   position: relative;
-  background: #f0f0f0;
+  background: var(--blue1);
   border: 2px dashed var(--purple1);
   border-radius: 8px;
   min-height: 250px;
