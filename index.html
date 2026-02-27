@@ -25,10 +25,23 @@
       oninput="sugerirColaboradorUnificado('buscaColaborador', 'sugestoesBancoHoras')">
     <div id="sugestoesBancoHoras" class="sugestoes"></div>
     <button onclick="buscarBancoHoras()">Buscar</button>
+    <div id="versao"></div>
     <div id="resultado" class="resultado"></div>
   </div>
 
   <div id="requisicoes" class="secao" onload="carregarRequisicoes();">
+
+
+    <input type="text" onfocus="this.value='';" id="buscaRequisicao2"
+        placeholder="Digite o nome do colaborador"><button onclick="buscarRequisicoes()">Buscar</button>
+      <div id="resultadoBusca"></div>
+    
+
+
+
+    <button type="button" onclick="pesquisarReq()">Pesquisar Requisições</button>
+
+
     <input type="text" onfocus="this.value='';" id="buscaRequisicao" placeholder="Digite o nome do colaborador"
       oninput="sugerirColaboradorUnificado('buscaRequisicao', 'sugestoesColaborador')">
     <div id="sugestoesColaborador" class="sugestoes"></div>
@@ -86,6 +99,7 @@
           <label class="radio-btn"><input type="radio" name="linha" value="L12"> L12</label>
           <label class="radio-btn"><input type="radio" name="linha" value="L13"> L13</label>
           <label class="radio-btn"><input type="radio" name="linha" value="L22"> L22</label>
+          <label class="radio-btn"><input type="radio" name="linha" value="L23"> L23</label>
           <label class="radio-btn"><input type="radio" name="linha" value="L24"> L24</label>
           <label class="radio-btn"><input type="radio" name="linha" value="L26"> L26</label>
           <label class="radio-btn"><input type="radio" name="linha" value="L27"> L27</label>
