@@ -3,6 +3,8 @@ let colaboradoresPDF = [];
 let colaboradoresCSV = [];
 let listaEPIs = [];
 
+
+
 fetch("listanomes.csv")
   .then(response => response.text())
   .then(texto => {
@@ -17,14 +19,12 @@ fetch("listanomes.csv")
     console.error("Erro ao carregar listanomes.csv:", err);
   });
 
-
-fetch("bancodehoras.pdf")
+  fetch("bancodehoras.pdf")
   .then(res => res.arrayBuffer())
   .then(data => pdfjsLib.getDocument({ data }).promise)
   .then(pdf => {
     const total = pdf.numPages;
     const promises = [];
-
     for (let i = 1; i <= total; i++) {
       promises.push(
         pdf.getPage(i).then(page =>
@@ -34,10 +34,38 @@ fetch("bancodehoras.pdf")
         )
       );
     }
-
     return Promise.all(promises);
   })
 
+.then(paginas => {
+    version = paginas.join("\n");
+    const regexVersion = /\s*(\d{2}\/\d{2}\/\d{4})/;
+    const matchVersion = version.match(regexVersion);
+    if (matchVersion) {
+      const dataExtraida = matchVersion[1];
+      document.getElementById("versao").textContent = `Última atualização: ${dataExtraida}`;
+    } else {
+      document.getElementById("versao").textContent = "Data de atualização não encontrada";
+    }
+  })
+
+    fetch("bancodehoras.pdf")
+  .then(res => res.arrayBuffer())
+  .then(data => pdfjsLib.getDocument({ data }).promise)
+  .then(pdf => {
+    const total = pdf.numPages;
+    const promises = [];
+    for (let i = 1; i <= total; i++) {
+      promises.push(
+        pdf.getPage(i).then(page =>
+          page.getTextContent().then(content =>
+            content.items.map(item => item.str).join(" ")
+          )
+        )
+      );
+    }
+    return Promise.all(promises);
+  })
 
   .then(paginas => {
     textoPDF = paginas.join("\n");
@@ -139,7 +167,7 @@ function corHora(valor) {
 }
 function corSaldo(valor) {
   if (!valor || valor === "0:00") return "#a0a0a0";
-  if (valor.startsWith("-")) return "#cc9292";
+  if (valor.startsWith("-")) return "#fff19b";
   return "#a2d492";
 }
 function corDebito(valor) {
@@ -262,7 +290,7 @@ function criarRequisicao() {
   }
 
 
-  const titulo = `${colaborador.nome} - ${colaborador.matricula}`;
+  const titulo = ` ${colaborador.matricula} - ${colaborador.nome}`;
   const id = `req-${Date.now()}`;
   const itens = Array.from(document.querySelectorAll("#itensRequisicao li")).map(li => li.textContent);
   const editar = `<button onclick="toggleEditor('${id}')">Editar</button>`;
@@ -299,11 +327,37 @@ function criarRequisicao() {
   document.getElementById("buscaRequisicao").value = "";
 }
 
-
+function buscarRequisicoes() {
+  const entrada = document.getElementById("buscaRequisicao2").value.trim().toLowerCase();
+  const resultadoDiv = document.getElementById("resultadoBusca");
+  resultadoDiv.innerHTML = "";
+  const requisicoes = JSON.parse(localStorage.getItem("requisicoes") || "[]");
+  const filtradas = requisicoes.filter(req => req.titulo.toLowerCase().includes(entrada));
+  if (filtradas.length === 0) {
+    resultadoDiv.innerHTML = `<p class="negativo" style="justify-items: left; font-size: 2.3rem;">Nenhuma requisição encontrada para <span style="color: var(--cor-neutro)">"${entrada}"</span>.</p>`;
+    return;
+  }
+  filtradas.forEach(req => {
+    const html = `<a href="#${req.id}" style="justify-content: left; text-decoration: none; display:block; margin-bottom:10px; margin-top: 10px; color: var(--purple1); font-size: 2.3rem;">${req.titulo}</a>`;
+    resultadoDiv.innerHTML += html;
+  });
+}
 
 function toggleEditor(id) {
   const editor = document.getElementById(`editor-${id}`);
+  const btnEdt = document.getElementById(`btnEditar-${id}`); 
+
   editor.style.display = editor.style.display === "none" ? "block" : "none";
+
+  if (editor.style.display === "none") {
+    btnEdt.innerText = "Editar";
+    btnEdt.style.backgroundColor = "var(--primary)";
+  }
+  if (editor.style.display === "block") {
+    btnEdt.innerText = "Salvar";
+    btnEdt.style.backgroundColor = "var(--verde1)";
+    btnEdt.blur();
+  }
 }
 
 function removerItem(requisicaoId, index) {
@@ -465,10 +519,16 @@ function salvarRequisicaoLocal(id, titulo, itens) {
 function removerRequisicao(id) {
   const div = document.getElementById(id);
   if (div) div.remove();
-
+  
   const requisicoes = JSON.parse(localStorage.getItem("requisicoes") || "[]");
   const atualizadas = requisicoes.filter(req => req.id !== id);
   localStorage.setItem("requisicoes", JSON.stringify(atualizadas));
+
+}
+
+function pesquisarReq() {
+  const form = getElementById("pesquisarReq");
+  form.style.display = "flex";
 }
 
 function carregarRequisicoes() {
@@ -491,15 +551,14 @@ function carregarRequisicoes() {
             ${req.itens.map((item, index) => `
               <li>
                 <label>${item}</label>
-                <span onclick="removerItem('${req.id}', ${index})">🗑️</span>
+                <span onclick="removerItem('${req.id}', ${index})" style="cursor: pointer; color: var(--cor-negativo);">🗑️ Remover</span>
               </li>
             `).join("")}
           </ul>
         </div><div class="editar">
-        <button onclick="toggleEditor('${req.id}')">Editar</button>
-        <button onclick="removerRequisicao('${req.id}')">Remover</button></div>
-      </div>
-    `;
+        <button style="background-color: var(--primary); color: var(--white1);" onclick="toggleEditor('${req.id}')" id="btnEditar-${req.id}">Editar</button>
+        <button style="background-color: var(--danger); color: var(--white1);" onclick="removerRequisicao('${req.id}')">Remover</button></div>
+      </div>`;
     container.insertAdjacentHTML("beforeend", html);
   });
 }
@@ -587,89 +646,89 @@ let streamAtivo = null;
 // 1. Inicializa Banco de Dados
 const reqDB = indexedDB.open("InspecaoTecnica_DB", 3);
 reqDB.onupgradeneeded = e => {
-    const db = e.target.result;
-    if (!db.objectStoreNames.contains("fotos")) {
-        db.createObjectStore("fotos", { keyPath: "chave" });
-    }
+  const db = e.target.result;
+  if (!db.objectStoreNames.contains("fotos")) {
+    db.createObjectStore("fotos", { keyPath: "chave" });
+  }
 };
 reqDB.onsuccess = e => {
-    dbImagens = e.target.result;
-    renderizarEstruturaEFotos(); // Só mostra o que tem foto ao carregar
+  dbImagens = e.target.result;
+  renderizarEstruturaEFotos(); // Só mostra o que tem foto ao carregar
 };
 
 // 2. Controle da Câmera (Melhor Resolução)
 async function iniciarCamera() {
-    const video = document.getElementById('video');
-    try {
-        streamAtivo = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }
-        });
-        video.srcObject = streamAtivo;
-        document.getElementById('area-camera').style.display = 'block';
-        document.getElementById('btnAbrir').style.display = 'none';
-        document.getElementById('btnFecharCam').style.display = 'block';
-    } catch (err) { alert("Câmera não disponível: " + err); }
+  const video = document.getElementById('video');
+  try {
+    streamAtivo = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+    });
+    video.srcObject = streamAtivo;
+    document.getElementById('area-camera').style.display = 'block';
+    document.getElementById('btnAbrir').style.display = 'none';
+    document.getElementById('btnFecharCam').style.display = 'block';
+  } catch (err) { alert("Câmera não disponível: " + err); }
 }
 
 function pararCamera() {
-    if (streamAtivo) { streamAtivo.getTracks().forEach(t => t.stop()); streamAtivo = null; }
-    document.getElementById('area-camera').style.display = 'none';
-    document.getElementById('btnAbrir').style.display = 'block';
-    document.getElementById('btnFecharCam').style.display = 'none';
+  if (streamAtivo) { streamAtivo.getTracks().forEach(t => t.stop()); streamAtivo = null; }
+  document.getElementById('area-camera').style.display = 'none';
+  document.getElementById('btnAbrir').style.display = 'block';
+  document.getElementById('btnFecharCam').style.display = 'none';
 }
 
 // 3. Captura e Processamento
 function tirarFoto() {
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const linha = document.querySelector('input[name="linha"]:checked').value;
-    const tipo = document.querySelector('input[name="tipo"]:checked').value;
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const linha = document.querySelector('input[name="linha"]:checked').value;
+  const tipo = document.querySelector('input[name="tipo"]:checked').value;
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0);
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
 
-    canvas.toBlob(blob => {
-        const chave = (tipo === 'os') ? `${linha}-os-${Date.now()}` : `${linha}-${tipo}`;
-        const tx = dbImagens.transaction("fotos", "readwrite");
-        tx.objectStore("fotos").put({ chave, linha, tipo, data: blob });
-        tx.oncomplete = () => renderizarEstruturaEFotos();
-    }, 'image/jpeg', 0.85);
+  canvas.toBlob(blob => {
+    const chave = (tipo === 'os') ? `${linha}-os-${Date.now()}` : `${linha}-${tipo}`;
+    const tx = dbImagens.transaction("fotos", "readwrite");
+    tx.objectStore("fotos").put({ chave, linha, tipo, data: blob });
+    tx.oncomplete = () => renderizarEstruturaEFotos();
+  }, 'image/jpeg', 0.85);
 }
 
 // 4. Renderização Dinâmica (Só exibe linhas com foto)
 function renderizarEstruturaEFotos() {
-    const container = document.getElementById('container-linhas');
-    container.innerHTML = ""; 
+  const container = document.getElementById('container-linhas');
+  container.innerHTML = "";
 
-    const store = dbImagens.transaction("fotos", "readonly").objectStore("fotos");
-    const fotosMap = new Map();
+  const store = dbImagens.transaction("fotos", "readonly").objectStore("fotos");
+  const fotosMap = new Map();
 
-    store.openCursor().onsuccess = e => {
-        const cursor = e.target.result;
-        if (cursor) {
-            const foto = cursor.value;
-            if (!fotosMap.has(foto.linha)) fotosMap.set(foto.linha, []);
-            fotosMap.get(foto.linha).push(foto);
-            cursor.continue();
-        } else {
-            // Desenha apenas as linhas que possuem fotos no banco
-            Array.from(fotosMap.keys()).sort().forEach(linhaKey => {
-                const card = criarCardHTML(linhaKey);
-                container.appendChild(card);
-                
-                fotosMap.get(linhaKey).forEach(foto => {
-                    exibirFotoNoCard(foto);
-                });
-            });
-        }
-    };
+  store.openCursor().onsuccess = e => {
+    const cursor = e.target.result;
+    if (cursor) {
+      const foto = cursor.value;
+      if (!fotosMap.has(foto.linha)) fotosMap.set(foto.linha, []);
+      fotosMap.get(foto.linha).push(foto);
+      cursor.continue();
+    } else {
+      // Desenha apenas as linhas que possuem fotos no banco
+      Array.from(fotosMap.keys()).sort().forEach(linhaKey => {
+        const card = criarCardHTML(linhaKey);
+        container.appendChild(card);
+
+        fotosMap.get(linhaKey).forEach(foto => {
+          exibirFotoNoCard(foto);
+        });
+      });
+    }
+  };
 }
 
 function criarCardHTML(l) {
-    const sec = document.createElement('section');
-    sec.className = 'linha-card';
-    sec.innerHTML = `
+  const sec = document.createElement('section');
+  sec.className = 'linha-card';
+  sec.innerHTML = `
         <h2>${l.replace('L', 'LINHA ')}</h2>
         <div class="sub-secao">
             <div class="box" id="box-${l}-caderno"><h4>CADERNO</h4></div>
@@ -677,44 +736,43 @@ function criarCardHTML(l) {
         </div>
         <div id="grid-${l}-os" style="display:grid; grid-template-columns: 1fr 1fr 1fr; justify-content:center; gap:5px; margin-top:15px;"></div>
     `;
-    return sec;
+  return sec;
 }
 
 function exibirFotoNoCard(foto) {
-    const url = URL.createObjectURL(foto.data);
-    const btn = `<button class="btn-del" onclick="apagarFoto('${foto.chave}')">🗑️</button>`;
-    const imgHtml = `${btn}<img src="${url}" onclick="abrirZoom('${url}')" style="width:100%; height:100%; object-fit:cover; cursor:pointer;">`;
+  const url = URL.createObjectURL(foto.data);
+  const btn = `<button class="btn-del" onclick="apagarFoto('${foto.chave}')">🗑️</button>`;
+  const imgHtml = `${btn}<img src="${url}" onclick="abrirZoom('${url}')" style="width:100%; height:100%; object-fit:cover; cursor:pointer;">`;
 
-    if (foto.tipo === 'os') {
-        const div = document.createElement('div');
-        div.className = 'box'; div.style.width = '180px'; div.style.height = '180px';
-        div.innerHTML = imgHtml;
-        document.getElementById(`grid-${foto.linha}-os`).appendChild(div);
-    } else {
-        const box = document.getElementById(`box-${foto.linha}-${foto.tipo}`);
-        if(box) box.innerHTML = imgHtml;
-    }
+  if (foto.tipo === 'os') {
+    const div = document.createElement('div');
+    div.className = 'box'; div.style.width = '180px'; div.style.height = '180px';
+    div.innerHTML = imgHtml;
+    document.getElementById(`grid-${foto.linha}-os`).appendChild(div);
+  } else {
+    const box = document.getElementById(`box-${foto.linha}-${foto.tipo}`);
+    if (box) box.innerHTML = imgHtml;
+  }
 }
 
 // 5. Funções de Apoio
 function apagarFoto(chave) {
-    if (confirm("Apagar imagem?")) {
-        const tx = dbImagens.transaction("fotos", "readwrite");
-        tx.objectStore("fotos").delete(chave);
-        tx.oncomplete = () => renderizarEstruturaEFotos();
-    }
+  const tx = dbImagens.transaction("fotos", "readwrite");
+  tx.objectStore("fotos").delete(chave);
+  tx.oncomplete = () => renderizarEstruturaEFotos();
+
 }
 
 function abrirZoom(url) {
-    document.getElementById('imgZoom').src = url;
-    document.getElementById('modalZoom').style.display = "flex";
+  document.getElementById('imgZoom').src = url;
+  document.getElementById('modalZoom').style.display = "flex";
 }
 
 function mostrarSecao(id) {
-    document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
-    document.getElementById(id).style.display = 'flex';
-    if (id !== 'hora-a-hora') pararCamera();
-    if (id === 'hora-a-hora') renderizarEstruturaEFotos();
+  document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
+  document.getElementById(id).style.display = 'flex';
+  if (id !== 'hora-a-hora') pararCamera();
+  if (id === 'hora-a-hora') renderizarEstruturaEFotos();
 }
 
 
