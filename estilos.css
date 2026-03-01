@@ -23,8 +23,8 @@
   --background: #dbdbdb;
   --black1: #3f3f3f;
   --black2: hsla(0, 0%, 0%, 0.205);
-  --primary: #035dab;
-  --secondary: #48b4d0;
+  --primary: #48b4d0;
+  --secondary: #035dab;
   --danger: #dc3545;
   --novacor: #d8bbe0;
   --cor-positivo: #072bf5;
@@ -659,5 +659,6 @@ li::marker {
   color: white;
   font-size: 8rem;
 }
+
 
 
