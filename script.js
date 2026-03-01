@@ -134,7 +134,33 @@ fetch("listanomes.csv")
 
 
 
+const menuCheckbox = document.getElementById('menuCheckbox');
+const menuLinks = document.querySelectorAll('#menu a');
 
+let startY = 0;
+let endY = 0;
+
+// Detecta início do toque
+document.addEventListener('touchstart', (e) => {
+  startY = e.touches[0].clientY;
+});
+
+// Detecta fim do toque
+document.addEventListener('touchend', (e) => {
+  endY = e.changedTouches[0].clientY;
+
+  // Se deslizou para baixo mais de 50px → abre menu
+  if (endY - startY > 50) {
+    menuCheckbox.checked = true;
+  }
+});
+
+// Fecha menu ao clicar em uma opção
+menuLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    menuCheckbox.checked = false;
+  });
+});
 
 
 
@@ -468,7 +494,55 @@ function sugerirColaboradorUnificado(inputId, sugestaoId) {
     sugestoesDiv.appendChild(btn);
   });
 }
+function fecharDetalhesColaborador() {
+  const detalherDiv = document.getElementById("detalhesColaborador");
+  detalherDiv.style.display = "none";
 
+}
+
+function detalharColaborador(matricula) {
+  const colaborador = colaboradoresPDF.find(c => c.matricula === matricula);
+  const detalherDiv = document.getElementById("detalhesColaborador");
+  detalherDiv.style.display = "block";
+  if (!colaborador) return;
+  
+  detalherDiv.innerHTML = `
+  <span  id="botaoFecharDetalhes" onclick="fecharDetalhesColaborador()"> &times;</span>
+    <h3>Detalhes do Colaborador</h3>
+    <p><strong style="color: var(--white2);">Nome:</strong> ${colaborador.nome}</p>
+    <p><strong style="color: var(--white2);">Matrícula:</strong> ${colaborador.matricula}</p>
+    <p><strong style="color: var(--white2);">Setor:</strong> ${descreverCDC(colaborador.cdc)}</p>
+    <p><strong style="color: var(--white2);">Função:</strong> ${colaborador.funcao}</p>
+  `;
+}
+
+
+function listarCDC() {  
+  const cdcInput = document.querySelector("#cdc input");
+  const cdcValor = cdcInput.value.trim();
+  const resultadoDiv = document.getElementById("resultadoCDC");
+  resultadoDiv.innerHTML = "";
+  if (!cdcValor) {
+    resultadoDiv.innerHTML = `<p class="negativo">Por favor, insira um CDC para buscar.</p>`;
+    return;
+  }
+  const colaboradoresFiltrados = colaboradoresPDF.filter(c => c.cdc === cdcValor);
+  if (colaboradoresFiltrados.length === 0) {
+    resultadoDiv.innerHTML = `<p class="negativo">Nenhum colaborador encontrado para o CDC ${cdcValor}.</p>`;
+    return;
+  }
+  resultadoDiv.innerHTML = `
+    <table class="tabela-cdc">
+      <tr><th>Matrícula</th><th>Colaborador</th></tr>
+      ${colaboradoresFiltrados.map(c => `
+        <tr onclick="detalharColaborador('${c.matricula}')">
+          <td>${c.matricula}</td>
+          <td>${c.nome}</td>
+        </tr>
+      `).join("")}
+    </table>
+  `;
+}
 
 function buscarBancoHoras() {
   const entrada = document.getElementById("buscaColaborador").value.trim().toLowerCase();
