@@ -23,7 +23,8 @@
   --background: #dbdbdb;
   --black1: #3f3f3f;
   --black2: hsla(0, 0%, 0%, 0.205);
-  --primary: #0b87da;
+  --primary: #57b0c9;
+  --secondary: #2596be;
   --danger: #dc3545;
   --novacor: #d8bbe0;
   --cor-positivo: #072bf5;
@@ -124,7 +125,7 @@
   line-height: 90px;
   text-align: center;
   background-color: none;
-  color: var(--white1);
+  color: var(--secondary);
   border-radius: 7px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -658,3 +659,4 @@ li::marker {
   color: white;
   font-size: 8rem;
 }
+
