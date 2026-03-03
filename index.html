@@ -36,15 +36,20 @@
 
   <div id="requisicoes" class="secao" onload="carregarRequisicoes();">
 
+    <div id="pesquisaReq">
+      <input type="text" onfocus="this.value='';" id="buscaRequisicao2"
+        placeholder="Digite o nome do colaborador"><button onclick="buscarRequisicoes()">Buscar</button>
+    </div>
 
-    <input type="text" onfocus="this.value='';" id="buscaRequisicao2" placeholder="Digite o nome do colaborador"><button
-      onclick="buscarRequisicoes()">Buscar</button>
+
     <div id="resultadoBusca"></div>
 
 
 
 
-    <button type="button" onclick="pesquisarReq()">Pesquisar Requisições</button>
+    <div id="exibePesqReq">
+      <button type="button" onclick="pesquisarRequisicoes()">Pesquisar Requisições</button>
+    </div>
 
 
     <input type="text" onfocus="this.value='';" id="buscaRequisicao" placeholder="Digite o nome do colaborador"
@@ -147,7 +152,7 @@
     <div id="detalhesColaborador">
     </div>
     <div id="resultadoCDC"></div>
-    
+
   </div>
 
   <script src="script.js"></script>

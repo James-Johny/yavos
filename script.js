@@ -137,24 +137,6 @@ fetch("listanomes.csv")
 const menuCheckbox = document.getElementById('menuCheckbox');
 const menuLinks = document.querySelectorAll('#menu a');
 
-let startY = 0;
-let endY = 0;
-
-// Detecta início do toque
-document.addEventListener('touchstart', (e) => {
-  startY = e.touches[0].clientY;
-});
-
-// Detecta fim do toque
-document.addEventListener('touchend', (e) => {
-  endY = e.changedTouches[0].clientY;
-
-  // Se deslizou para baixo mais de 50px → abre menu
-  if (endY - startY > 50) {
-    menuCheckbox.checked = true;
-  }
-});
-
 // Fecha menu ao clicar em uma opção
 menuLinks.forEach(link => {
   link.addEventListener('click', () => {
@@ -356,6 +338,12 @@ function criarRequisicao() {
 function buscarRequisicoes() {
   const entrada = document.getElementById("buscaRequisicao2").value.trim().toLowerCase();
   const resultadoDiv = document.getElementById("resultadoBusca");
+  const pesquisaDiv = document.getElementById('pesquisaReq');
+  const buscaDiv = document.getElementById('exibePesqReq');
+
+  pesquisaDiv.style.display = "none";
+  buscaDiv.style.display = "flex";
+
   resultadoDiv.innerHTML = "";
   const requisicoes = JSON.parse(localStorage.getItem("requisicoes") || "[]");
   const filtradas = requisicoes.filter(req => req.titulo.toLowerCase().includes(entrada));
@@ -495,8 +483,8 @@ function sugerirColaboradorUnificado(inputId, sugestaoId) {
   });
 }
 function fecharDetalhesColaborador() {
-  const detalherDiv = document.getElementById("detalhesColaborador");
-  detalherDiv.style.display = "none";
+  const detalhesDiv = document.getElementById("detalhesColaborador");
+  detalhesDiv.style.display = "none";
 
 }
 
@@ -600,9 +588,12 @@ function removerRequisicao(id) {
 
 }
 
-function pesquisarReq() {
-  const form = getElementById("pesquisarReq");
-  form.style.display = "flex";
+function pesquisarRequisicoes() {
+  const pesquisaDiv = document.getElementById('pesquisaReq');
+  const exibirDiv =  document.getElementById('exibePesqReq');
+
+  exibirDiv.style.display = "none";
+  pesquisaDiv.style.display = "flex";
 }
 
 function carregarRequisicoes() {

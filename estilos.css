@@ -47,7 +47,7 @@
   color: var(--danger);
   text-shadow: 1px 1px 10px var(--shadow1);
 }
- 
+
 #detalhesColaborador {
   display: none;
   width: 48rem;
@@ -87,14 +87,16 @@
   text-decoration: none;
 
 }
+
 .tabela-cdc tr:hover {
   background-color: var(--purple4);
   cursor: pointer;
 }
+
 #menu a {
   text-align: center;
   text-decoration: none;
-  
+
   color: var(--white1);
   font-size: 5rem;
 }
@@ -117,6 +119,7 @@
   padding: 0;
   margin: 0;
 }
+
 #menuToggle label {
   display: inline-block;
   font-size: 5rem;
@@ -130,7 +133,7 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   font-weight: bold;
-  text-shadow:  2px 2px 4px var(--shadow1);
+  text-shadow: 2px 2px 4px var(--shadow1);
 }
 
 #menuToggle label::first-letter {
@@ -140,16 +143,21 @@
 }
 
 #menuToggle input {
-  display: none; /* esconde o checkbox real */
+  display: none;
+  /* esconde o checkbox real */
 }
 
-#menuToggle input:checked + label {
+#menuToggle input:checked+label {
   background-color: var(--purple3);
   color: var(--white3);
 }
 
-#menuToggle input:checked ~ ul {
+#menuToggle input:checked~ul {
   transform: translateY(0);
+}
+
+#requisicoes {
+  display: none;
 }
 
 input,
@@ -160,6 +168,10 @@ button {
   width: 48rem;
   box-sizing: border-box;
   border-radius: 5px;
+}
+
+input {
+  color: var(--purple1)
 }
 
 button {
@@ -243,11 +255,13 @@ button:hover {
   font-size: 2rem;
   width: 48rem;
 }
+
 .tarefa:target {
   border-color: var(--purple1);
   box-shadow: 0 0 10px var(--purple1);
   background-color: var(--purple4);
 }
+
 table {
   color: var(--cor-neutro);
   background-color: var(--cor-neutro);
@@ -382,8 +396,23 @@ li::marker {
   box-shadow: none;
 }
 
+#pesquisaReq {
+  display: none;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+#exibePesqReq {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+
 .adicionar {
-  color: var(--white1);
+  color: var(--purple1);
   max-width: 48rem;
 }
 
@@ -659,6 +688,3 @@ li::marker {
   color: white;
   font-size: 8rem;
 }
-
-
-
