@@ -11,9 +11,9 @@
 
 :root {
   --verde1: #28a745;
-  --purple1: #4F1C86;
-  --purple2: #612d9c;
-  --purple3: #3a1466;
+  --purple1: #035dab;
+  --purple2: #152580;
+  --purple3: #05125e;
   --purple4: #eed7ff;
   --blue1: #b1edf1;
   --shadow1: hsla(0, 0%, 0%, 0.356);
@@ -103,6 +103,7 @@
 
 #menu {
   display: flex;
+  z-index: 999999;
   flex-flow: column wrap;
   align-items: center;
   justify-content: space-around;
