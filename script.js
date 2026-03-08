@@ -668,7 +668,7 @@ async function iniciarScanner() {
 
   const config = {
     fps: 15,
-    qrbox: { width: 500, height: 500 },
+    qrbox: { width: 300, height: 300 },
     aspectRatio: 1.0
   };
 
