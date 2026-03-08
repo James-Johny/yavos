@@ -49,17 +49,18 @@
 }
 
 #detalhesColaborador {
-  display: none;
+  font-size: 2rem;
+  display: none; 
+  position: relative;
   width: 48rem;
-  height: 12rem;
+  height: 25rem;
   background-color: var(--purple1);
   color: var(--white1);
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 1rem;
-  position: fixed;
-  top: 55%;
-  left: 50%;
+  top: 14rem;
+  left: 25rem;
   transform: translate(-50%, -50%);
   opacity: 0.95;
 }
@@ -88,6 +89,32 @@
 
 }
 
+.container-scroll {
+  max-height: 70rem; /* Ajuste a altura conforme sua necessidade */
+  overflow-y: auto;  /* Ativa o scroll vertical */
+  overflow-x: auto;
+  border: 2px solid var(--purple1);
+  border-radius: 4px;
+}
+
+.tabela-cdc {
+  width: 49rem;
+  border-collapse: collapse;
+  font-size: 3rem;
+}
+
+
+/* Fixa o cabeçalho no topo durante o scroll */
+.tabela-cdc thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f8f9fa; /* Cor de fundo para não ficar transparente */
+  z-index: 1;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1); /* Sombra leve para separar do corpo */
+  padding: 12px;
+  text-align: left;
+}
+
 .tabela-cdc tr:hover {
   background-color: var(--purple4);
   cursor: pointer;
@@ -103,11 +130,11 @@
 
 #menu {
   display: flex;
+  position: fixed;
   z-index: 999999;
   flex-flow: column wrap;
   align-items: center;
   justify-content: space-around;
-  position: absolute;
   width: 100dvw;
   height: 100dvh;
   top: 0;

@@ -137,6 +137,8 @@ fetch("listanomes.csv")
 const menuCheckbox = document.getElementById('menuCheckbox');
 const menuLinks = document.querySelectorAll('#menu a');
 
+
+
 // Fecha menu ao clicar em uma opção
 menuLinks.forEach(link => {
   link.addEventListener('click', () => {
@@ -519,17 +521,26 @@ function listarCDC() {
     resultadoDiv.innerHTML = `<p class="negativo">Nenhum colaborador encontrado para o CDC ${cdcValor}.</p>`;
     return;
   }
-  resultadoDiv.innerHTML = `
+ resultadoDiv.innerHTML = `
+  <div class="container-scroll">
     <table class="tabela-cdc">
-      <tr><th>Matrícula</th><th>Colaborador</th></tr>
-      ${colaboradoresFiltrados.map(c => `
-        <tr onclick="detalharColaborador('${c.matricula}')">
-          <td>${c.matricula}</td>
-          <td>${c.nome}</td>
+      <thead>
+        <tr>
+          <th>Matrícula</th>
+          <th>Colaborador</th>
         </tr>
-      `).join("")}
+      </thead>
+      <tbody>
+        ${colaboradoresFiltrados.map(c => `
+          <tr onclick="detalharColaborador('${c.matricula}')">
+            <td>${c.matricula}</td>
+            <td>${c.nome}</td>
+          </tr>
+        `).join("")}
+      </tbody>
     </table>
-  `;
+  </div>
+`;
 }
 
 function buscarBancoHoras() {
