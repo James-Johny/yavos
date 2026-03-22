@@ -651,35 +651,101 @@ function carregarRequisicoes() {
 const output = document.getElementById("output");
 let html5QrCode;
 
+/////////////////////////////////////////////////////////////////
+
+
+
+
+const FORMATOS = {
+  // ETIQUETA UD
+  ETIQUETA_UD: {
+    check: (partes) => partes.length === 6,
+    formatar: (partes) => {
+      const qtd = Number(partes[4].slice(1, -3)).toString();
+      return `PALLET: ${partes[0].slice(-10)}\n` +
+             `SKU: ${partes[1].slice(2)}\n` +
+             `Lote: ${partes[2].slice(2)}\n` +
+             `Validade: ${partes[3].slice(2)}\n` +
+             `Qtd: ${qtd}\n` +
+             `Ordem: ${partes[5].slice(7)}`;
+    }
+  },
+  // ETIQUETA DE EMBARQUE
+  ETIQUETA_EMBARQUE: {
+    check: (partes) => partes.length === 4,
+    formatar: (partes) => {
+      const v = partes[1].slice(2, -2);
+      const vf = v.replace(/(\d{2})(\d{4})/, "$1.$2")
+      return `LOTE: ${partes[0].slice(2)}\n` +
+             `VALIDADE: ${vf}\n` +
+             `VOLUME: ${partes[2].slice(2)}\n` +
+             `SKU: ${partes[3].slice(2)}`;
+    }
+  },
+  // ETIQUETA DE IDENTIFICAÇÃO
+  ETIQUETA_IDENTIFICACAO: {
+    check: (partes) => partes.length === 5,
+    formatar: (partes) => {
+      const v = partes[3].slice(2);
+      const vf = v.replace(/(\d{2})(\d{2})(\d{4})/, "$1.$2.$3")
+      return `PALLET: ${Number(partes[0].slice(2))}\n` +
+             `PRODUTO: ${partes[1].slice(2)}\n` +
+             `LOTE SAP: ${partes[2].slice(2)}\n` +
+             `VALIDADE: ${vf}\n` +
+             `QUANTIDADE: ${Number(partes[4].slice(1, -3))}`;
+    }
+  },
+  // ORDEM DE PRODUÇAO
+  ORDEM_PRODUCAO: {
+    check: (partes) => partes.length === 8,
+    formatar: (partes) => {
+      const val = partes[3].slice(2);
+      const v = val.split("/");
+      const vf = v[1] + "." + v[0];
+      const di = partes[7].slice(2);
+      const dif = di.replace(/(\d{4})(\d{2})(\d{2})/, "$3.$2.$1")
+      return `SKU: ${partes[0].slice(-10)}\n` +
+             `PRODUTO: ${partes[1].slice(2)}\n` +
+             `LOTE: ${partes[2].slice(2)}\n` +
+             `VALIDADE: ${vf}\n` +
+             `UN: ${partes[4].slice(2)}\n` +
+             `CX: ${partes[5].slice(2)}\n` +
+             `QUANTIDADE/CAIXA: ${partes[6].slice(2)}\n` +
+             `DATA DE IMPRESSÃO: ${dif}`;
+    }
+  },
+};
 function processarDados(decodedText) {
   if (!decodedText.includes("]")) return "Código: " + decodedText;
 
   const partes = decodedText.split("]");
-  try {
-    const qtdBruta = partes[4].slice(1, -3);
+  
+  // Procura no mapa qual formato satisfaz a condição (check)
+  const formatoEncontrado = Object.values(FORMATOS).find(f => f.check(partes));
 
-    const qtdFormatada = Number(qtdBruta).toString();
-
-    return `PALLET: ${partes[0].slice(-10)}
-SKU: ${partes[1].slice(2)}
-Lote: ${partes[2].slice(2)}
-Validade: ${partes[3].slice(2)}
-Qtd: ${qtdFormatada}
-Ordem: ${partes[5].slice(7)}`;
-  } catch (e) {
-    return `LOTE: ${partes[0].slice(2)}
-        VALIDADE: ${partes[1].slice(2, -2)}
-        VOLUME: ${partes[2].slice(2)}
-        SKU: ${partes[3].slice(2)}`;
+  if (formatoEncontrado) {
+    try {
+      return formatoEncontrado.formatar(partes);
+    } catch (e) {
+      return "Erro ao formatar padrão conhecido: " + e.message;
+    }
   }
+
+  return "Padrão desconhecido: " + decodedText;
+  
 }
+
+
+
+
+/////////////////////////////////////////////////////////////////
 
 async function iniciarScanner() {
   html5QrCode = new Html5Qrcode("reader");
 
   const config = {
     fps: 15,
-    qrbox: { width: 300, height: 300 },
+    qrbox: { width: 250, height: 250 },
     aspectRatio: 1.0
   };
 
@@ -689,6 +755,7 @@ async function iniciarScanner() {
       config,
       (decodedText) => {
         output.textContent = "LIDO COM SUCESSO:\n" + processarDados(decodedText);
+        console.log(decodedText);
         pararScanner();
         if (navigator.vibrate) navigator.vibrate(200);
       }
