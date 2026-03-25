@@ -716,11 +716,11 @@ const FORMATOS = {
   },
   // ORDEM PRODUÇAO ESMALTE
   ORDEM_ESMALTE: {
-    cleck: (partes) => partes.length === 10,
+    check: (partes) => partes.length === 10,
     formatar: (partes) => {
       const v = partes[3].slice(2);
       const va = v.split("/");
-      const vf = va[1].va[0];
+      const vf = va[1] + "." + va[0];
       const di = partes[8].slice(2);
       const dif = di.replace(/(\d{4})(\d{2})(\d{2})/, "$3.$2.$1");
       return `SKU: ${partes[0].slice(2)}\n` +
