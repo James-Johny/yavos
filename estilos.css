@@ -242,6 +242,7 @@ button:hover {
   font-size: 2rem;
 }
 
+
 .positivo {
   color: var(--cor-positivo);
   font-style: bold;
@@ -273,7 +274,9 @@ button:hover {
   color: var(--white1);
 }
 
-
+button {
+  border-radius: 500px !important;
+}
 .tarefa {
   margin-top: 20px;
   padding: 10px;
@@ -380,7 +383,7 @@ li {
 }
 
 li::marker {
-  content: "→ ";
+  content: "[  ]";
   color: var(--purple1);
 }
 

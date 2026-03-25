@@ -675,7 +675,7 @@ const FORMATOS = {
     check: (partes) => partes.length === 4,
     formatar: (partes) => {
       const v = partes[1].slice(2, -2);
-      const vf = v.replace(/(\d{2})(\d{4})/, "$1.$2")
+      const vf = v.replace(/(\d{4})(\d{2})/, "$2.$1")
       return `LOTE: ${partes[0].slice(2)}\n` +
              `VALIDADE: ${vf}\n` +
              `VOLUME: ${partes[2].slice(2)}\n` +
@@ -714,6 +714,27 @@ const FORMATOS = {
              `DATA DE IMPRESSÃO: ${dif}`;
     }
   },
+  // ORDEM PRODUÇAO ESMALTE
+  ORDEM_ESMALTE: {
+    cleck: (partes) => partes.length === 10,
+    formatar: (partes) => {
+      const v = partes[3].slice(2);
+      const va = v.split("/");
+      const vf = va[1].va[0];
+      const di = partes[8].slice(2);
+      const dif = di.replace(/(\d{4})(\d{2})(\d{2})/, "$3.$2.$1");
+      return `SKU: ${partes[0].slice(2)}\n` +
+              `PRODUTO: ${partes[1].slice(2)}\n` +
+              `LOTE: ${partes[2].slice(2)}\n` +
+              `VALIDADE: ${vf}\n` +
+              `UN: ${partes[4].slice(2)}\n` +
+              `ZUI: ${partes[5].slice(2)}\n` +
+              `CX: ${partes[6].slice(2)}\n` +
+              `QTD/CAIXA: ${partes[7].slice(2)}\n` +
+              `DATA DE IMPRESSÃO: ${dif}\n` +
+              `DESCRIÇÃO: ${partes[9].slice(2)}\n`;
+    }
+  }
 };
 function processarDados(decodedText) {
   if (!decodedText.includes("]")) return "Código: " + decodedText;
