@@ -722,7 +722,7 @@ const FORMATOS = {
       const va = v.split("/");
       const vf = va[1] + "." + va[0];
       const di = partes[8].slice(2);
-      const dif = di.replace(/(\d{4})(\d{2})(\d{2})/, "$3.$2.$1");
+      const dif = di.replace(/(\d{4})(\d{2})(\d{2})/, "$3.$2.$1")
       return `SKU: ${partes[0].slice(2)}\n` +
               `PRODUTO: ${partes[1].slice(2)}\n` +
               `LOTE: ${partes[2].slice(2)}\n` +
