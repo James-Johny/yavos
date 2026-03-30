@@ -225,6 +225,10 @@ function descreverCDC(cdc) {
 function sugerirEPIs(inputId = "epiInput", sugestoesId = "sugestoesEPI") {
   const input = document.getElementById(inputId);
   const sugestoesDiv = document.getElementById(sugestoesId);
+  const qtd = document.getElementById("quantidade").value;
+  const desc = document.getElementById("descricao").value || "TROCA/DESGASTE NATURAL";
+
+
   if (!input || !sugestoesDiv) return;
 
   const termo = input.value.toLowerCase().trim();
@@ -245,13 +249,13 @@ function sugerirEPIs(inputId = "epiInput", sugestoesId = "sugestoesEPI") {
   encontrados.forEach(epi => {
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.textContent = `${epi.codigo} - ${epi.descricao}`;
+    btn.textContent = `[ ${qtd} ] ${epi.codigo} - ${epi.descricao} #${desc}`;
     btn.onclick = () => {
       if (inputId === "epiInput") {
         adicionarItemEPI(epi);
       } else {
         const requisicaoId = inputId.replace("novoItem-", "");
-        adicionarItemComValor(requisicaoId, `${epi.codigo} - ${epi.descricao}`);
+        adicionarItemComValor(requisicaoId, `[ ${qtd} ] ${epi.codigo} - ${epi.descricao} #${desc}`);
       }
 
       input.value = "";
@@ -265,8 +269,26 @@ function sugerirEPIs(inputId = "epiInput", sugestoesId = "sugestoesEPI") {
 function adicionarItemEPI(epi) {
   const lista = document.getElementById("itensRequisicao");
   const li = document.createElement("li");
+  const qtd = document.getElementById("quantidade").value || "1";
+  const desc = document.getElementById("descricao").value  || "TROCA/DESGASTE NATURAL";
   console.log(epi);
-  li.innerHTML = `<label class="new-item">${epi.codigo} - ${epi.descricao}`;
+
+  switch (desc) {
+    case "TROCA/DESGASTE NATURAL":
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc">${desc}</span></label>`;
+      break;
+    case "PERDA":
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc perda">${desc}</span></label>`;
+      break;
+    case "NECESSIDADE":
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc necessidade">${desc}</span></label>`;
+      break;
+    case "USO COLETIVO":
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc coletivo">${desc}</span></label>`;
+      break;
+    default:
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc">${desc}</span></label>`;
+  }
   lista.appendChild(li);
 }
 
@@ -302,9 +324,11 @@ function criarRequisicao() {
 
   const titulo = ` ${colaborador.matricula} - ${colaborador.nome}`;
   const id = `req-${Date.now()}`;
-  const itens = Array.from(document.querySelectorAll("#itensRequisicao li")).map(li => li.textContent);
+  const itens = Array.from(document.querySelectorAll("#itensRequisicao li")).map(li => li.outerHTML);
   const editar = `<button onclick="toggleEditor('${id}')">Editar</button>`;
   const apagar = `<button onclick="removerRequisicao('${id}')">Remover</button>`;
+
+
 
   const html = `
   <div id="${id}" class="tarefa">
