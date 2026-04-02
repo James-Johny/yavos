@@ -189,33 +189,101 @@ function descreverCDC(cdc) {
 
   let setor = ''
   switch (cdc) {
-    case '76512':
-      setor = 'ALMOXARIFADO MP'
+    case '76526':      setor = 'ADM PESSOAL'
       break
-    case '76532':
-      setor = 'APOIO E MOV'
+case '76521':      setor = 'ALMOX. NÃO PRODUTIVO - SVY'
       break
-    case '76540':
-      setor = 'OPERAÇÃO CUSTOMIZAÇÃO'
+case '76512':      setor = 'ALMOXARIFADO MP/EM - SVY'
       break
-    case '76590':
-      setor = 'ENVASE COLORAÇÃO WELLA'
+case '76532':      setor = 'APOIO E MOV. LINHAS-COSMET. - SVY'
       break
-    case '76591':
-      setor = 'ENVASE PROFESSIONAL WELLA'
+case '76536':      setor = 'CALDEIRA - SVY'
       break
-    case '76582':
-      setor = 'ENVASE ESMALTES'
+case '76506':      setor = 'CONTROLADORIA - SVY'
       break
-    case '76581':
-      setor = 'ENVASE COLORAÇÃO '
+case '76511':      setor = 'CONTROLE DE QUALIDADE - SVY'
       break
-    case '76585':
-      setor = 'ENVASE LINHAS RÁPIDAS'
+case '76507':      setor = 'DIR. INDUSTRIAL - SVY'
       break
-    case '76587':
-      setor = 'ENVASE AEROSÓIS'
+case '76504':      setor = 'DIRETORIA MANUFATURA'
       break
+case '76514':      setor = 'ENGENHARIA - SVY'
+      break
+case '76528':      setor = 'ENGENHARIA DE PROCESSO - SVY'
+      break
+case '76554':      setor = 'ENTUFAMENTO/MONT.TAMPA ESM-SVY'
+      break
+case '76587':      setor = 'ENVASE AEROSÓIS - SVY'
+      break
+case '76581':      setor = 'ENVASE COLORAÇÃO - SVY'
+      break
+case '76590':      setor = 'ENVASE COLORACAO WELLA - SVY'
+      break
+case '76582':      setor = 'ENVASE ESMALTES - SVY'
+      break
+case '76585':      setor = 'ENVASE LINHAS RÁPIDAS - SVY'
+      break
+case '76591':      setor = 'ENVASE PROFESSIONAL WELLA - SNC'
+      break
+case '76505':      setor = 'EXCELENCIA OPERACIONAL'
+      break
+case '76573':      setor = 'FABRICAÇÃO ALCOOLICOS - SVY'
+      break
+case '76571':      setor = 'FABRICAÇÃO COLORAÇÃO - SVY'
+      break
+case '76570':      setor = 'FABRICACAO COLORACAO WELLA - SVY'
+      break
+case '76574':      setor = 'FABRICAÇÃO COSMÉTICOS - SVY'
+      break
+case '76572':      setor = 'FABRICAÇÃO ESMALTES - SVY'
+      break
+case '76560':      setor = 'GER. EMBALAGENS PLÁSTICAS - SVY'
+      break
+case '76510':      setor = 'GERÊNCIA COSMÉTICO - SVY'
+      break
+case '76518':      setor = 'GERÊNCIA DE UTILIDADES - SVY'
+      break
+case '76509':      setor = 'GERÊNCIA LOGÍSTICA - SVY'
+      break
+case '76564':      setor = 'INJEÇÃO TAMPAS - SVY'
+      break
+case '76530':      setor = 'INSPECAO DE QUALIDADE - SNC'
+      break
+case '76565':      setor = 'MANUT. INDUST. EMB PLÁSTICAS - SVY'
+      break
+case '76520':      setor = 'MANUT. INDUSTRIAL COSMÉTICO - SVY'
+      break
+case '76592':      setor = 'MANUTENCAO HAIR COLOR - SNC'
+      break
+case '76537':      setor = 'MANUTENÇÃO UTILIDADES - SVY'
+      break
+case '76517':      setor = 'MEIO AMBIENTE - SVY'
+      break
+case '76540':      setor = 'OPERACAO CUSTOMIZACAO - SNC'
+      break
+case '76531':      setor = 'PATIO DE INFLAMAVEIS - SNC'
+      break
+case '76523':      setor = 'PCP COSMÉTICO - SNC'
+      break
+case '76524':      setor = 'PESAGEM COSMÉTICOS - SVY'
+      break
+case '76525':      setor = 'PESAGEM SOPRO/INJEÇÃO - SVY'
+      break
+case '76589':      setor = 'PROJETOS ESTRATEGICOS SNC'
+      break
+case '76515':      setor = 'RECEBIMENTO FISCAL FABRIL'
+      break
+case '76527':      setor = 'RH - SEN CANEDO'
+      break
+case '76538':      setor = 'SEGURANÇA DO TRABALHO - SNC'
+      break
+case '76563':      setor = 'SERIGRAFIA FRASCOS - SVY'
+      break
+case '76513':      setor = 'SERVIÇOS ADMINISTRATIVOS - SVY'
+      break
+case '76562':      setor = 'SOPRO - SNC - SVY'
+      break
+
     default:
       setor = 'INDEFINIDO'
   }
