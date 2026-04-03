@@ -1,0 +1,10 @@
+:root {
+    font-family: "Verdana";
+}
+
+.main {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: center;
+}
