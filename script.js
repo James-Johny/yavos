@@ -940,17 +940,22 @@ function tirarFoto() {
   const linha = document.querySelector('input[name="linha"]:checked').value;
   const tipo = document.querySelector('input[name="tipo"]:checked').value;
 
+
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
-  canvas.getContext('2d').drawImage(video, 0, 0);
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
 
-  canvas.toBlob(blob => {
-    const chave = (tipo === 'os') ? `${linha}-os-${Date.now()}` : `${linha}-${tipo}`;
-    const tx = dbImagens.transaction("fotos", "readwrite");
-    tx.objectStore("fotos").put({ chave, linha, tipo, data: blob });
-    tx.oncomplete = () => renderizarEstruturaEFotos();
-  }, 'image/jpeg', 0.85);
+  if (confirm(`Capturar imagem de ${tipo} da linha ${linha}?`)) {
+    canvas.toBlob(blob => {
+      const chave = (tipo === 'os') ? `${linha}-os-${Date.now()}` : `${linha}-${tipo}`;
+      const tx = dbImagens.transaction("fotos", "readwrite");
+      tx.objectStore("fotos").put({ chave, linha, tipo, data: blob });
+      tx.oncomplete = () => renderizarEstruturaEFotos();
+    }, 'image/jpeg', 0.85);
+  }
 }
+
 
 // 4. Renderização Dinâmica (Só exibe linhas com foto)
 function renderizarEstruturaEFotos() {
@@ -1014,7 +1019,7 @@ function exibirFotoNoCard(foto) {
 // 5. Funções de Apoio
 function apagarFoto(chave) {
   const tx = dbImagens.transaction("fotos", "readwrite");
-  tx.objectStore("fotos").delete(chave);
+  alert( "Apagar?", tx.objectStore("fotos").delete(chave));
   tx.oncomplete = () => renderizarEstruturaEFotos();
 
 }
