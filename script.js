@@ -1051,3 +1051,9 @@ if ("serviceWorker" in navigator) {
     console.log("Service Worker registrado com sucesso.");
   });
 }
+
+
+window.addEventListener("load", () => {
+  const loader = document.getElementById('loader');
+  loader.classList.add('hidden');
+});
