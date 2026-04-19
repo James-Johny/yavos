@@ -599,6 +599,7 @@ function detalharColaborador(matricula) {
 }
 
 
+
 function listarCDC() {  
   const cdcInput = document.querySelector("#cdc input");
   const cdcValor = cdcInput.value.trim();
@@ -683,8 +684,12 @@ function salvarRequisicaoLocal(id, titulo, itens) {
 
 function removerRequisicao(id) {
   const div = document.getElementById(id);
-  if (div) div.remove();
-  
+  if (div) {
+    if (confirm("Tem certeza que deseja remover esta requisição?")) {
+      div.remove();
+    } else {      return;
+    }
+  }
   const requisicoes = JSON.parse(localStorage.getItem("requisicoes") || "[]");
   const atualizadas = requisicoes.filter(req => req.id !== id);
   localStorage.setItem("requisicoes", JSON.stringify(atualizadas));

@@ -17,10 +17,10 @@
     <input type="checkbox" id="menuCheckbox" />
     <label for="menuCheckbox">SAVOY</label>
     <ul id="menu">
-      <li>><a href="#" onclick="mostrarSecao('bancoHoras')">Banco de Horas</a></li>
-      <li>><a href="#" onclick="mostrarSecao('requisicoes')">Requisições</a></li>
-      <li>><a href="#" onclick="mostrarSecao('codigos')">Leitor de Códigos</a></li>
-      <li>><a href="#" onclick="mostrarSecao('hora-a-hora')">Hora A Hora</a></li>
+      <li><a href="#" onclick="mostrarSecao('bancoHoras')">Banco de Horas</a></li>
+      <li><a href="#" onclick="mostrarSecao('requisicoes')">Requisições</a></li>
+      <li><a href="#" onclick="mostrarSecao('codigos')">Leitor de Códigos</a></li>
+      <li><a href="#" onclick="mostrarSecao('hora-a-hora')">Hora A Hora</a></li>
       <li><a href="#" onclick="mostrarSecao('cdc')">Colaboradores</a></li>
     </ul>
   </div>
@@ -156,6 +156,12 @@
   </div>
 
   <div id="cdc" class="secao">
+    <div class="container-cdc">
+      <select id="listaCDC">
+        <option value="">Selecione um CDC</option>
+        <!-- Opções serão preenchidas dinamicamente -->
+      </select>
+    </div>
     <input type="text" placeholder="Digite o CDC">
     <button onclick="listarCDC()">Buscar CDC</button>
     <div id="detalhesColaborador">

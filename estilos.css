@@ -1,26 +1,15 @@
-/* ============================================
-   CÓDIGO OTIMIZADO COM MELHORIAS VISUAIS
-   - Gradientes suaves
-   - Glassmorphism
-   - Sombras realistas
-   - Animações fluidas
-   - Efeito glow
-   - Cards flutuantes
-   - Tipografia refinada
-   ============================================ */
-
-/* ========== 1. FONTES ========== */
+/* ========== FONTES ========== */
 @font-face {
   font-family: "CotySans";
   src: url("CotySans-Regular-v1008.ttf");
 }
 
-/* ========== 2. ANIMAÇÕES GLOBAIS ========== */
+/* ========== 1. ANIMAÇÕES GLOBAIS ========== */
 * {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ========== 3. VARIÁVEIS GLOBAIS ========== */
+/* ========== 2. VARIÁVEIS GLOBAIS ========== */
 :root {
   --verde1: #28a745;
   --purple1: #035dab;
@@ -53,6 +42,7 @@
   background: var(--background);
 }
 
+/* ========== 3. LOADER COM ANIMAÇÃO DE SPINNER ========== */
 #loader {
   position: fixed;
   top: 0;
@@ -74,8 +64,8 @@
   border: 8px solid var(--background);
   border-top: 8px solid var(--purple1);
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  width: 15rem;
+  height: 15rem;
   animation: spin 1s linear infinite;
 }
 
@@ -253,11 +243,6 @@ p, input, button, div, li, span, td, th {
   display: none;
 }
 
-#menuToggle input:checked + label {
-  background: linear-gradient(135deg, var(--purple3), var(--purple2));
-  color: var(--white3);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
 
 #menuToggle input:checked ~ ul {
   transform: translateY(0);
