@@ -27,7 +27,7 @@
   --primary: #48b4d0;
   --secondary: #035dab;
   --danger: #dc3545;
-  --novacor: #d8bbe0;
+  --novacor: #bbcce0;
   --cor-positivo: #072bf5;
   --cor-negativo: #ff0000;
   --cor-neutro: #000;
@@ -281,6 +281,10 @@ button {
   border-radius: 500px !important;
   position: relative;
   overflow: hidden;
+}
+
+.sugestoes button {
+  border-radius: 0 !important;
 }
 
 button::before {

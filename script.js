@@ -922,7 +922,7 @@ async function iniciarCamera() {
   const video = document.getElementById('video');
   try {
     streamAtivo = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+      video: { facingMode: { ideal: "environment" }, width: { ideal: 1720 }, height: { ideal: 1080 } }
     });
     video.srcObject = streamAtivo;
     document.getElementById('area-camera').style.display = 'block';
