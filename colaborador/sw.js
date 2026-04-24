@@ -1,62 +1,41 @@
-const CACHE_NAME = "v1-colab-cache";
-const ASSETS_TO_CACHE = [
-  "./index.html", // Raiz (geralmente index.html)
+const CACHE_NAME = "v2-savoy-cache"; // Mudei para v2 para forçar atualização
+const ASSETS = [
+  "./",
   "index.html",
   "estilos.css",
   "script.js",
   "manifest.json",
   "icon-192.png",
-  "icon-512.png",
+  "icon-512.png"
 ];
 
-// 1. Instalação: Salva os arquivos essenciais inicialmente
-self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      console.log("Caching assets...");
-      return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting()) // Força o SW a ativar imediatamente
+self.addEventListener("install", e => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
+  self.skipWaiting();
 });
 
-// 2. Ativação: Limpa caches antigos se você mudar o CACHE_NAME no futuro
-self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cache => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
-          }
-        })
-      );
-    }).then(() => self.clients.claim()) // Assume o controle das abas abertas na hora
+self.addEventListener("activate", e => {
+  e.waitUntil(
+    caches.keys().then(keys => Promise.all(
+      keys.map(key => key !== CACHE_NAME && caches.delete(key))
+    ))
   );
+  self.clients.claim();
 });
 
-// 3. Estratégia Network-First: Tenta rede, se falhar usa cache
-self.addEventListener("fetch", event => {
-  event.respondWith(
-    fetch(event.request)
-      .then(networkResponse => {
-        // Se a resposta da rede for válida, clonamos e atualizamos o cache
-        return caches.open(CACHE_NAME).then(cache => {
-          // Apenas fazemos cache de requisições bem-sucedidas (tipo GET)
-          if (event.request.method === "GET") {
-            cache.put(event.request, networkResponse.clone());
-          }
-          return networkResponse;
-        });
+self.addEventListener("fetch", e => {
+  // Ignora requisições para Supabase ou Chrome Extensions no cache
+  if (!e.request.url.startsWith(self.location.origin)) return;
+
+  e.respondWith(
+    fetch(e.request)
+      .then(res => {
+        const resClone = res.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(e.request, resClone));
+        return res;
       })
-      .catch(() => {
-        // Se a rede falhar (Offline), tenta encontrar no cache
-        return caches.match(event.request).then(cachedResponse => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          // Caso não tenha na rede nem no cache (ex: página não visitada offline)
-          // Você poderia retornar uma página de "offline.html" aqui
-        });
-      })
+      .catch(() => caches.match(e.request))
   );
 });
