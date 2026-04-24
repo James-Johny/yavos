@@ -1,8 +1,60 @@
+// 1. Inicialização única usando sua constante 'db'
 const { createClient } = supabase;
 const db = createClient(
   'https://vrzdgwzzqxdinnijydhg.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyemRnd3p6cXhkaW5uaWp5ZGhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzMDE1OTAsImV4cCI6MjA5MTg3NzU5MH0.64kRIoCtJDtT8svA9lsXBCSHs_PQEcNRNTEe8EbVGmc'
 );
+
+// 2. Verificação Automática de Sessão
+document.addEventListener('DOMContentLoaded', async () => {
+    // Usando 'db' para checar se o usuário já está logado
+    const { data: { session } } = await db.auth.getSession();
+    
+    if (session) {
+        exibirConteudo();
+    } else {
+        if(document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+        document.getElementById('login-container').style.display = 'flex';
+    }
+});
+
+// 3. Função de Login utilizando 'db'
+async function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('senha').value;
+    const erroTxt = document.getElementById('login-erro');
+
+    console.log("Tentando login com db..."); 
+
+    try {
+        const { data, error } = await db.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
+
+        if (error) {
+            erroTxt.style.display = 'block';
+            erroTxt.innerText = "Acesso negado: " + error.message;
+        } else if (data.user) {
+            console.log("Login realizado!");
+            exibirConteudo();
+        }
+    } catch (err) {
+        console.error("Erro crítico:", err);
+    }
+}
+
+// 4. Funções de Interface
+function exibirConteudo() {
+    document.getElementById('login-container').style.display = 'none';
+    document.getElementById('conteudo-protegido').style.display = 'block';
+    if(document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+}
+
+async function logout() {
+    await db.auth.signOut();
+    window.location.reload();
+}
 
 
 let textoPDF = "";
@@ -1105,7 +1157,7 @@ if ("serviceWorker" in navigator) {
 }
 
 
-window.addEventListener("load", () => {
+  window.addEventListener("load", () => {
   const loader = document.getElementById('loader');
   loader.classList.add('hidden');
 });

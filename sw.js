@@ -6,8 +6,7 @@ const ASSETS_TO_CACHE = [
   "script.js",
   "manifest.json",
   "icon-192.png",
-  "icon-512.png",
-  "db.js"
+  "icon-512.png"
 ];
 
 // 1. Instalação: Salva os arquivos essenciais inicialmente

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4F1C86">
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <title>Solicitação de requisições</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body>
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+    <div id="menuToggle">
+        <input type="checkbox" id="menuCheckbox" />
+        <label for="menuCheckbox">SAVOY</label>
+    </div>
+
+
+    <div id="requisicoes" style="display: flex;" onload="carregarRequisicoesColaborador()">
+
+
+
+
+        <div id="resultadoBusca"></div>
+
+
+        <input type="text" onfocus="this.value='';" id="buscaRequisicao" placeholder="Digite o nome do colaborador"
+            oninput="sugerirColaboradorUnificado('buscaRequisicao', 'sugestoesColaborador')">
+        <div id="sugestoesColaborador" class="sugestoes"></div>
+
+        <div class="qtd_desc">
+            <input type="number" id="quantidade" onfocus="this.value='';" class="quantidade" placeholder="Quantidade"
+                min="1" value="1">
+            <select id="descricao" name="descricao" class="descricao">
+                <option value="TROCA/DESGASTE NATURAL" class="desc">Troca/Desgaste Natural</option>
+                <option value="NECESSIDADE" class="desc necessidade">Necessidade</option>
+                <option value="PERDA" class="desc perda">Perda</option>
+                <option value="USO COLETIVO" class="desc coletivo">Uso Coletivo</option>
+            </select>
+        </div>
+        <input type="text" placeholder="Digite o nome do EPI" id="epiInput" oninput="sugerirEPIs()">
+        <div id="sugestoesEPI" class="sugestoes"></div>
+
+        <ul id="itensRequisicao"></ul>
+        <button onclick="criarRequisicao()">Criar Requisição</button>
+        <div id="listaRequisicoes"></div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>
