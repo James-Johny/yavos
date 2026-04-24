@@ -10,7 +10,59 @@ let colaboradoresPDF = [];
 let colaboradoresCSV = [];
 let listaEPIs = [];
 
+let deferredPrompt; // Variável para guardar o evento de instalação
 
+// 1. Escuta o evento de instalação do navegador
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Impede que o navegador mostre o prompt padrão automaticamente
+    e.preventDefault();
+    // Guarda o evento para ser disparado depois
+    deferredPrompt = e;
+    
+    // O banner só deve aparecer se o usuário já estiver logado
+    verificarEExibirBannerPWA();
+});
+
+// 2. Função para mostrar o banner apenas se logado
+async function verificarEExibirBannerPWA() {
+    const { data: { session } } = await db.auth.getSession();
+    const banner = document.getElementById('pwa-install-banner');
+    
+    // Se tem sessão e o evento de instalação está disponível, mostra o banner
+    if (session && deferredPrompt && banner) {
+        banner.style.display = 'block';
+    }
+}
+
+// 3. Lógica do clique no botão de instalação
+document.addEventListener('DOMContentLoaded', () => {
+    const btnInstalar = document.getElementById('btn-instalar-pwa');
+    
+    if (btnInstalar) {
+        btnInstalar.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+
+            // Mostra o prompt de instalação
+            deferredPrompt.prompt();
+            
+            // Aguarda a resposta do usuário
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Usuário escolheu: ${outcome}`);
+            
+            // Limpa o evento, pois ele só pode ser usado uma vez
+            deferredPrompt = null;
+            
+            // Esconde o banner
+            document.getElementById('pwa-install-banner').style.display = 'none';
+        });
+    }
+});
+
+// 4. Registrar que o app foi instalado com sucesso
+window.addEventListener('appinstalled', () => {
+    console.log('PWA instalado com sucesso!');
+    document.getElementById('pwa-install-banner').style.display = 'none';
+});
 
 fetch("../listanomes.csv")
   .then(response => response.text())

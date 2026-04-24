@@ -12,6 +12,17 @@
 </head>
 
 <body>
+    <div id="pwa-install-banner"
+        style="display: none; background: #f3e9ff; padding: 15px; border-bottom: 2px solid #4F1C86; text-align: center;">
+        <p style="margin: 0 0 10px 0; color: #4F1C86; font-weight: bold;">Instale o Sistema no seu celular para
+            facilitar o acesso!</p>
+        <button id="btn-instalar-pwa"
+            style="background: #4F1C86; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer;">Instalar
+            agora</button>
+        <button onclick="document.getElementById('pwa-install-banner').style.display='none'"
+            style="background: transparent; border: none; color: #888; margin-left: 10px; cursor: pointer;">Depois</button>
+    </div>
+    
     <div id="loader">
         <div class="spinner"></div>
     </div>
