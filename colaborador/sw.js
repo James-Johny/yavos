@@ -1,6 +1,6 @@
 const CACHE_NAME = "v2-savoy-cache"; // Mudei para v2 para forçar atualização
 const ASSETS = [
-  "index.html",
+  "./",
   "index.html",
   "estilos.css",
   "script.js",
