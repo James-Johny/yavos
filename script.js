@@ -1,48 +1,30 @@
-// Aguarda o objeto 'supabase' estar disponível no window (essencial para mobile)
-let db;
+// 1. Inicialização única usando sua constante 'db'
+const { createClient } = supabase;
+const db = createClient(
+  'https://vrzdgwzzqxdinnijydhg.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyemRnd3p6cXhkaW5uaWp5ZGhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzMDE1OTAsImV4cCI6MjA5MTg3NzU5MH0.64kRIoCtJDtT8svA9lsXBCSHs_PQEcNRNTEe8EbVGmc'
+);
 
-function inicializarSupabase() {
-    if (window.supabase) {
-        db = window.supabase.createClient(
-            'https://vrzdgwzzqxdinnijydhg.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyemRnd3p6cXhkaW5uaWp5ZGhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzMDE1OTAsImV4cCI6MjA5MTg3NzU5MH0.64kRIoCtJDtT8svA9lsXBCSHs_PQEcNRNTEe8EbVGmc'
-        );
-        verificarSessao();
+// 2. Verificação Automática de Sessão
+document.addEventListener('DOMContentLoaded', async () => {
+    // Usando 'db' para checar se o usuário já está logado
+    const { data: { session } } = await db.auth.getSession();
+    
+    if (session) {
+        exibirConteudo();
     } else {
-        // Se não carregou, tenta de novo em 500ms
-        setTimeout(inicializarSupabase, 500);
+        if(document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+        document.getElementById('login-container').style.display = 'flex';
     }
-}
+});
 
-async function verificarSessao() {
-    try {
-        const { data: { session } } = await db.auth.getSession();
-        if (session) {
-            exibirConteudo();
-        } else {
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('login-container').style.display = 'flex';
-        }
-    } catch (e) {
-        console.error("Erro na sessão:", e);
-    }
-}
-
-// Inicia o processo
-inicializarSupabase();
-
+// 3. Função de Login utilizando 'db'
 async function login() {
-    // Adicione um alert para testar se o clique funciona no celular
-    // alert("Botão clicado!"); 
-
-    const email = document.getElementById('email').value.trim();
+    const email = document.getElementById('email').value;
     const password = document.getElementById('senha').value;
     const erroTxt = document.getElementById('login-erro');
 
-    if (!db) {
-        alert("O sistema ainda está carregando, tente novamente em instantes.");
-        return;
-    }
+    console.log("Tentando login com db..."); 
 
     try {
         const { data, error } = await db.auth.signInWithPassword({
@@ -52,13 +34,21 @@ async function login() {
 
         if (error) {
             erroTxt.style.display = 'block';
-            erroTxt.innerText = "Erro: " + error.message;
-        } else {
+            erroTxt.innerText = "Acesso negado: " + error.message;
+        } else if (data.user) {
+            console.log("Login realizado!");
             exibirConteudo();
         }
     } catch (err) {
-        alert("Erro de conexão: " + err.message);
+        console.error("Erro crítico:", err);
     }
+}
+
+// 4. Funções de Interface
+function exibirConteudo() {
+    document.getElementById('login-container').style.display = 'none';
+    document.getElementById('conteudo-protegido').style.display = 'block';
+    if(document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
 }
 
 async function logout() {
