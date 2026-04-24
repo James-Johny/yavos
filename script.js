@@ -518,21 +518,29 @@ function adicionarItemComValor(requisicaoId, valor) {
   localStorage.setItem("requisicoes", JSON.stringify(atualizadas));
 }
 
-function adicionarItem(requisicaoId) {
-  const input = document.getElementById(`novoItem-${requisicaoId}`);
-  if (!input) return;
+async function adicionarItem(reqId) {
+  const input = document.getElementById(`novoItem-${reqId}`);
+  const novoItem = input.value.trim();
+  if (!novoItem) return;
 
-  const valor = input.value.trim();
-  if (!valor) return;
+  // Busca os itens atuais do banco
+  const { data, error } = await db
+    .from('requisicoes')
+    .select('itens')
+    .eq('id', reqId)
+    .single();
 
-  adicionarItemComValor(requisicaoId, valor);
+  if (error) { console.error(error); return; }
 
-  input.value = "";
-  const sugestoesDiv = document.getElementById(`sugestoes-${requisicaoId}`);
-  if (sugestoesDiv) {
-    sugestoesDiv.innerHTML = "";
-    sugestoesDiv.style.display = "none";
-  }
+  const itensAtualizados = [...data.itens, novoItem];
+
+  // Atualiza no banco
+  await db.from('requisicoes').update({ itens: itensAtualizados }).eq('id', reqId);
+
+  // Atualiza o DOM (comportamento original)
+  const ul = document.getElementById(`itens-${reqId}`);
+  ul.insertAdjacentHTML('beforeend', `<li><label>${novoItem}</label></li>`);
+  input.value = '';
 }
 
 
@@ -675,64 +683,99 @@ function buscarBancoHoras() {
 }
 
 
+// ─── Inicialização do Supabase ────────────────────────────────────────────────
+const { createClient } = supabase;
+const db = createClient('SUA_URL_AQUI', 'SUA_ANON_KEY_AQUI');
 
-function salvarRequisicaoLocal(id, titulo, itens) {
-  const requisicoes = JSON.parse(localStorage.getItem("requisicoes") || "[]");
-  requisicoes.push({ id, titulo, itens });
-  localStorage.setItem("requisicoes", JSON.stringify(requisicoes));
-}
+// ─── Salvar requisição no banco ───────────────────────────────────────────────
+async function salvarRequisicaoLocal(id, titulo, itens) {
+  const { error } = await db
+    .from('requisicoes')
+    .insert({ id, titulo, itens });
 
-function removerRequisicao(id) {
-  const div = document.getElementById(id);
-  if (div) {
-    if (confirm("Tem certeza que deseja remover esta requisição?")) {
-      div.remove();
-    } else {      return;
-    }
+  if (error) {
+    console.error('Erro ao salvar requisição:', error.message);
+    alert('Não foi possível salvar a requisição. Verifique a conexão.');
   }
-  const requisicoes = JSON.parse(localStorage.getItem("requisicoes") || "[]");
-  const atualizadas = requisicoes.filter(req => req.id !== id);
-  localStorage.setItem("requisicoes", JSON.stringify(atualizadas));
-
 }
 
+// ─── Remover requisição do banco ──────────────────────────────────────────────
+async function removerRequisicao(id) {
+  const div = document.getElementById(id);
+
+  if (div) {
+    if (!confirm('Tem certeza que deseja remover esta requisição?')) return;
+    div.remove();
+  }
+
+  const { error } = await db
+    .from('requisicoes')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Erro ao remover requisição:', error.message);
+  }
+}
+
+// ─── Pesquisar requisições (sem alteração, mantém comportamento original) ─────
 function pesquisarRequisicoes() {
   const pesquisaDiv = document.getElementById('pesquisaReq');
-  const exibirDiv =  document.getElementById('exibePesqReq');
+  const exibirDiv  = document.getElementById('exibePesqReq');
 
-  exibirDiv.style.display = "none";
-  pesquisaDiv.style.display = "flex";
+  exibirDiv.style.display = 'none';
+  pesquisaDiv.style.display = 'flex';
 }
 
-function carregarRequisicoes() {
-  console.log("Executando carregarRequisicoes()");
-  const requisicoes = JSON.parse(localStorage.getItem("requisicoes") || "[]");
-  const container = document.getElementById("listaRequisicoes");
+// ─── Carregar requisições do banco ────────────────────────────────────────────
+async function carregarRequisicoes() {
+  console.log('Executando carregarRequisicoes()');
+
+  const { data: requisicoes, error } = await db
+    .from('requisicoes')
+    .select('*')
+    .order('criado_em', { ascending: true });
+
+  if (error) {
+    console.error('Erro ao carregar requisições:', error.message);
+    return;
+  }
+
+  const container = document.getElementById('listaRequisicoes');
+
   requisicoes.forEach(req => {
-    console.log("Renderizando:", req);
+    console.log('Renderizando:', req);
+
+    // itens vem como array do JSONB — garante compatibilidade
+    const itens = Array.isArray(req.itens) ? req.itens : JSON.parse(req.itens || '[]');
+
     const html = `
       <div id="${req.id}" class="tarefa">
         <h3>${req.titulo}</h3>
         <ul id="itens-${req.id}">
-          ${req.itens.map(item => `<li><label>${item}</label></li>`).join("")}
+          ${itens.map(item => `<li><label>${item}</label></li>`).join('')}
         </ul>
         <div id="editor-${req.id}" style="display:none;">
-          <input class="adicionar" type="text" id="novoItem-${req.id}" placeholder="Adicionar novo item" oninput="sugerirEPIs('novoItem-${req.id}','sugestoes-${req.id}')">
+          <input class="adicionar" type="text" id="novoItem-${req.id}" placeholder="Adicionar novo item"
+            oninput="sugerirEPIs('novoItem-${req.id}','sugestoes-${req.id}')">
           <div id="sugestoes-${req.id}" class="sugestoes" style="display:none;"></div>
           <button class="adicionar" onclick="adicionarItem('${req.id}')">Adicionar</button>
           <ul id="remover-${req.id}">
-            ${req.itens.map((item, index) => `
+            ${itens.map((item, index) => `
               <li>
                 <label>${item}</label>
                 <span onclick="removerItem('${req.id}', ${index})" style="cursor: pointer; color: var(--cor-negativo);">🗑️ Remover</span>
               </li>
-            `).join("")}
+            `).join('')}
           </ul>
-        </div><div class="editar">
-        <button style="background-color: var(--primary); color: var(--white1);" onclick="toggleEditor('${req.id}')" id="btnEditar-${req.id}">Editar</button>
-        <button style="background-color: var(--danger); color: var(--white1);" onclick="removerRequisicao('${req.id}')">Remover</button></div>
+        </div>
+        <div class="editar">
+          <button style="background-color: var(--primary); color: var(--white1);" onclick="toggleEditor('${req.id}')" id="btnEditar-${req.id}">Editar</button>
+          <button style="background-color: var(--danger); color: var(--white1);" onclick="removerRequisicao('${req.id}')">Remover</button>
+        </div>
       </div>`;
-    container.insertAdjacentHTML("beforeend", html);
+
+    container.insertAdjacentHTML('beforeend', html);
   });
 }
 
@@ -1045,10 +1088,10 @@ function mostrarSecao(id) {
 
 // ****************** CARREGA REQUISIÇOES *************** //
 
-window.onload = () => {
+window.onload = async () => {
   mostrarSecao('requisicoes');
-  carregarRequisicoes();
-  console.log("Requisições carregadas:", localStorage.getItem("requisicoes"));
+  await carregarRequisicoes();
+  console.log("Requisições carregadas do Supabase.");
 };
 
 if ("serviceWorker" in navigator) {
