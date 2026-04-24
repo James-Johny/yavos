@@ -1,3 +1,10 @@
+const { createClient } = supabase;
+const db = createClient(
+  'https://db.vrzdgwzzqxdinnijydhg.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyemRnd3p6cXhkaW5uaWp5ZGhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzMDE1OTAsImV4cCI6MjA5MTg3NzU5MH0.64kRIoCtJDtT8svA9lsXBCSHs_PQEcNRNTEe8EbVGmc'
+);
+
+
 let textoPDF = "";
 let colaboradoresPDF = [];
 let colaboradoresCSV = [];
@@ -683,9 +690,6 @@ function buscarBancoHoras() {
 }
 
 
-// ─── Inicialização do Supabase ────────────────────────────────────────────────
-const { createClient } = supabase;
-const db = createClient('https://db.vrzdgwzzqxdinnijydhg.supabase.co', 'sb_publishable_iyMkhMFtdsJ6vKsmitAnUw_LXVk2Gi4');
 
 // ─── Salvar requisição no banco ───────────────────────────────────────────────
 async function salvarRequisicaoLocal(id, titulo, itens) {
