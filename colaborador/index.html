@@ -12,16 +12,13 @@
 </head>
 
 <body>
-    <div id="pwa-install-banner"
-        style="display: none; background: #f3e9ff; padding: 15px; border-bottom: 2px solid #4F1C86; text-align: center;">
-        <p style="margin: 0 0 10px 0; color: #4F1C86; font-weight: bold;">Instale o Sistema no seu celular para
-            facilitar o acesso!</p>
-        <button id="btn-instalar-pwa"
-            style="background: #4F1C86; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer;">Instalar
-            agora</button>
-        <button onclick="document.getElementById('pwa-install-banner').style.display='none'"
-            style="background: transparent; border: none; color: #888; margin-left: 10px; cursor: pointer;">Depois</button>
+    <div id="pwa-install-banner" style="display: none; background: #4F1C86; color: white; padding: 15px; text-align: center; font-family: sans-serif; position: relative; z-index: 9999;">
+    <p style="margin: 0 0 10px 0; font-size: 14px;">Instale o App para acessar as Requisições e Banco de Horas mais rápido!</p>
+    <div style="display: flex; justify-content: center; gap: 10px;">
+        <button id="btn-instalar-pwa" style="background: white; color: #4F1C86; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer;">Instalar Agora</button>
+        <button onclick="document.getElementById('pwa-install-banner').style.display='none'" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Depois</button>
     </div>
+</div>
     
     <div id="loader">
         <div class="spinner"></div>

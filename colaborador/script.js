@@ -10,46 +10,41 @@ let colaboradoresPDF = [];
 let colaboradoresCSV = [];
 let listaEPIs = [];
 
-let deferredPrompt; // Variável para guardar o evento de instalação
+let deferredPrompt;
 
-// 1. Escuta o evento de instalação do navegador
+// Escuta o evento do navegador que diz que o app pode ser instalado
 window.addEventListener('beforeinstallprompt', (e) => {
-    // Impede que o navegador mostre o prompt padrão automaticamente
+    // Impede o prompt automático do navegador
     e.preventDefault();
-    // Guarda o evento para ser disparado depois
+    // Armazena o evento
     deferredPrompt = e;
     
-    // O banner só deve aparecer se o usuário já estiver logado
-    verificarEExibirBannerPWA();
-});
-
-// 2. Função para mostrar o banner apenas se logado
-async function verificarEExibirBannerPWA() {
-    const { data: { session } } = await db.auth.getSession();
+    // Mostra o banner imediatamente (já que é para o colaborador ver na entrada)
     const banner = document.getElementById('pwa-install-banner');
-    
-    // Se tem sessão e o evento de instalação está disponível, mostra o banner
-    if (session && deferredPrompt && banner) {
+    if (banner) {
         banner.style.display = 'block';
     }
-}
+});
 
-// 3. Lógica do clique no botão de instalação
+// Lógica do botão de instalação
 document.addEventListener('DOMContentLoaded', () => {
     const btnInstalar = document.getElementById('btn-instalar-pwa');
     
     if (btnInstalar) {
         btnInstalar.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
+            if (!deferredPrompt) {
+                alert("O app já está instalado ou seu navegador não suporta a instalação direta.");
+                return;
+            }
 
-            // Mostra o prompt de instalação
+            // Mostra a pergunta oficial do sistema (Android/iOS/Chrome)
             deferredPrompt.prompt();
             
-            // Aguarda a resposta do usuário
+            // Verifica se o usuário aceitou ou cancelou
             const { outcome } = await deferredPrompt.userChoice;
-            console.log(`Usuário escolheu: ${outcome}`);
+            console.log(`Resultado da instalação: ${outcome}`);
             
-            // Limpa o evento, pois ele só pode ser usado uma vez
+            // Limpa o prompt para não ser usado de novo
             deferredPrompt = null;
             
             // Esconde o banner
@@ -58,10 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 4. Registrar que o app foi instalado com sucesso
+// Esconde o banner se o app for instalado por outros meios (ex: menu do Chrome)
 window.addEventListener('appinstalled', () => {
-    console.log('PWA instalado com sucesso!');
-    document.getElementById('pwa-install-banner').style.display = 'none';
+    const banner = document.getElementById('pwa-install-banner');
+    if (banner) banner.style.display = 'none';
+    deferredPrompt = null;
 });
 
 fetch("../listanomes.csv")
