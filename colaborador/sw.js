@@ -1,6 +1,6 @@
 const CACHE_NAME = "v1-colab-cache";
 const ASSETS_TO_CACHE = [
-  "./colaborador/", // Raiz (geralmente index.html)
+  "./", // Raiz (geralmente index.html)
   "index.html",
   "estilos.css",
   "script.js",
