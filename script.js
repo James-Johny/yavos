@@ -685,7 +685,7 @@ function buscarBancoHoras() {
 
 // ─── Inicialização do Supabase ────────────────────────────────────────────────
 const { createClient } = supabase;
-const db = createClient('https://vrzdgwzzqxdinnijydhg.supabase.co', 'sb_publishable_iyMkhMFtdsJ6vKsmitAnUw_LXVk2Gi4');
+const db = createClient('db.vrzdgwzzqxdinnijydhg.supabase.co', 'sb_publishable_iyMkhMFtdsJ6vKsmitAnUw_LXVk2Gi4');
 
 // ─── Salvar requisição no banco ───────────────────────────────────────────────
 async function salvarRequisicaoLocal(id, titulo, itens) {
