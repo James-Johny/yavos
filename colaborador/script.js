@@ -159,7 +159,7 @@ fetch("../listanomes.csv")
 
 
 // Carrega CSV de EPIs
-fetch("../listaepis.csv")
+fetch("listaepis.csv")
   .then(response => response.text())
   .then(texto => {
     const linhas = texto.split("\n").map(l => l.trim());
