@@ -6,7 +6,7 @@ const linkLOTO = 'https://forms.office.com/pages/responsepage.aspx?id=PK7qOeaHzk
 
 const lista = document.getElementById('menu-colab');
 lista.innerHTML = `
-<ul class="links-colab">
+<ul class="links-colab" style="display: none;">
     <li><a target="_blank" href="${linkBos}">BOS Tour</a></li>
     <li><a target="_blank" href="${linkQuimicos}">Quimícos</a></li>
     <li><a target="_blank" href="${linkInflamaveis}">Inflamáveis</a></li>

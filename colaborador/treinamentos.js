@@ -1,5 +1,5 @@
 const inflamaveis = `
-        <section class="inflamaveis">
+        <section class="inflamaveis" style="display: none;">
 
             <span id="01" class="pergunta">Questão 01: A NR - 20 estabelecer requisitos mínimos para a gestão da segurança e
                 saúde no trabalho contra os fatores de risco de acidentes provenientes das atividades de;</span>
