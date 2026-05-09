@@ -4,6 +4,7 @@
   src: url("CotySans-Regular-v1008.ttf");
 }
 
+
 /* ========== LOGIN ============= */
 
 
@@ -195,6 +196,8 @@ th {
 }
 
 /* ========== 7. MENU HAMBÚRGUER COM GRADIENTE ========== */
+
+
 #menu {
   display: flex;
   position: fixed;
@@ -267,6 +270,13 @@ th {
 
 #menuToggle input:checked~ul {
   transform: translateY(0);
+}
+
+#menuToggle {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 /* ========== 8. FORMULÁRIOS E BOTÕES COM GRADIENTE E GLOW ========== */
@@ -509,6 +519,7 @@ video {
 
 /* ========== 14. REQUISIÇÕES E PESQUISA ========== */
 #requisicoes {
+  position: relative;
   display: none;
   flex-flow: column wrap;
   justify-content: center;
@@ -534,9 +545,18 @@ video {
 }
 
 /* ========== 15. SUGESTÕES AUTOCOMPLETE COM GLASSMORPHISM ========== */
+#sugestoesEPI {
+  position: absolute;
+  top: 6.5rem;
+}
+
+#sugestoesColaborador {
+  position: absolute;
+  top: -5rem;
+}
+
 .sugestoes {
   margin-top: 12rem;
-  position: absolute;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.3);
