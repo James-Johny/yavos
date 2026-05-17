@@ -14,50 +14,50 @@ let deferredPrompt;
 
 // Escuta o evento do navegador que diz que o app pode ser instalado
 window.addEventListener('beforeinstallprompt', (e) => {
-    // Impede o prompt automático do navegador
-    e.preventDefault();
-    // Armazena o evento
-    deferredPrompt = e;
-    
-    // Mostra o banner imediatamente (já que é para o colaborador ver na entrada)
-    const banner = document.getElementById('pwa-install-banner');
-    if (banner) {
-        banner.style.display = 'block';
-    }
+  // Impede o prompt automático do navegador
+  e.preventDefault();
+  // Armazena o evento
+  deferredPrompt = e;
+
+  // Mostra o banner imediatamente (já que é para o colaborador ver na entrada)
+  const banner = document.getElementById('pwa-install-banner');
+  if (banner) {
+    banner.style.display = 'block';
+  }
 });
 
 // Lógica do botão de instalação
 document.addEventListener('DOMContentLoaded', () => {
-    const btnInstalar = document.getElementById('btn-instalar-pwa');
-    
-    if (btnInstalar) {
-        btnInstalar.addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                alert("O app já está instalado ou seu navegador não suporta a instalação direta.");
-                return;
-            }
+  const btnInstalar = document.getElementById('btn-instalar-pwa');
 
-            // Mostra a pergunta oficial do sistema (Android/iOS/Chrome)
-            deferredPrompt.prompt();
-            
-            // Verifica se o usuário aceitou ou cancelou
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`Resultado da instalação: ${outcome}`);
-            
-            // Limpa o prompt para não ser usado de novo
-            deferredPrompt = null;
-            
-            // Esconde o banner
-            document.getElementById('pwa-install-banner').style.display = 'none';
-        });
-    }
+  if (btnInstalar) {
+    btnInstalar.addEventListener('click', async () => {
+      if (!deferredPrompt) {
+        alert("O app já está instalado ou seu navegador não suporta a instalação direta.");
+        return;
+      }
+
+      // Mostra a pergunta oficial do sistema (Android/iOS/Chrome)
+      deferredPrompt.prompt();
+
+      // Verifica se o usuário aceitou ou cancelou
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`Resultado da instalação: ${outcome}`);
+
+      // Limpa o prompt para não ser usado de novo
+      deferredPrompt = null;
+
+      // Esconde o banner
+      document.getElementById('pwa-install-banner').style.display = 'none';
+    });
+  }
 });
 
 // Esconde o banner se o app for instalado por outros meios (ex: menu do Chrome)
 window.addEventListener('appinstalled', () => {
-    const banner = document.getElementById('pwa-install-banner');
-    if (banner) banner.style.display = 'none';
-    deferredPrompt = null;
+  const banner = document.getElementById('pwa-install-banner');
+  if (banner) banner.style.display = 'none';
+  deferredPrompt = null;
 });
 
 fetch("../listanomes.csv")
@@ -74,7 +74,7 @@ fetch("../listanomes.csv")
     console.error("Erro ao carregar listanomes.csv:", err);
   });
 
-    fetch("../bancodehoras.pdf")
+fetch("../bancodehoras.pdf")
   .then(res => res.arrayBuffer())
   .then(data => pdfjsLib.getDocument({ data }).promise)
   .then(pdf => {
@@ -189,99 +189,99 @@ function descreverCDC(cdc) {
 
   let setor = ''
   switch (cdc) {
-    case '76526':      setor = 'ADM PESSOAL'
+    case '76526': setor = 'ADM PESSOAL'
       break
-case '76521':      setor = 'ALMOX. NÃO PRODUTIVO - SVY'
+    case '76521': setor = 'ALMOX. NÃO PRODUTIVO - SVY'
       break
-case '76512':      setor = 'ALMOXARIFADO MP/EM - SVY'
+    case '76512': setor = 'ALMOXARIFADO MP/EM - SVY'
       break
-case '76532':      setor = 'APOIO E MOV. LINHAS-COSMET. - SVY'
+    case '76532': setor = 'APOIO E MOV. LINHAS-COSMET. - SVY'
       break
-case '76536':      setor = 'CALDEIRA - SVY'
+    case '76536': setor = 'CALDEIRA - SVY'
       break
-case '76506':      setor = 'CONTROLADORIA - SVY'
+    case '76506': setor = 'CONTROLADORIA - SVY'
       break
-case '76511':      setor = 'CONTROLE DE QUALIDADE - SVY'
+    case '76511': setor = 'CONTROLE DE QUALIDADE - SVY'
       break
-case '76507':      setor = 'DIR. INDUSTRIAL - SVY'
+    case '76507': setor = 'DIR. INDUSTRIAL - SVY'
       break
-case '76504':      setor = 'DIRETORIA MANUFATURA'
+    case '76504': setor = 'DIRETORIA MANUFATURA'
       break
-case '76514':      setor = 'ENGENHARIA - SVY'
+    case '76514': setor = 'ENGENHARIA - SVY'
       break
-case '76528':      setor = 'ENGENHARIA DE PROCESSO - SVY'
+    case '76528': setor = 'ENGENHARIA DE PROCESSO - SVY'
       break
-case '76554':      setor = 'ENTUFAMENTO/MONT.TAMPA ESM-SVY'
+    case '76554': setor = 'ENTUFAMENTO/MONT.TAMPA ESM-SVY'
       break
-case '76587':      setor = 'ENVASE AEROSÓIS - SVY'
+    case '76587': setor = 'ENVASE AEROSÓIS - SVY'
       break
-case '76581':      setor = 'ENVASE COLORAÇÃO - SVY'
+    case '76581': setor = 'ENVASE COLORAÇÃO - SVY'
       break
-case '76590':      setor = 'ENVASE COLORACAO WELLA - SVY'
+    case '76590': setor = 'ENVASE COLORACAO WELLA - SVY'
       break
-case '76582':      setor = 'ENVASE ESMALTES - SVY'
+    case '76582': setor = 'ENVASE ESMALTES - SVY'
       break
-case '76585':      setor = 'ENVASE LINHAS RÁPIDAS - SVY'
+    case '76585': setor = 'ENVASE LINHAS RÁPIDAS - SVY'
       break
-case '76591':      setor = 'ENVASE PROFESSIONAL WELLA - SNC'
+    case '76591': setor = 'ENVASE PROFESSIONAL WELLA - SNC'
       break
-case '76505':      setor = 'EXCELENCIA OPERACIONAL'
+    case '76505': setor = 'EXCELENCIA OPERACIONAL'
       break
-case '76573':      setor = 'FABRICAÇÃO ALCOOLICOS - SVY'
+    case '76573': setor = 'FABRICAÇÃO ALCOOLICOS - SVY'
       break
-case '76571':      setor = 'FABRICAÇÃO COLORAÇÃO - SVY'
+    case '76571': setor = 'FABRICAÇÃO COLORAÇÃO - SVY'
       break
-case '76570':      setor = 'FABRICACAO COLORACAO WELLA - SVY'
+    case '76570': setor = 'FABRICACAO COLORACAO WELLA - SVY'
       break
-case '76574':      setor = 'FABRICAÇÃO COSMÉTICOS - SVY'
+    case '76574': setor = 'FABRICAÇÃO COSMÉTICOS - SVY'
       break
-case '76572':      setor = 'FABRICAÇÃO ESMALTES - SVY'
+    case '76572': setor = 'FABRICAÇÃO ESMALTES - SVY'
       break
-case '76560':      setor = 'GER. EMBALAGENS PLÁSTICAS - SVY'
+    case '76560': setor = 'GER. EMBALAGENS PLÁSTICAS - SVY'
       break
-case '76510':      setor = 'GERÊNCIA COSMÉTICO - SVY'
+    case '76510': setor = 'GERÊNCIA COSMÉTICO - SVY'
       break
-case '76518':      setor = 'GERÊNCIA DE UTILIDADES - SVY'
+    case '76518': setor = 'GERÊNCIA DE UTILIDADES - SVY'
       break
-case '76509':      setor = 'GERÊNCIA LOGÍSTICA - SVY'
+    case '76509': setor = 'GERÊNCIA LOGÍSTICA - SVY'
       break
-case '76564':      setor = 'INJEÇÃO TAMPAS - SVY'
+    case '76564': setor = 'INJEÇÃO TAMPAS - SVY'
       break
-case '76530':      setor = 'INSPECAO DE QUALIDADE - SNC'
+    case '76530': setor = 'INSPECAO DE QUALIDADE - SNC'
       break
-case '76565':      setor = 'MANUT. INDUST. EMB PLÁSTICAS - SVY'
+    case '76565': setor = 'MANUT. INDUST. EMB PLÁSTICAS - SVY'
       break
-case '76520':      setor = 'MANUT. INDUSTRIAL COSMÉTICO - SVY'
+    case '76520': setor = 'MANUT. INDUSTRIAL COSMÉTICO - SVY'
       break
-case '76592':      setor = 'MANUTENCAO HAIR COLOR - SNC'
+    case '76592': setor = 'MANUTENCAO HAIR COLOR - SNC'
       break
-case '76537':      setor = 'MANUTENÇÃO UTILIDADES - SVY'
+    case '76537': setor = 'MANUTENÇÃO UTILIDADES - SVY'
       break
-case '76517':      setor = 'MEIO AMBIENTE - SVY'
+    case '76517': setor = 'MEIO AMBIENTE - SVY'
       break
-case '76540':      setor = 'OPERACAO CUSTOMIZACAO - SNC'
+    case '76540': setor = 'OPERACAO CUSTOMIZACAO - SNC'
       break
-case '76531':      setor = 'PATIO DE INFLAMAVEIS - SNC'
+    case '76531': setor = 'PATIO DE INFLAMAVEIS - SNC'
       break
-case '76523':      setor = 'PCP COSMÉTICO - SNC'
+    case '76523': setor = 'PCP COSMÉTICO - SNC'
       break
-case '76524':      setor = 'PESAGEM COSMÉTICOS - SVY'
+    case '76524': setor = 'PESAGEM COSMÉTICOS - SVY'
       break
-case '76525':      setor = 'PESAGEM SOPRO/INJEÇÃO - SVY'
+    case '76525': setor = 'PESAGEM SOPRO/INJEÇÃO - SVY'
       break
-case '76589':      setor = 'PROJETOS ESTRATEGICOS SNC'
+    case '76589': setor = 'PROJETOS ESTRATEGICOS SNC'
       break
-case '76515':      setor = 'RECEBIMENTO FISCAL FABRIL'
+    case '76515': setor = 'RECEBIMENTO FISCAL FABRIL'
       break
-case '76527':      setor = 'RH - SEN CANEDO'
+    case '76527': setor = 'RH - SEN CANEDO'
       break
-case '76538':      setor = 'SEGURANÇA DO TRABALHO - SNC'
+    case '76538': setor = 'SEGURANÇA DO TRABALHO - SNC'
       break
-case '76563':      setor = 'SERIGRAFIA FRASCOS - SVY'
+    case '76563': setor = 'SERIGRAFIA FRASCOS - SVY'
       break
-case '76513':      setor = 'SERVIÇOS ADMINISTRATIVOS - SVY'
+    case '76513': setor = 'SERVIÇOS ADMINISTRATIVOS - SVY'
       break
-case '76562':      setor = 'SOPRO - SNC - SVY'
+    case '76562': setor = 'SOPRO - SNC - SVY'
       break
 
     default:
@@ -323,7 +323,7 @@ function sugerirEPIs(inputId = "epiInput", sugestoesId = "sugestoesEPI") {
         adicionarItemEPI(epi);
       } else {
         const requisicaoId = inputId.replace("novoItem-", "");
-        adicionarItemComValor(requisicaoId, `[ ${qtd} ] ${epi.codigo} - ${epi.descricao} #${desc}`);
+        adicionarItemComValor(requisicaoId, `${qtd} ${epi.codigo} - ${epi.descricao} #${desc}`);
       }
 
       input.value = "";
@@ -338,24 +338,24 @@ function adicionarItemEPI(epi) {
   const lista = document.getElementById("itensRequisicao");
   const li = document.createElement("li");
   const qtd = document.getElementById("quantidade").value || "1";
-  const desc = document.getElementById("descricao").value  || "TROCA/DESGASTE NATURAL";
+  const desc = document.getElementById("descricao").value || "TROCA/DESGASTE NATURAL";
   console.log(epi);
 
   switch (desc) {
     case "TROCA/DESGASTE NATURAL":
-      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc">${desc}</span></label>`;
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">${qtd}</span> ${epi.codigo} - ${epi.descricao} <span class="desc">${desc}</span></label>`;
       break;
     case "PERDA":
-      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc perda">${desc}</span></label>`;
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">${qtd}</span> ${epi.codigo} - ${epi.descricao} <span class="desc perda">${desc}</span></label>`;
       break;
     case "NECESSIDADE":
-      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc necessidade">${desc}</span></label>`;
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">${qtd}</span> ${epi.codigo} - ${epi.descricao} <span class="desc necessidade">${desc}</span></label>`;
       break;
     case "USO COLETIVO":
-      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc coletivo">${desc}</span></label>`;
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">${qtd}</span> ${epi.codigo} - ${epi.descricao} <span class="desc coletivo">${desc}</span></label>`;
       break;
     default:
-      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc">${desc}</span></label>`;
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">${qtd}</span> ${epi.codigo} - ${epi.descricao} <span class="desc">${desc}</span></label>`;
   }
   lista.appendChild(li);
 }
@@ -391,7 +391,7 @@ function criarRequisicao() {
 
 
   const titulo = ` ${colaborador.matricula} - ${colaborador.nome}`;
-  const id = `req-${Date.now()}`;
+  const id = `req-${colaborador.matricula}`;
   const itens = Array.from(document.querySelectorAll("#itensRequisicao li")).map(li => li.outerHTML);
   const editar = `<button onclick="toggleEditor('${id}')">Editar</button>`;
   const apagar = `<button onclick="removerRequisicao('${id}')">Remover</button>`;
@@ -482,7 +482,7 @@ function adicionarItemComValor(requisicaoId, valor) {
   const listaRemover = document.getElementById(`remover-${requisicaoId}`);
   if (!listaVisual || !listaRemover) return;
 
- 
+
   const requisicoes = JSON.parse(localStorage.getItem("requisicoes") || "[]");
   const atualizadas = requisicoes.map(req => {
     if (req.id === requisicaoId) {
@@ -565,14 +565,18 @@ function sugerirColaboradorUnificado(inputId, sugestaoId) {
 
 // ─── Salvar requisição no banco ───────────────────────────────────────────────
 async function salvarRequisicaoLocal(id, titulo, itens) {
-  const { error } = await db
-    .from('requisicoes')
-    .insert({ id, titulo, itens });
+  const { error } = await db.rpc('salvar_ou_concatenar_requisicao' , {
+    p_id: id,
+    p_titulo: titulo,
+    p_novos_itens: itens
+  });
 
   if (error) {
     console.error('Erro ao salvar requisição:', error.message);
     alert('Não foi possível salvar a requisição. Verifique a conexão.');
+  
   }
+
 }
 
 // ─── Remover requisição do banco ──────────────────────────────────────────────
@@ -597,7 +601,7 @@ async function removerRequisicao(id) {
 // ─── Pesquisar requisições (sem alteração, mantém comportamento original) ─────
 function pesquisarRequisicoes() {
   const pesquisaDiv = document.getElementById('pesquisaReq');
-  const exibirDiv  = document.getElementById('exibePesqReq');
+  const exibirDiv = document.getElementById('exibePesqReq');
 
   exibirDiv.style.display = 'none';
   pesquisaDiv.style.display = 'flex';
@@ -652,7 +656,7 @@ async function carregarRequisicoes() {
 
 
 window.onload = async () => {
-    await carregarRequisicoes();
-    const loader = document.getElementById('loader');
-    if (loader) loader.classList.add('hidden');
+  await carregarRequisicoes();
+  const loader = document.getElementById('loader');
+  if (loader) loader.classList.add('hidden');
 };

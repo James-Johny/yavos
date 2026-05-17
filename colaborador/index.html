@@ -30,7 +30,7 @@
     </div>
     <div id="menuToggle">
         <input type="checkbox" id="menuCheckbox" />
-        <label for="menuCheckbox">SAVOY</label>
+        <label for="menuCheckbox" onclick="window.location.href='index.html'">SAVOY</label>
         
     </div>
     <div class="menuColab">
@@ -48,11 +48,11 @@
         <div id="resultadoBusca"></div>
 
 
-        <input type="text" onfocus="this.value='';" id="buscaRequisicao" placeholder="Digite seu nome ou sua matrícula"
+        <input type="text" onfocus="this.value='';" id="buscaRequisicao" placeholder="Ex: Nome,Matricula (Fulano,111111)"
             oninput="sugerirColaboradorUnificado('buscaRequisicao', 'sugestoesColaborador')">
         <div id="sugestoesColaborador" class="sugestoes"></div>
 
-        <div class="qtd_desc">
+        <div class="qtd_desc" style="display: none;">
             <input type="number" id="quantidade" onfocus="this.value='';" class="quantidade" placeholder="Quantidade"
                 min="1" value="1">
             <select id="descricao" name="descricao" class="descricao">
