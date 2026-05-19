@@ -75,6 +75,36 @@ fetch("../listanomes.csv")
   });
 
 fetch("../bancodehoras.pdf")
+.then(res => res.arrayBuffer())
+  .then(data => pdfjsLib.getDocument({ data }).promise)
+  .then(pdf => {
+    const total = pdf.numPages;
+    const promises = [];
+    for (let i = 1; i <= total; i++) {
+      promises.push(
+        pdf.getPage(i).then(page =>
+          page.getTextContent().then(content =>
+            content.items.map(item => item.str).join(" ")
+          )
+        )
+      );
+    }
+    return Promise.all(promises);
+  })
+
+.then(paginas => {
+    version = paginas.join("\n");
+    const regexVersion = /\s*(\d{2}\/\d{2}\/\d{4})/;
+    const matchVersion = version.match(regexVersion);
+    if (matchVersion) {
+      const dataExtraida = matchVersion[1];
+      document.getElementById("versao").textContent = `Última atualização: ${dataExtraida}`;
+    } else {
+      document.getElementById("versao").textContent = "Data de atualização não encontrada";
+    }
+  })
+
+fetch("../bancodehoras.pdf")
   .then(res => res.arrayBuffer())
   .then(data => pdfjsLib.getDocument({ data }).promise)
   .then(pdf => {
@@ -290,11 +320,49 @@ function descreverCDC(cdc) {
   return setor;
 }
 
+function buscarBancoHoras() {
+  const entrada = document.getElementById("buscaColaborador").value.trim().toLowerCase();
+  const resultadoDiv = document.getElementById("resultado");
+  resultadoDiv.innerHTML = "";
+
+
+
+
+  const todos = [...colaboradoresPDF];
+  let colaborador = null;
+
+  if (/^\d+$/.test(entrada)) {
+    colaborador = todos.find(c => c.matricula.includes(entrada));
+  } else {
+    colaborador = todos.find(c => c.nome.toLowerCase() === entrada);
+  }
+
+
+  if (!colaborador) {
+    resultadoDiv.innerHTML = `<p class="negativo">Colaborador não encontrado.</p>`;
+    return;
+  }
+
+
+  resultadoDiv.innerHTML = `
+    <table>
+      <tr><td><strong>Colaborador:</strong></td> <td>${colaborador.nome}</td></tr>
+      <tr><td><strong>Setor:</strong></td><td>${descreverCDC(colaborador.cdc) || "Local"}</td></tr>
+      <tr><td><strong>Função:</strong></td> <td>${colaborador.funcao || "Cargo"}</td></tr>
+      <tr><td><strong>Matrícula:</strong> </td> <td>${colaborador.matricula}</td></tr>
+      <tr><td><strong>Saldo Anterior:</strong> </td> <td><span class="${corHora(colaborador.saldoAnterior)}">${colaborador.saldoAnterior}</span></td></tr>
+      <tr><td><strong>Horas Crédito:</strong> </td> <td><span class="${corHora(colaborador.horasCredito)}">${colaborador.horasCredito}</span></td></tr>
+      <tr><td><strong>Horas Débito:</strong> </td> <td><span class="${corDebito(colaborador.horasDebito)}">${colaborador.horasDebito}</span></td></tr>
+      <tr class="${corHora(colaborador.saldoAtual)}" style="background-color: ${corSaldo(colaborador.saldoAtual)};"><td><strong>Saldo Atual:</strong> </td> <td><span class="${corHora(colaborador.saldoAtual)}">${colaborador.saldoAtual}</span></td></tr>
+      </table>
+  `;
+}
+
 function sugerirEPIs(inputId = "epiInput", sugestoesId = "sugestoesEPI") {
   const input = document.getElementById(inputId);
   const sugestoesDiv = document.getElementById(sugestoesId);
   const qtd = document.getElementById("quantidade").value;
-  const desc = document.getElementById("descricao").value || "TROCA/DESGASTE NATURAL";
+  const desc = document.getElementById("descricao").value || "TROCA/DESGASTE";
 
 
   if (!input || !sugestoesDiv) return;
@@ -316,6 +384,16 @@ function sugerirEPIs(inputId = "epiInput", sugestoesId = "sugestoesEPI") {
 
   encontrados.forEach(epi => {
     const btn = document.createElement("button");
+    const qtdCode = `<input type="number" id="quantidade" onfocus="this.value='';" class="quantidade" placeholder="Quantidade"
+                min="1" value="1">`;
+    const descCode = `<select id="descricao" name="descricao" class="descricao">
+                <option value="TROCA/DESGASTE NATURAL" class="desc">Troca/Desgaste Natural</option>
+                <option value="NECESSIDADE" class="desc necessidade">Necessidade</option>
+                <option value="PERDA" class="desc perda">Perda</option>
+                <option value="USO COLETIVO" class="desc coletivo">Uso Coletivo</option>
+            </select>`;
+
+
     btn.type = "button";
     btn.textContent = `[ ${qtd} ] ${epi.codigo} - ${epi.descricao} #${desc}`;
     btn.onclick = () => {
@@ -338,11 +416,11 @@ function adicionarItemEPI(epi) {
   const lista = document.getElementById("itensRequisicao");
   const li = document.createElement("li");
   const qtd = document.getElementById("quantidade").value || "1";
-  const desc = document.getElementById("descricao").value || "TROCA/DESGASTE NATURAL";
+  const desc = document.getElementById("descricao").value || "TROCA/DESGASTE";
   console.log(epi);
 
   switch (desc) {
-    case "TROCA/DESGASTE NATURAL":
+    case "TROCA/DESGASTE":
       li.innerHTML = `<label class="new-item"><span class="item-quantidade">${qtd}</span> ${epi.codigo} - ${epi.descricao} <span class="desc">${desc}</span></label>`;
       break;
     case "PERDA":
@@ -644,7 +722,13 @@ async function carregarRequisicoes() {
 
 
 
+function secao(secaoId, el) {
+  document.querySelectorAll(".secao").forEach(div => div.style.display = "none");
+  document.getElementById(secaoId).style.display = "flex";
 
+  document.querySelectorAll(".button-bottom").forEach(btn => btn.classList.remove("button-active"));
+  el.classList.add("button-active");
+}
 
 
 

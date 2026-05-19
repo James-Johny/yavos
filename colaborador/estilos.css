@@ -40,8 +40,8 @@ div#menuToggle {
   --cor-positivo: #072bf5;
   --cor-negativo: #ff0000;
   --cor-neutro: #000;
-  --tr-even: #e0e0e0;
-  --tr-odd: #ffffff;
+  --tr-even: white;
+  --tr-odd: silver;
   --lista-requisições-bg: #d4c3e6;
 
   /* Estilos base */
@@ -50,6 +50,47 @@ div#menuToggle {
   padding: 0;
   background: var(--background);
 }
+/* ================== navbar bottom =====================*/
+
+.navbar-bottom{
+  z-index: 999;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 12rem;
+  background-color: var(--purple3);
+  display: flex;
+  flex-flow: wrap nowrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-around;  
+  border-top: 2px solid white;
+  color: white;
+}
+
+span.button-active {
+  background: var(--primary);
+  filter: blur(1.5px) !important;
+  color: var(--purple3) !important;  
+  cursor: default !important;
+}
+
+.button-bottom {
+  margin-top: 1rem;
+  margin bottom: .5rem;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 13rem;
+  height: 100%;
+  border-radius: 0;
+  font-size: 2rem;
+}
+
 
 /* ========== 3. LOADER COM ANIMAÇÃO DE SPINNER ========== */
 #loader {
@@ -116,7 +157,7 @@ th {
 
 #menuToggle label {
   display: inline-block;
-  font-size: 5rem;
+  font-size: 8rem;
   width: 300px;
   height: 100px;
   line-height: 90px;
@@ -128,6 +169,7 @@ th {
   transition: all 0.3s ease;
   font-weight: bold;
   text-shadow: 2px 2px 4px var(--shadow1);
+  margin-bottom: 4rem;
 }
 
 #menuToggle label:hover {
@@ -138,7 +180,7 @@ th {
 #menuToggle label::first-letter {
   color: var(--primary);
   font-weight: bolder;
-  font-size: 5.1rem;
+  font-size: 8.1rem;
 }
 
 #menuToggle input {
@@ -163,7 +205,7 @@ button {
   margin: 10px 0;
   padding: 10px;
   font-size: 2rem;
-  width: 48rem;
+  width: 60rem;
   box-sizing: border-box;
   border-radius: 5px;
 }
@@ -225,6 +267,7 @@ button:active {
 
 /* ========== 9. COMPONENTES ESPECÍFICOS ========== */
 .secao {
+  position: relative;
   display: flex;
   flex-flow: column wrap;
   align-items: center;
@@ -285,6 +328,54 @@ button:active {
   min-width: 95%;
   text-align: center;
 }
+
+/* =========== 11. TABELAS ESTILIZADAS ========== */
+
+table {  
+  min-width: 58rem;
+  color: var(--cor-neutro);
+  border-radius: 5px;
+  font-size: 2rem;
+  font-weight: bolder;
+}
+
+table td {
+  padding: 8px 12px;
+}
+
+table td:nth-child(odd) {
+  min-width: 15rem;
+  max-width: 15rem;
+}
+
+tr:nth-child(even) {
+  background: var(--tr-even);
+}
+
+table tr:nth-child(odd) {
+  background: var(--tr-odd);
+}li
+
+/* ================ VELOCIDADE ================ */
+
+.soon {    
+  width: 500px;
+  height: 500px;
+  background: black;
+  border: 8px solid var(--purple3); /* Light grey background circle */
+  border-top: 8px solid var(--primary); /* Blue spinning part */
+  border-radius: 50%; /* Makes it a circle */
+
+  /* Calls 'spin' animation, 2s duration, linear speed, infinite loop */
+  animation: soon 2s linear infinite; 
+}
+
+@keyframes soon {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
 
 /* ========== 14. REQUISIÇÕES E PESQUISA ========== */
 #requisicoes {
@@ -353,11 +444,14 @@ button:active {
 #sugestoesEPI {
   position: absolute;
   top: 6.5rem;
+  width: 100%;
+
 }
 
-#sugestoesColaborador {
+#sugestoesColaborador, #sugestoesBancoHoras {
   position: absolute;
   top: -5rem;
+  min-width: 100%;
 }
 
 .sugestoes {
@@ -521,7 +615,7 @@ a {
     font-size: 3rem;
     padding: 8px;
     max-width: 50rem;
-    width: 800px;
+    min-width: 90%;
   }
 
   .tarefa {

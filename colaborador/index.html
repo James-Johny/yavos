@@ -3,7 +3,7 @@
 
 <head>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4F1C86">
+    <meta name="theme-color" content="#05125e">
     <meta charset="UTF-8">
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
@@ -16,7 +16,8 @@
         style="display: none; top: 0; left: 0; flex-flow: column wrap; background: var(--purple1); color: white; padding: 15px; text-align: center; font-family: sans-serif; position: fixed; z-index: 9999; min-width: 100%; min-height: 100%;">
         <p style="margin: 100px 0 100px 0; font-size: 60px;">Instale o App para solicitar as Requisições mais
             rápido!</p>
-        <div style="display: flex; flex-flow: column wrap; justify-content: center; align-items: center; gap: 10px;"><br>
+        <div style="display: flex; flex-flow: column wrap; justify-content: center; align-items: center; gap: 10px;">
+            <br>
             <button id="btn-instalar-pwa"
                 style="background: white; color: var(--purple1); border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer;">Instalar
                 Agora</button><br>
@@ -31,16 +32,32 @@
     <div id="menuToggle">
         <input type="checkbox" id="menuCheckbox" />
         <label for="menuCheckbox" onclick="window.location.href='index.html'">SAVOY</label>
-        
+
     </div>
-    <div class="menuColab">
-        <ul id="menu-colab">
-            <li>Carregando...</li>
-        </ul>
+    <div class="navbar-bottom">
+        <span onclick="secao('requisicoes')" class="button-bottom" id="requisicao"></span>
+        <span onclick="secao('bancoHoras')" class="button-bottom" id="bancodehoras"></span>
+        <span onclick="secao('velocidad')" class="button-bottom" id="velocidade"></span>
+        <span onclick="secao('program')" class="button-bottom" id="programacao"></span>
+
+    </div>
+
+    <!-----------------------     Banco de Horas      --------------------------->
+
+    <div id="bancoHoras" class="secao" style="display: none">
+        <input type="text" onfocus="this.value='';" id="buscaColaborador"
+            placeholder="Digite parte do nome ou matrícula"
+            oninput="sugerirColaboradorUnificado('buscaColaborador', 'sugestoesBancoHoras')">
+        <div id="sugestoesBancoHoras" class="sugestoes"></div>
+        <button onclick="buscarBancoHoras()">Buscar</button>
+        <div id="versao"></div>
+        <div id="resultado" class="resultado"></div>
     </div>
 
 
-    <div id="requisicoes" style="display: flex;" onload="carregarRequisicoesColaborador()">
+    <!-----------------------   Requisições   -------------------------->
+    <div class="secao" id="requisicoes" style="margin-bottom: 12rem; display: flex;"
+        onload="carregarRequisicoesColaborador()">
 
 
 
@@ -48,7 +65,8 @@
         <div id="resultadoBusca"></div>
 
 
-        <input type="text" onfocus="this.value='';" id="buscaRequisicao" placeholder="Ex: Nome,Matricula (Fulano,111111)"
+        <input type="text" onfocus="this.value='';" id="buscaRequisicao"
+            placeholder="Ex: Nome,Matricula (Fulano,111111)"
             oninput="sugerirColaboradorUnificado('buscaRequisicao', 'sugestoesColaborador')">
         <div id="sugestoesColaborador" class="sugestoes"></div>
 
@@ -70,10 +88,31 @@
         <div id="listaRequisicoes"></div>
     </div>
 
+    <!-----------------------     Velocidade      -------------------------->
 
+    <div class="secao" id="velocidad" style="display: none;">
+
+        <div class="soon"></div>
+    </div>
+
+
+
+    <!-----------------------     Programação       ---------------------->
+
+
+    <div class="secao" id="program" style="display: none;">
+
+        <div class="soon"></div>
+    </div>
+
+
+
+
+    <!------------------------    Treinamentos     ------------------------>
     <section id="treinamentos" style="display: none;"></section>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="svg.js"></script>
     <script src="treinamentos.js"></script>
     <script src="colab.js"></script>
     <script src="script.js"></script>
