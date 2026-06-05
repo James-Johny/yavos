@@ -80,7 +80,7 @@ span.button-active {
 
 .button-bottom {
   margin-top: 1rem;
-  margin bottom: .5rem;
+  margin-bottom: .5rem;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -328,7 +328,23 @@ button:active {
   min-width: 95%;
   text-align: center;
 }
+.qtd_desc{
+  display: flex;
+  flex-flow: column wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
 
+.qtd_desc span {
+  font-size: 2.6rem;
+  color: var(--purple1);
+  font-weight: bold;
+}
+
+.qtd_desc span input.quantidade {
+  width: 1rem;
+}
 /* =========== 11. TABELAS ESTILIZADAS ========== */
 
 table {  
