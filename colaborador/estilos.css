@@ -617,6 +617,25 @@ a {
   margin-left: 0;
 }
 
+/* ========== XADREZ ========== */
+#program input, #program button, #program select, #program {
+  font-size: 2rem;
+}
+#program {
+  background: var(--white1);
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  gap: 3rem;
+  justify-content: center;
+  width: 60rem;
+  padding: 20px;
+}
+#pdf-canvas {
+  display: none;
+}
+
+
 
 /* ========== 21. RESPONSIVIDADE ========== */
 @media screen and (min-width: 120px) {
@@ -631,7 +650,11 @@ a {
     font-size: 3rem;
     padding: 8px;
     max-width: 50rem;
-    min-width: 90%;
+    width: 90%;
+  }
+
+  .qtd_desc input.quandtidade {
+    max-width: 3rem;
   }
 
   .tarefa {

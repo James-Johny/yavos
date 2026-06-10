@@ -5,6 +5,8 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#05125e">
     <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <title>Solicitação de requisições</title>
@@ -56,7 +58,7 @@
 
 
     <!-----------------------   Requisições   -------------------------->
-    <div class="secao" id="requisicoes" style="margin-bottom: 12rem; display: flex;"
+    <div class="secao" id="requisicoes" style="margin-bottom: 12rem; display: none;"
         onload="carregarRequisicoesColaborador()">
 
 
@@ -71,9 +73,14 @@
         <div id="sugestoesColaborador" class="sugestoes"></div>
 
         <div class="qtd_desc">
-           <table style="border: none; width: 15rem; margin-left: 2rem; background-color: transparent;"><tr style="background-color: transparent; text-align: right;"><td style="width: 15rem;"><span>Quantidade: </span></td><td><input type="number" id="quantidade" onfocus="this.value='';" class="quantidade" placeholder="Quantidade"
-                min="1" value="1" style="width: 2rem !important;"></td></tr></table>
-               
+            <table style="border: none; width: 15rem; margin-left: 2rem; background-color: transparent;">
+                <tr style="background-color: transparent; text-align: right;">
+                    <td style="width: 15rem;"><span>Quantidade: </span></td>
+                    <td><input type="number" id="quantidade" onfocus="this.value='';" class="quantidade"
+                            placeholder="Quantidade" min="1" value="1" style="width: 2rem !important;"></td>
+                </tr>
+            </table>
+
             <select id="descricao" name="descricao" class="descricao">
                 <option value="TROCA/DESGASTE NATURAL" class="desc">Troca/Desgaste Natural</option>
                 <option value="NECESSIDADE" class="desc necessidade">Necessidade</option>
@@ -101,19 +108,55 @@
     <!-----------------------     Programação       ---------------------->
 
 
-    <div class="secao" id="program" style="display: none;">
+    <div class="secao" id="program" style="display: flex;">
 
-        <div class="soon"></div>
+        <div id="canva">
+            <div class="select-setor">
+                Setor: <select id="setorSelect" onchange="trocarSetor()">
+                    <option value="esmalte">Esmalte</option>
+                    <option value="aerosol">Aerosol</option>
+                    <option value="lineares">Lineares</option>
+                    <option value="rapidas">Rápidas</option>
+                    <option value="customizacao">Customização</option>
+                </select>
+                Dia: <select id="diaSelect" onchange="trocarSetor()">
+                    <option value="seg2">Segunda</option>
+                    <option value="ter2">Terça</option>
+                    <option value="qua2">Quarta</option>
+                    <option value="qui2">Quinta</option>
+                    <option value="sex2">Sexta</option>
+                </select>
+            </div>
+            <canvas id="pdf-canvas"></canvas>
+
+
+
+        </div>
+
+
+        
+
     </div>
 
 
 
 
-    <!------------------------    Treinamentos     ------------------------>
-    <section id="treinamentos" style="display: none;"></section>
 
+    <!------------------------    Treinamentos     ------------------------>
+    <section id="treinamentos" style="display: none;">
+        <div class="soon"></div>
+    </section>
+
+
+
+
+    <!------------------------    Scripts   ----------------------->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <script src="svg.js"></script>
+    <script src="xadrez.js"></script>
+    <script src="programacao.js"></script>
     <script src="treinamentos.js"></script>
     <script src="colab.js"></script>
     <script src="script.js"></script>
