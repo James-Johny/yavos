@@ -3,7 +3,7 @@ const xadrez = '../xadrez.pdf';
 const esmalte = { //  x y width height
     size: "380, 102",
     position: "170, 64",
-    quadro: "483, 64, 290, 122",
+    quadro: "483, 30, 290, 156",
     quadro2: "260, 106",
     seg: "625, 64",
     ter: "925, 64",
@@ -11,7 +11,7 @@ const esmalte = { //  x y width height
     qui: "1524, 64",
     sex: "1824, 64",
     sab: "2132, 64",
-    seg2: "925, 64, 290, 122",
+    seg2: "925, 30, 290, 156",
     ter2: "1986, 147, 260, 138",
     qua2: "2245, 147, 260, 138",
     qui2: "1724, 147, 260, 138",
@@ -138,7 +138,7 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                 const recorteCanvas = document.createElement('canvas');
                 recorteCanvas.width = width;
                 recorteCanvas.height = height;
-                recorteCanvas.getContext('2d').drawImage(canvas, xQuadro, yLinha, wEsmalte, hEsmalte, 0, 0, width, height);
+                recorteCanvas.getContext('2d').drawImage(canvas, x, y, width, height, 0, 0, width, height);
 
                 const quadroCanvas = document.createElement('canvas');
                 quadroCanvas.width = width2;
