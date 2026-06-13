@@ -1,7 +1,7 @@
 const xadrez = '../xadrez.pdf';
 
 const esmalte = { //  x y width height
-    quadro: "483, 30, 290, 156",
+    quadro: "483, 30, 65, 156",
     seg: "925, 30, 290, 156",
     ter: "1224, 30, 290, 156",
     qua: "1530, 30, 290, 156",
@@ -31,7 +31,7 @@ const xSab = null;
 
 
 const aerosol = {
-    quadro: "483, 320, 290, 156",
+    quadro: "483, 320, 65, 156",
     seg: "925, 320, 290, 156",
     ter: "1224, 320, 290, 156",
     qua: "1530, 320, 290, 156",
@@ -42,7 +42,7 @@ const aerosol = {
 const lineares = {
     size: "380, 160",
     position: "170, 624",
-    quadro: "483, 580, 340, 220",
+    quadro: "483, 580, 65, 220",
     seg: "925, 580, 290, 220",
     ter: "1224, 580, 290, 220",
     qua: "1530, 580, 290, 220",
@@ -53,7 +53,7 @@ const lineares = {
 const rapidas = {
     size: "380, 200",
     position: "170, 958",
-    quadro: "483, 913, 340, 260",
+    quadro: "483, 913, 65, 260",
     seg: "925, 913, 290, 260",
     ter: "1224, 913, 290, 260",
     qua: "1530, 913, 290, 260",
@@ -77,6 +77,10 @@ const customizacao = {
 const canvas = document.getElementById('pdf-canvas');
 const ctx = canvas.getContext('2d');
 
+
+
+
+
 pdfjsLib.getDocument(xadrez).promise.then(pdf => {
     pdf.getPage(1).then(page => {
         const viewport = page.getViewport({
@@ -92,7 +96,7 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
         page.render(renderContext).promise.then(() => {
             const trocarSetor = () => {
                 const setorNome = document.getElementById('setorSelect').value;
-                const dia = document.getElementById('diaSelect').value;
+                const dia = diaC; //document.getElementById('diaSelect').value;
                 let setor;
 
                 switch (setorNome) {
@@ -115,31 +119,81 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                         setor = rapidas;
                 }
 
+
+
+
+
+                const hora = 5; //new Date().getHours();
+                const day = new Date().getDay();
+                let dia;
+                let turno;
+
+                if (hora > 7 && hora < 15) {
+                    turno = "A";
+                } else if (hora > 15 && hora < 23) {
+                    turno = "B";
+                } else {
+                    turno = "C";
+                }
+
+
+                if (turno === "C") {
+                    if (day === 0) {
+                        diaC = "sab";
+                    } else if (day === 2) {
+                        diaC = "seg";
+                    } else if (day === 3) {
+                        diaC = "ter";
+                    } else if (day === 4) {
+                        diaC = "qua";
+                    } else if (day === 5) {
+                        diaC = "qui";
+                    } else if (day === 6) {
+                        diaC = "sex";
+                    }
+                }
+                console.log('Turno:', turno + ' - Dia:', diaC);
+
+
+
+
                 const [x, y, width, height] = setor[dia].split(',').map(Number);
                 const [x2, y2, width2, height2] = setor.quadro.split(',').map(Number);
+                const [xRecEsmalte, yRecEsmalte, wRecEsmalte, hRecEsmalte] = esmalte.quadro.split(',').map(Number);
+                const [xEsmalte, yEsmalte, wEsmalte, hEsmalte] = esmalte[dia].split(',').map(Number);
+                const [xRapidas, yRapidas, wRapidas, hRapidas] = rapidas[dia].split(',').map(Number);
 
-                const recorteCanvas = document.createElement('canvas');
-                recorteCanvas.width = width;
-                recorteCanvas.height = height;
-                recorteCanvas.getContext('2d').drawImage(canvas, x, y, width, height, 0, 0, width, height);
 
-                const quadroCanvas = document.createElement('canvas');
-                quadroCanvas.width = width2;
-                quadroCanvas.height = height2;
-                quadroCanvas.getContext('2d').drawImage(canvas, x2, y2, width2, height2, 0, 0, width2, height2);
-                              
+
+                const recEsmalte = document.createElement('canvas');
+                recEsmalte.width = wRecEsmalte;
+                recEsmalte.height = hRecEsmalte;
+                recEsmalte.getContext('2d').drawImage(canvas, xRecEsmalte, yRecEsmalte, wRecEsmalte, hRecEsmalte, 0, 0, wRecEsmalte, hRecEsmalte);
+
+                const linhasEsmalte = document.createElement('canvas');
+                linhasEsmalte.width = width2;
+                linhasEsmalte.height = height2;
+                linhasEsmalte.getContext('2d').drawImage(canvas, xEsmalte, yEsmalte, wEsmalte, hEsmalte, 0, 0, wEsmalte, hEsmalte);
+
+                const linhasRapidas = document.createElement('canvas');
+                linhasRapidas.width = wRapidas;
+                linhasRapidas.height = hRapidas;
+                linhasRapidas.getContext('2d').drawImage(canvas, xRapidas, yRapidas, wRapidas, hRapidas, 0, 0, wRapidas, hRapidas);
+
+
+                const linhasLineares = document.createElement('canvas');
 
                 const newCanvas = document.createElement('canvas');
-                newCanvas.width = (width + width2) * 1.5;
-                newCanvas.height = Math.max(height, height2) * 1.5;
+                newCanvas.width = (wRecEsmalte + wEsmalte) * 2;
+                newCanvas.height = Math.max(hRecEsmalte, hEsmalte) * 2;
 
                 const newCtx = newCanvas.getContext('2d');
 
 
-                const newScale = 1.5;
+                const newScale = 2.0;
                 newCtx.scale(newScale, newScale);
-                newCtx.drawImage(quadroCanvas, 0, 0);
-                newCtx.drawImage(recorteCanvas, width2, 0);
+                newCtx.drawImage(recEsmalte, 0, 0);
+                newCtx.drawImage(linhasEsmalte, wEsmalte, 0);
 
                 const canva = document.getElementById('canva');
                 canva.querySelectorAll('canvas:not(#xlsx #pdf-canvas)').forEach(c => c.remove());
