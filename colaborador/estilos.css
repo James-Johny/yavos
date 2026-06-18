@@ -264,6 +264,45 @@ button:active {
   transform: translateY(1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+/* =================== XLSX ======================== */
+
+    #status {
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      font-weight: 500;
+      background-color: #e2e8f0;
+      color: #334155;
+      display: inline-block;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      width: 95dvw;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      background: white;
+      margin-bottom: 13rem;
+    }
+
+    .excel-table {
+      border-collapse: collapse;
+      font-family: 'Calibri', 'Segoe UI', sans-serif;
+      color: #000000;
+      width: min-content;
+    }
+
+    .excel-table td {
+      border: 1px solid #d4d4d4;
+      padding: 1px 2px;
+      min-width: 1rem;
+      max-width: 12rem;
+      height: min-content;
+      white-space: nowrap;
+      box-sizing: border-box;
+    }
+
+   
 
 /* ========== 9. COMPONENTES ESPECÍFICOS ========== */
 .secao {
@@ -359,10 +398,7 @@ table td {
   padding: 8px 12px;
 }
 
-table td:nth-child(odd) {
-  min-width: 15rem;
-  max-width: 15rem;
-}
+
 
 tr:nth-child(even) {
   background: var(--tr-even);
@@ -399,7 +435,7 @@ table tr:nth-child(odd) {
   display: none;
   flex-flow: column wrap;
   justify-content: center;
-  align-items: center;
+  align-items: center; 
 }
 
 #pesquisaReq {

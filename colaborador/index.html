@@ -5,6 +5,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#05125e">
     <meta charset="UTF-8">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -119,16 +120,15 @@
                     <option value="rapidas">Rápidas</option>
                     <option value="customizacao">Customização</option>
                 </select>
-                
+
             </div>
             <canvas id="pdf-canvas"></canvas>
-
-
-
         </div>
 
+        <div id="status">Aguardando inicialização...</div>
+        <div class="table-container" id="planilha-container"></div>
 
-        
+
 
     </div>
 

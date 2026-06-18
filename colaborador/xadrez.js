@@ -34,7 +34,7 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
 
                 const setorNome = document.getElementById('setorSelect').value;
-                
+
                 let setor;
 
                 switch (setorNome) {
@@ -63,18 +63,24 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
                 const hora = new Date().getHours();
                 const day = new Date().getDay();
+
+
                 let turno;
-                let dia = day;
+                let dia;
                 let diaC;
 
-                if (hora > 7 && hora < 15) {
+
+                if (hora > 7 & hora < 15) {
                     turno = "A";
-                } else if (hora > 15 && hora < 23) {
+                } else if (hora > 15 & hora < 23) {
                     turno = "B";
                 } else {
                     turno = "C";
                 }
-                console.log(`O dia é ${day}`);
+
+
+
+
                 if (turno === "C") {
                     if (day === 0) {
                         diaC = [6, "Sábado"];
@@ -89,14 +95,17 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                     } else if (day === 6) {
                         diaC = [5, "Sexta"];
                     }
-
                     dia = diaC[0];
+                } else {
+                    dia = day;
                 }
 
 
+                console.log("Hora: ", hora, "Turno: ", turno, "Dia: ", dia);
 
 
-                console.log("O dia hoje é: ", diaC[1])
+
+
 
 
                 const xQuadro = q;
@@ -110,7 +119,6 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                 const hLinha = h[setor];
 
 
-                console.log('Setor:', setor);
                 console.log('Linhas:', xLinha, yLinha, wLinha, hLinha);
 
                 const quadro = document.createElement('canvas');

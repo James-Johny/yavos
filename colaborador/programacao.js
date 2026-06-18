@@ -1,216 +1,188 @@
-let rapidas = {};
+async function carregarEExibirPlanilha(url) {
+    const statusDiv = document.getElementById('status');
+    statusDiv.textContent = "Buscando arquivo...";
+    statusDiv.style.display = 'block';
+    statusDiv.style.opacity = '1';
 
-        function evaluateExpression(value) {
-            if (typeof value !== 'string') return value;
-            const trimmed = value.trim();
-            
-            if (trimmed.startsWith('=')) {
-                const expression = trimmed.substring(1);
-                try {
-                    if (/^[\d\s\+\-\*\/\(\)]+$/.test(expression)) {
-                        const result = Function('"use strict";return (' + expression + ')')();
-                        return Number(result);
-                    }
-                } catch(e) {
-                    console.warn(`Não foi possível avaliar: ${expression}`);
-                }
-            }
-            
-            if (!isNaN(trimmed) && trimmed !== '') {
-                return Number(trimmed);
-            }
-            return value;
-        }
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Status HTTP: ${response.status}`);
 
-        function processExcelData(workbook) {
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
-            
-            const rapidasTemp = {};
-            let currentLine = null;
-            let headers = null;
-            
-            for (let i = 0; i < jsonData.length; i++) {
-                const row = jsonData[i];
-                const firstCell = row[0] ? String(row[0]).trim() : '';
-                
-                if (firstCell.toUpperCase().startsWith('LINHA')) {
-                    currentLine = firstCell;
-                    rapidasTemp[currentLine] = [];
-                    headers = null;
-                    continue;
-                }
-                
-                if (firstCell === 'CÓDIGO P.A.') {
-                    headers = true;
-                    continue;
-                }
-                
-                if (currentLine && headers && row.length >= 5) {
-                    const codigoPA = row[0] ? String(row[0]).trim() : '';
-                    const descricaoPA = row[1] ? String(row[1]).trim() : '';
-                    const numeroOrdem = row[2] ? String(row[2]).trim() : '';
-                    const qtdCXS = row[3] ? evaluateExpression(row[3]) : '';
-                    const qtdUND = row[4] ? evaluateExpression(row[4]) : '';
-                    
-                    if (codigoPA === '' && descricaoPA === '' && numeroOrdem === '' && 
-                        qtdCXS === '' && qtdUND === '') {
-                        continue;
-                    }
-                    
-                    if (codigoPA === '' && descricaoPA !== '') {
-                        continue;
-                    }
-                    
-                    if (codigoPA !== '') {
-                        rapidasTemp[currentLine].push({
-                            "CÓDIGO P.A.": codigoPA,
-                            "DESCRIÇÃO P.A.": descricaoPA,
-                            "Nº ORDEM": numeroOrdem,
-                            "QTD (CXS)": typeof qtdCXS === 'number' ? qtdCXS : qtdCXS,
-                            "QTD (UND)": typeof qtdUND === 'number' ? qtdUND : qtdUND
-                        });
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(arrayBuffer);
+        const worksheet = workbook.worksheets[0];
+
+        const table = document.createElement('table');
+        table.className = 'excel-table';
+
+        // 1. Mapeamento de Células Mescladas (Merge Cells) - Método Corrigido
+        const colunasMescladas = {};
+        if (worksheet.model && worksheet.model.merges) {
+            worksheet.model.merges.forEach(rangeStr => {
+                const [topLeftRef, bottomRightRef] = rangeStr.split(':');
+                const topLeftCell = worksheet.getCell(topLeftRef);
+                const bottomRightCell = worksheet.getCell(bottomRightRef);
+
+                const top = topLeftCell.row;
+                const left = topLeftCell.col;
+                const bottom = bottomRightCell.row;
+                const right = bottomRightCell.col;
+
+                for (let r = top; r <= bottom; r++) {
+                    for (let c = left; c <= right; c++) {
+                        if (r === top && c === left) {
+                            colunasMescladas[`${r}_${c}`] = {
+                                isMaster: true,
+                                rowspan: (bottom - top) + 1,
+                                colspan: (right - left) + 1
+                            };
+                        } else {
+                            colunasMescladas[`${r}_${c}`] = {
+                                isSlave: true
+                            };
+                        }
                     }
                 }
-            }
-            
-            for (const line in rapidasTemp) {
-                if (rapidasTemp[line].length === 0) {
-                    delete rapidasTemp[line];
-                }
-            }
-            
-            return rapidasTemp;
-        }
-
-        function displayStats() {
-            const statsDiv = document.getElementById('stats');
-            const lines = Object.keys(rapidas);
-            const totalItems = lines.reduce((sum, line) => sum + rapidas[line].length, 0);
-            const totalUnd = lines.reduce((sum, line) => {
-                return sum + rapidas[line].reduce((s, item) => {
-                    const und = typeof item["QTD (UND)"] === 'number' ? item["QTD (UND)"] : 0;
-                    return s + und;
-                }, 0);
-            }, 0);
-            
-            statsDiv.style.display = 'grid';
-            statsDiv.innerHTML = `
-                <div class="stat-card">
-                    <h3>Total de Linhas</h3>
-                    <div class="number">${lines.length}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Total de Produtos</h3>
-                    <div class="number">${totalItems}</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Total em Unidades</h3>
-                    <div class="number">${totalUnd.toLocaleString()}</div>
-                </div>
-            `;
-        }
-
-        function displayTabs() {
-            const tabsDiv = document.getElementById('tabs');
-            const contentDiv = document.getElementById('content');
-            const lines = Object.keys(rapidas);
-            
-            if (lines.length === 0) {
-                contentDiv.innerHTML = '<div style="text-align: center; padding: 50px; background: white; border-radius: 15px;">Nenhum dado encontrado na planilha</div>';
-                return;
-            }
-            
-            tabsDiv.style.display = 'flex';
-            
-            tabsDiv.innerHTML = lines.map((line, index) => `
-                <button class="tab-btn ${index === 0 ? 'active' : ''}" onclick="showTab('tab-${index}')">
-                    📁 ${line}
-                </button>
-            `).join('');
-            
-            contentDiv.innerHTML = lines.map((line, index) => `
-                <div id="tab-${index}" class="tab-content ${index === 0 ? 'active' : ''}">
-                    <h3 style="margin-bottom: 20px; color: #667eea;">${line}</h3>
-                    ${createTable(rapidas[line])}
-                </div>
-            `).join('');
-        }
-
-        function createTable(data) {
-            if (data.length === 0) return '<p>Nenhum dado disponível</p>';
-            
-            const headers = Object.keys(data[0]);
-            return `
-                <table>
-                    <thead>
-                        <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
-                    </thead>
-                    <tbody>
-                        ${data.map(row => `
-                            <tr>
-                                ${headers.map(h => `<td>${formatValue(row[h])}</td>`).join('')}
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-        function formatValue(value) {
-            if (value === '' || value === undefined || value === null) return '-';
-            if (typeof value === 'number') return value.toLocaleString();
-            return value;
-        }
-
-        window.showTab = function(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
             });
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
-        };
+        }
 
-        window.processFile = function() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-            const statusDiv = document.getElementById('status');
-            
-            if (!file) {
-                statusDiv.innerHTML = '<div class="status error">❌ Por favor, selecione um arquivo Excel primeiro!</div>';
-                return;
+        // 2. Construção da tabela respeitando ocultações
+        worksheet.eachRow({
+            includeEmpty: true
+        }, (row, rowNumber) => {
+            const tr = document.createElement('tr');
+
+            // VERIFICAÇÃO: Se a linha inteira estiver oculta no Excel
+            if (row.hidden) {
+                tr.style.display = 'none';
             }
-            
-            statusDiv.innerHTML = '<div class="status">⏳ Processando arquivo...</div>';
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    rapidas = processExcelData(workbook);
-                    
-                    statusDiv.innerHTML = '<div class="status success">✅ Arquivo processado com sucesso!</div>';
-                    
-                    displayStats();
-                    displayTabs();
-                    
-                    console.log('Dados processados:', rapidas);
-                    
-                } catch (error) {
-                    statusDiv.innerHTML = `<div class="status error">❌ Erro ao processar: ${error.message}</div>`;
-                    console.error('Erro:', error);
+
+            row.eachCell({
+                includeEmpty: true
+            }, (cell, colNumber) => {
+                // VERIFICAÇÃO: Se a coluna atual estiver oculta no Excel
+                const columnModel = worksheet.getColumn(colNumber);
+                if (columnModel && columnModel.hidden) {
+                    return; // Ignora e não renderiza esta célula (coluna oculta)
                 }
-            };
-            
-            reader.onerror = function() {
-                statusDiv.innerHTML = '<div class="status error">❌ Erro ao ler o arquivo!</div>';
-            };
-            
-            reader.readAsArrayBuffer(file);
-        };
+
+                const cellKey = `${rowNumber}_${colNumber}`;
+                const mergeInfo = colunasMescladas[cellKey];
+
+                // Pula células escravas de mesclagem
+                if (mergeInfo && mergeInfo.isSlave) return;
+
+                const td = document.createElement('td');
+
+                // Aplica rowspan/colspan
+                if (mergeInfo && mergeInfo.isMaster) {
+                    if (mergeInfo.rowspan > 1) td.setAttribute('rowspan', mergeInfo.rowspan);
+                    if (mergeInfo.colspan > 1) td.setAttribute('colspan', mergeInfo.colspan);
+                }
+
+                // Conteúdo da célula
+                if (cell.value && typeof cell.value === 'object') {
+                    if (cell.value.result !== undefined) {
+                        const num = Number(cell.value.result);
+                        td.textContent = !isNaN(num) ? Math.floor(num) : cell.value.result;
+                    } else if (cell.value.richText) {
+                        const texto = cell.value.richText.map(t => t.text).join('');
+                        const num = Number(texto);
+                        td.textContent = !isNaN(num) ? Math.floor(num) : texto;
+                    } else {
+                        td.textContent = '';
+                    }
+                } else {
+                    const num = Number(cell.value);
+                    td.textContent = (cell.value !== null && cell.value !== undefined) 
+                        ? (!isNaN(num) ? Math.floor(num) : cell.value) 
+                        : '';
+                }
+
+                // --- Estilos de Formatação ---
+                // Cor de fundo
+                if (cell.fill && cell.fill.type === 'pattern' && cell.fill.fgColor && cell.fill.fgColor.argb) {
+                    const argb = cell.fill.fgColor.argb;
+                    td.style.backgroundColor = '#' + (argb.length === 8 ? argb.substring(2) : argb);
+                }
+
+                // Fonte
+                if (cell.font) {
+                    if (cell.font.bold) td.style.fontWeight = 'bold';
+                    if (cell.font.italic) td.style.fontStyle = 'italic';
+                    if (cell.font.size) td.style.fontSize = `${cell.font.size}pt`;
+                    if (cell.font.color && cell.font.color.argb) {
+                        const cColor = cell.font.color.argb;
+                        td.style.color = '#' + (cColor.length === 8 ? cColor.substring(2) : cColor);
+                    }
+                }
+
+                // Alinhamento
+                if (cell.alignment) {
+                    if (cell.alignment.horizontal) td.style.textAlign = cell.alignment.horizontal;
+                    if (cell.alignment.vertical) td.style.verticalAlign = cell.alignment.vertical === 'middle' ? 'middle' : cell.alignment.vertical;
+                }
+
+                tr.appendChild(td);
+            });
+
+            table.appendChild(tr);
+        });
+
+        const container = document.getElementById('planilha-container');
+        container.innerHTML = '';
+        container.appendChild(table);
+
+        statusDiv.style.backgroundColor = '#dcfce7';
+        statusDiv.style.color = '#15803d';
+        statusDiv.textContent = "Planilha carregada com sucesso!";
+        statusDiv.style.position = 'fixed';
+
+        setTimeout(() => {
+            statusDiv.style.opacity = '0';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 500);
+        }, 3000);
+
+    } catch (error) {
+        statusDiv.style.backgroundColor = '#fee2e2';
+        statusDiv.style.color = '#b91c1c';
+        statusDiv.textContent = `Erro: ${error.message}`;
+        console.error(error);
+
+        setTimeout(() => {
+            statusDiv.style.opacity = '0';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 500);
+        }, 3000);
+    }
+}
+
+// CORREÇÃO PRINCIPAL: Configurar o event listener corretamente
+function configurarEventListeners() {
+    const setorSelect = document.getElementById("setorSelect");
+    
+    // Carregar a planilha inicial (primeira opção)
+    const setorInicial = setorSelect.value;
+    if (setorInicial) {
+        const NOME_DO_ARQUIVO = `${setorInicial}.xlsx`;
+        carregarEExibirPlanilha(NOME_DO_ARQUIVO);
+    }
+
+    // Event listener para quando o select mudar
+    setorSelect.addEventListener('change', function() {
+        const setorNome = this.value;
+        
+        if (!setorNome) return;
+        
+        const NOME_DO_ARQUIVO = `${setorNome}.xlsx`;
+        console.log("Alterando para o arquivo: ", NOME_DO_ARQUIVO);
+        carregarEExibirPlanilha(NOME_DO_ARQUIVO);
+    });
+}
+
+// Inicializar quando a página carregar
+document.addEventListener('DOMContentLoaded', configurarEventListeners);
