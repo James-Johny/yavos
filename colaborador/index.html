@@ -58,7 +58,7 @@
 
 
     <!-----------------------   Requisições   -------------------------->
-    <div class="secao" id="requisicoes" style="margin-bottom: 12rem; display: flex;"
+    <div class="secao" id="requisicoes" style="margin-bottom: 12rem; display: none;"
         onload="carregarRequisicoesColaborador()">
 
 
@@ -108,7 +108,7 @@
     <!-----------------------     Programação       ---------------------->
 
 
-    <div class="secao" id="program" style="display: none;">
+    <div class="secao" id="program" style="display: flex;">
 
         <div id="canva">
             <div class="select-setor">
@@ -119,14 +119,7 @@
                     <option value="rapidas">Rápidas</option>
                     <option value="customizacao">Customização</option>
                 </select>
-                Dia: <select id="diaSelect" onchange="trocarSetor()">
-                    <option value="seg">Segunda</option>
-                    <option value="ter">Terça</option>
-                    <option value="qua">Quarta</option>
-                    <option value="qui">Quinta</option>
-                    <option value="sex">Sexta</option>
-                    <option value="sab">Sábado</option>
-                </select>
+                
             </div>
             <canvas id="pdf-canvas"></canvas>
 
