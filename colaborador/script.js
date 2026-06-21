@@ -66,7 +66,7 @@ fetch("../listanomes.csv")
     const linhas = texto.split("\n").map(l => l.trim()).filter(l => l);
     colaboradoresCSV = linhas.slice(3).map(linha => {
       const [matricula, nome, cdc, funcao] = linha.split(";").map(v => v.trim());
-      return { matricula, nome, cdc, funcao };
+      return { matricula, nome, cdc, funcao }; 
     });
     console.log("Colaboradores CSV carregados:", (colaboradoresCSV))
   })
@@ -448,7 +448,7 @@ function criarRequisicao() {
     const [nome, matricula] = colaboradorManual;
     colaborador = { nome, matricula };
   } else {
-    colaborador = todos.find(c => c.nome.toLowerCase() === entrada);
+    colaborador = todos.find(c => c.nome?.toLowerCase() === entrada?.toLowerCase());
   }
 
 

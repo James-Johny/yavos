@@ -13,7 +13,7 @@ const ctx = canvas.getContext('2d');
 pdfjsLib.getDocument(xadrez).promise.then(pdf => {
     pdf.getPage(1).then(page => {
         const viewport = page.getViewport({
-            scale: 3.0
+            scale: 3.5
         });
         canvas.width = viewport.width;
         canvas.height = viewport.height;
@@ -25,11 +25,12 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
         page.render(renderContext).promise.then(() => {
             const trocarSetor = () => {
 
-                const q = 383;
-                const x = [1700, 200, 500, 852, 1158, 1463, 1768];
-                const y = [22, 330, 588, 932, 1375];
-                const w = [65, 300];
-                const h = [161, 161, 225, 265, 243];
+                // 
+                const q = 120;
+                const x = [470, 1320, 570, 470, 170, 170, 170];
+                const y = [258, 526, 740, 1055, 1440];
+                const w = [60, 260];
+                const h = [145, 145, 220, 265, 243];
 
 
 
@@ -101,6 +102,7 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                 }
 
 
+                dia = 1;
                 console.log("Hora: ", hora, "Turno: ", turno, "Dia: ", dia);
 
 
@@ -136,13 +138,13 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
 
                 const newCanvas = document.createElement('canvas');
-                newCanvas.width = (wQuadro + wLinha) * 2;
-                newCanvas.height = Math.max(hLinha, hQuadro) * 2;
+                newCanvas.width = (wQuadro + wLinha) * 2.5;
+                newCanvas.height = Math.max(hLinha, hQuadro) * 2.5;
 
                 const newCtx = newCanvas.getContext('2d');
 
 
-                const newScale = 2.0;
+                const newScale = 2.5;
                 newCtx.scale(newScale, newScale);
                 newCtx.drawImage(quadro, 0, 0);
                 newCtx.drawImage(linhas, wQuadro, 0);
