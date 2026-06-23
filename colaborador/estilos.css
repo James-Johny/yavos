@@ -654,21 +654,28 @@ a {
 }
 
 /* ========== XADREZ ========== */
+
+.xadrez h1#h1-xadrez {
+  font-size: 4rem;
+}
+
 #program input, #program button, #program select, #program {
-  font-size: 2rem;
+  font-size: 2rem;  
+  margin-bottom: 11rem;
 }
 #program {
   background: var(--white1);
   display: flex;
   flex-flow: column wrap;
   align-items: center;
-  gap: 3rem;
+  gap: 0;
   justify-content: center;
   width: 60rem;
   padding: 20px;
 }
 #pdf-canvas {
   display: none;
+
 }
 
 

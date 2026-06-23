@@ -59,7 +59,7 @@
 
 
     <!-----------------------   Requisições   -------------------------->
-    <div class="secao" id="requisicoes" style="margin-bottom: 12rem; display: flex;"
+    <div class="secao" id="requisicoes" style="margin-bottom: 12rem; display: none;"
         onload="carregarRequisicoesColaborador()">
 
 
@@ -97,22 +97,11 @@
         <div id="listaRequisicoes"></div>
     </div>
 
-    <!-----------------------     Velocidade      -------------------------->
+    <!-----------------------     Programação      -------------------------->
 
     <div class="secao" id="velocidad" style="display: none;">
 
-        <div class="soon"></div>
-    </div>
-
-
-
-    <!-----------------------     Programação       ---------------------->
-
-
-    <div class="secao" id="program" style="display: none;">
-
-        <div id="canva">
-            <div class="select-setor">
+        <div class="select-setor">
                 Setor: <select id="setorSelect" onchange="trocarSetor()">
                     <option value="esmalte">Esmalte</option>
                     <option value="aerosol">Aerosol</option>
@@ -122,11 +111,24 @@
                 </select>
 
             </div>
-            <canvas id="pdf-canvas"></canvas>
-        </div>
-
         <div id="status">Aguardando inicialização...</div>
         <div class="table-container" id="planilha-container"></div>
+
+    </div>
+
+
+
+    <!-----------------------     Xadrez       ---------------------->
+
+
+    <div class="secao" id="program" style="display: flex;">
+
+        <div class="xadrez"><h1 id="h1-xadrez"></h1></div>
+        <div id="canva">
+                      <canvas id="pdf-canvas"></canvas>
+        </div>
+
+        
 
 
 
