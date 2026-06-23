@@ -655,9 +655,6 @@ a {
 
 /* ========== XADREZ ========== */
 
-.xadrez h1#h1-xadrez {
-  font-size: 4rem;
-}
 
 #program input, #program button, #program select, #program {
   font-size: 2rem;  

@@ -1,10 +1,7 @@
 const xadrez = '../xadrez.pdf';
 
 
-const h1 = document.getElementById('h1-xadrez');
-h1.style.textAlign = 'center';
-h1.textContent = `Xadrez do dia`
-h1.style.color = 'var(--purple3)';
+
 
 
 const canvas = document.getElementById('pdf-canvas');
