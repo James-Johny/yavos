@@ -47,9 +47,9 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                 let diaC;
 
 
-                if (hora > 7 & hora < 15) {
+                if (hora > 7 && hora < 15) {
                     turno = "A";
-                } else if (hora > 15 & hora < 23) {
+                } else if (hora > 15 && hora < 23) {
                     turno = "B";
                 } else {
                     turno = "C";
