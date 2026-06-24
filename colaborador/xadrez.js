@@ -58,11 +58,11 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
 
 
-                if (turno === "C") {
+                if (turno === "C" && hora < 23) {
                     if (day === 0) {
                         diaC = [6, "Sábado"];
                     } else if (day === 2) {
-                        diaC = [1, "Segunda"];
+                        diaC = [3, "Segunda"];
                     } else if (day === 3) {
                         diaC = [2, "Terça"];
                     } else if (day === 4) {
@@ -78,7 +78,7 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                 }
 
 
-                console.log("Hora: ", hora, "Turno: ", turno, "Dia: ", dia);
+                console.log("Hora: ", hora, "Turno: ", turno, "Dia: ", dia, day);
 
 
 
