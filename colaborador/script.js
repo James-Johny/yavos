@@ -609,7 +609,7 @@ function sugerirColaboradorUnificado(inputId, sugestaoId) {
   if (termo.length < 3) return;
 
   const encontradosPDF = colaboradoresPDF.filter(c => {
-    const nome = c.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const nome = c.nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     return nome.includes(termo) || c.matricula.includes(termo);
   });
 
