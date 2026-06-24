@@ -601,24 +601,37 @@ async function adicionarItem(reqId) {
 
 
 function sugerirColaboradorUnificado(inputId, sugestaoId) {
-  const termo = document.getElementById(inputId).value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  // Verificar se as variáveis existem
+  if (typeof colaboradoresPDF === 'undefined' || typeof colaboradoresCSV === 'undefined') {
+    console.error('Listas de colaboradores não carregadas');
+    return;
+  }
+
+  const input = document.getElementById(inputId);
   const sugestoesDiv = document.getElementById(sugestaoId);
+  
+  if (!input || !sugestoesDiv) {
+    console.error('Elementos não encontrados:', inputId, sugestaoId);
+    return;
+  }
+
+  const termo = input.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   sugestoesDiv.innerHTML = "";
   sugestoesDiv.style.display = "none";
 
   if (termo.length < 3) return;
 
   const encontradosPDF = colaboradoresPDF.filter(c => {
-    const nome = c.nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    return nome.includes(termo) || c.matricula.includes(termo);
+    const nome = c.nome?.normalize("NFD").replace(/[\u0300-\u036f]/g, "") || '';
+    return nome.includes(termo) || c.matricula?.includes(termo) || false;
   });
 
   let encontrados = encontradosPDF;
 
   if (encontrados.length === 0) {
     encontrados = colaboradoresCSV.filter(c => {
-      const nome = c.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      return nome.includes(termo) || c.matricula.includes(termo) || c.funcao.includes(termo);
+      const nome = c.nome?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || '';
+      return nome.includes(termo) || c.matricula?.includes(termo) || c.funcao?.includes(termo) || false;
     });
   }
 
@@ -629,9 +642,13 @@ function sugerirColaboradorUnificado(inputId, sugestaoId) {
     const btn = document.createElement("button");
     btn.type = "button";
 
-    btn.innerHTML = `${c.nome} - ${c.matricula} <br> ${c.funcao} - ${descreverCDC(c.cdc)}`;
+    const funcaoDesc = c.funcao || 'Função não definida';
+    const cdcDesc = c.cdc ? descreverCDC(c.cdc) : 'CDC não definido';
+    
+    btn.innerHTML = `${c.nome} - ${c.matricula || 'Sem matrícula'} <br> ${funcaoDesc} - ${cdcDesc}`;
+    
     btn.onclick = () => {
-      document.getElementById(inputId).value = `${c.nome}`;
+      input.value = c.nome || '';
       sugestoesDiv.innerHTML = "";
       sugestoesDiv.style.display = "none";
     };
