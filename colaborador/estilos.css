@@ -317,6 +317,7 @@ button:active {
   height: min-content;
   white-space: nowrap;
   box-sizing: border-box;
+  overflow: auto;
 }
 
 

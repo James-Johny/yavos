@@ -111,7 +111,7 @@ async function carregarEExibirPlanilha(url) {
                 if (cell.font) {
                     if (cell.font.bold) td.style.fontWeight = 'bold';
                     if (cell.font.italic) td.style.fontStyle = 'italic';
-                    if (cell.font.size) td.style.fontSize = `${cell.font.size}pt`;
+                    if (cell.font.size) td.style.fontSize = `32pt`;
                     if (cell.font.color && cell.font.color.argb) {
                         const cColor = cell.font.color.argb;
                         td.style.color = '#' + (cColor.length === 8 ? cColor.substring(2) : cColor);
