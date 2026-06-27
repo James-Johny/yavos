@@ -8,7 +8,7 @@ const canvas = document.getElementById('pdf-canvas');
 const ctx = canvas.getContext('2d');
 
 
-
+ 
 
 
 pdfjsLib.getDocument(xadrez).promise.then(pdf => {
@@ -27,11 +27,7 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
             const exibeXadrez = () => {
 
                 // 
-                const q = 200;
-                const x = [2100, 650, 937, 1226, 1518, 1809, 2100];
-                const y = [43, 526, 588, 892, 1440];
-                const w = [74, 277];
-                const h = [140, 145, 480, 275, 243];
+                
 
 
 
@@ -76,6 +72,16 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                 } else {
                     dia = day;
                 }
+
+
+                
+
+                const q = 365;
+                const x = [1325, 1620, 1908, 0, 743, 1039, 1618];
+                const y = [33, 526, 574, 892, 1440];
+                const w = [74, 277];
+                const h = [140, 145, 480, 275, 243];
+
 
 
                 console.log("Hora: ", hora, "Turno: ", turno, "Dia: ", dia, day);
