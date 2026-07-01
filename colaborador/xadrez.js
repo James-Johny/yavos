@@ -76,11 +76,11 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
                 
 
-                const q = 365;
-                const x = [1325, 1620, 1908, 0, 743, 1039, 1618];
-                const y = [33, 526, 574, 892, 1440];
-                const w = [74, 277];
-                const h = [140, 145, 480, 275, 243];
+                const q = 196;
+                const x = [1325, 1954, 1671, 592, 868, 1135, 1404];
+                const y = [110, 526, 610, 889, 1440];
+                const w = [58, 260];
+                const h = [128, 115, 420, 235, 243];
 
 
 
@@ -88,6 +88,7 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
 
 
+                
 
 
 
@@ -173,13 +174,13 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
 
                 const newCanvas = document.createElement('canvas');
-                newCanvas.width = (wQuadro3 + wRapidas) * 2.5;
-                newCanvas.height = (hRapidas + hLineares + hEsmalte) * 1.73;
+                newCanvas.width = (wQuadro3 + wRapidas) * 3.0;
+                newCanvas.height = (hRapidas + hLineares + hEsmalte) * 2.1;
 
                 const newCtx = newCanvas.getContext('2d');
 
 
-                const newScale = 2.5;
+                const newScale = 3.0;
                 newCtx.scale(newScale, newScale);
 
                 // RAPIDAS
