@@ -5,7 +5,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#05125e">
     <meta charset="UTF-8">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -42,6 +42,7 @@
         <span onclick="secao('bancoHoras')" class="button-bottom" id="bancodehoras"></span>
         <span onclick="secao('program')" class="button-bottom" id="velocidade"></span>
         <span onclick="secao('velocidad')" class="button-bottom" id="programacao"></span>
+        <span onclick="secao('treinamentos')" class="button-bottom" id="treinamentos"></span>
 
     </div>
 
@@ -137,9 +138,9 @@
 
 
     <!------------------------    Treinamentos     ------------------------>
-    <section id="treinamentos" style="display: none;">
-        <div class="soon"></div>
-    </section>
+    <div class="secao" id="treinamentos" style="display: none;">
+        <div id="menu-colab">Carregando...</div>
+    </div>
 
 
 

@@ -7,7 +7,7 @@ const linkApp = 'https://bit.ly/4eHnpDk'
 
 const lista = document.getElementById('menu-colab');
 lista.innerHTML = `
-<ul class="links-colab" style="display: none;">
+<ul class="links-colab" style="display: flex;">
     <li><a target="_blank" href="${linkBos}">BOS Tour</a></li>
     <li><a target="_blank" href="${linkQuimicos}">Quimícos</a></li>
     <li><a target="_blank" href="${linkInflamaveis}">Inflamáveis</a></li>
