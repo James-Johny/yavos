@@ -1,174 +1,120 @@
-async function carregarEExibirPlanilha(url) {
-    const statusDiv = document.getElementById('status');
-    statusDiv.textContent = "Buscando arquivo...";
-    statusDiv.style.display = 'block';
-    statusDiv.style.opacity = '1';
+let rapidas = {};
 
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`Status HTTP: ${response.status}`);
+fetch('rapidas.pdf')
+    .then(response => response.arrayBuffer())
+    .then(data => pdfjsLib.getDocument({ data }).promise)
+    .then(pdfRapidas => {
+        const totalRapidas = pdfRapidas.numPages;
+        const promisesRapidas = [];
+        for (let i = 1; i <= totalRapidas; i++) {
+            promisesRapidas.push(pdfRapidas.getPage(i).then(page =>
+                page.getTextContent().then(content =>
+                    content.items.map(item => item.str).join(' ')
+                )
+            ));
+        }
+        return Promise.all(promisesRapidas);
+    })
+    .then(paginasRapidas => {
+        // 1. Junta o texto e normaliza múltiplos espaços em branco
+        let textoCompleto = paginasRapidas.join(' ').replace(/\s+/g, ' ');
 
-        const arrayBuffer = await response.arrayBuffer();
-        const workbook = new ExcelJS.Workbook();
-        await workbook.xlsx.load(arrayBuffer);
-        const worksheet = workbook.worksheets[0];
+        // 2. Encontra todas as ocorrências de "LINHA XX" para mapear os blocos de categoria
+        const regexLinha = /(LINHA\s+\d{1,2})/g;
+        let blocos = [];
+        let match;
 
-        const table = document.createElement('table');
-        table.className = 'excel-table';
-
-        // 1. Mapeamento de Células Mescladas (Merge Cells) - Método Corrigido
-        const colunasMescladas = {};
-        if (worksheet.model && worksheet.model.merges) {
-            worksheet.model.merges.forEach(rangeStr => {
-                const [topLeftRef, bottomRightRef] = rangeStr.split(':');
-                const topLeftCell = worksheet.getCell(topLeftRef);
-                const bottomRightCell = worksheet.getCell(bottomRightRef);
-
-                const top = topLeftCell.row;
-                const left = topLeftCell.col;
-                const bottom = bottomRightCell.row;
-                const right = bottomRightCell.col;
-
-                for (let r = top; r <= bottom; r++) {
-                    for (let c = left; c <= right; c++) {
-                        if (r === top && c === left) {
-                            colunasMescladas[`${r}_${c}`] = {
-                                isMaster: true,
-                                rowspan: (bottom - top) + 1,
-                                colspan: (right - left) + 1
-                            };
-                        } else {
-                            colunasMescladas[`${r}_${c}`] = {
-                                isSlave: true
-                            };
-                        }
-                    }
-                }
+        while ((match = regexLinha.exec(textoCompleto)) !== null) {
+            blocos.push({
+                nome: match[1],
+                index: match.index
             });
         }
 
-        // 2. Construção da tabela respeitando ocultações
-        worksheet.eachRow({
-            includeEmpty: true
-        }, (row, rowNumber) => {
-            const tr = document.createElement('tr');
+        // 3. Processa cada bloco individualmente
+        for (let i = 0; i < blocos.length; i++) {
+            const inicio = blocos[i].index;
+            const fim = (blocos[i + 1]) ? blocos[i + 1].index : textoCompleto.length;
 
-            // VERIFICAÇÃO: Se a linha inteira estiver oculta no Excel
-            if (row.hidden) {
-                tr.style.display = 'none';
+            let conteudoBloco = textoCompleto.substring(inicio, fim);
+            let nomeLinha = blocos[i].nome;
+
+            rapidas[nomeLinha] = [];
+
+            // 4. REGEX AJUSTADA: 
+            // (\d{5}\s*-\s*\d) -> Captura o código mesmo se tiver espaços como "23484 - 0"
+            // (.+?)            -> Pega a descrição do produto
+            // (\d{7})          -> Captura o Nº de Ordem com 7 dígitos
+            // ([\d\.,]+)       -> Quantidade de Caixas
+            // ([\d\.,]+)       -> Quantidade de Unidades
+            const regexProdutos = /(\d{5}\s*-\s*\d)\s+(.+?)\s+(\d{7})\s+([\d\.,]+)\s+([\d\.,]+)/g;
+            let matchProduto;
+
+            while ((matchProduto = regexProdutos.exec(conteudoBloco)) !== null) {
+                // Remove espaços extras que possam ter ficado dentro do código P.A. extraído
+                const codigoLimpo = matchProduto[1].replace(/\s+/g, '');
+
+                rapidas[nomeLinha].push({
+                    'ORDEM': matchProduto[3].trim(),
+                    'CÓDIGO': codigoLimpo,
+                    'DESCRIÇÃO': matchProduto[2].trim(),
+                    'QTD': matchProduto[4].trim(),
+                    'QTD': matchProduto[5].trim()
+
+                });
             }
 
-            row.eachCell({
-                includeEmpty: true
-            }, (cell, colNumber) => {
-                // VERIFICAÇÃO: Se a coluna atual estiver oculta no Excel
-                const columnModel = worksheet.getColumn(colNumber);
-                if (columnModel && columnModel.hidden) {
-                    return; // Ignora e não renderiza esta célula (coluna oculta)
-                }
+            // Se a linha não tiver produtos mapeados (ex: LINHA 08), remove do JSON para não poluir
+            if (rapidas[nomeLinha].length === 0) {
+                delete rapidas[nomeLinha];
+            }
+        }
 
-                const cellKey = `${rowNumber}_${colNumber}`;
-                const mergeInfo = colunasMescladas[cellKey];
+        // Retorna o JSON formatado e pronto para uso
+        console.log("--- JSON GERADO COM SUCESSO ---");
+        console.log(JSON.stringify(rapidas, null, 4));
 
-                // Pula células escravas de mesclagem
-                if (mergeInfo && mergeInfo.isSlave) return;
+        const programacaoContainer = document.getElementById('programacao-container');
 
-                const td = document.createElement('td');
+        programacaoContainer.innerHTML = `
+    ${Object.entries(rapidas).map(([nomeDaLinha, produtos]) => `
+        <table class="tabela-programacao" style="margin-bottom: 20px; width: 100%;">
+            <thead>
+                <tr>
+                    <th colspan="4" style="text-align: left; background-color: #070157; color: white; text-align: center; font-size: 1.5em;">${nomeDaLinha}</th>
+                </tr>
+                <tr>
+                    <th style="text-align: center; background-color: #1661c4; color: white;">ORDEM</th>
+                    <th style="text-align: center; background-color: #1661c4; color: white;">CÓDIGO</th>
+                    <th style="text-align: center; background-color: #1661c4; color: white;">DESCRIÇÃO</th>
+                    <th style="text-align: center; background-color: #1661c4; color: white;">QTD</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${produtos.map(produto => `
+                    <tr>
+                        <td>${produto['ORDEM'] || ''}</td>
+                        <td>${produto['CÓDIGO'] || ''}</td>
+                        <td style="overflow: auto;">${produto['DESCRIÇÃO'] || ''}</td>
+                        <td>${produto['QTD'] || ''}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `).join('')}
+`;
 
-                // Aplica rowspan/colspan
-                if (mergeInfo && mergeInfo.isMaster) {
-                    if (mergeInfo.rowspan > 1) td.setAttribute('rowspan', mergeInfo.rowspan);
-                    if (mergeInfo.colspan > 1) td.setAttribute('colspan', mergeInfo.colspan);
-                }
+    })
+    .catch(error => console.error("Erro crítico no processamento:", error));
 
-                // Conteúdo da célula
-                if (cell.value && typeof cell.value === 'object') {
-                    if (cell.value.result !== undefined) {
-                        const num = Number(cell.value.result);
-                        td.textContent = !isNaN(num) ? Math.floor(num) : cell.value.result;
-                    } else if (cell.value.richText) {
-                        const texto = cell.value.richText.map(t => t.text).join('');
-                        const num = Number(texto);
-                        td.textContent = !isNaN(num) ? Math.floor(num) : texto;
-                    } else {
-                        td.textContent = '';
-                    }
-                } else {
-                    const num = Number(cell.value);
-                    td.textContent = (cell.value !== null && cell.value !== undefined) 
-                        ? (!isNaN(num) ? Math.floor(num) : cell.value) 
-                        : '';
-                }
 
-                // --- Estilos de Formatação ---
-                // Cor de fundo
-                if (cell.fill && cell.fill.type === 'pattern' && cell.fill.fgColor && cell.fill.fgColor.argb) {
-                    const argb = cell.fill.fgColor.argb;
-                    td.style.backgroundColor = '#' + (argb.length === 8 ? argb.substring(2) : argb);
-                }
-
-                // Fonte
-                if (cell.font) {
-                    if (cell.font.bold) td.style.fontWeight = 'bold';
-                    if (cell.font.italic) td.style.fontStyle = 'italic';
-                    if (cell.font.size) td.style.fontSize = `32pt`;
-                    if (cell.font.color && cell.font.color.argb) {
-                        const cColor = cell.font.color.argb;
-                        td.style.color = '#' + (cColor.length === 8 ? cColor.substring(2) : cColor);
-                    }
-                }
-
-                // Alinhamento
-                if (cell.alignment) {
-                    if (cell.alignment.horizontal) td.style.textAlign = cell.alignment.horizontal;
-                    if (cell.alignment.vertical) td.style.verticalAlign = cell.alignment.vertical === 'middle' ? 'middle' : cell.alignment.vertical;
-                }
-
-                tr.appendChild(td);
-            });
-
-            table.appendChild(tr);
-        });
-
-        const container = document.getElementById('planilha-container');
-        container.innerHTML = '';
-        container.appendChild(table);
-
-        statusDiv.style.backgroundColor = '#dcfce7';
-        statusDiv.style.color = '#15803d';
-        statusDiv.textContent = "Planilha carregada com sucesso!";
-        statusDiv.style.position = 'fixed';
-
-        setTimeout(() => {
-            statusDiv.style.opacity = '0';
-            setTimeout(() => {
-                statusDiv.style.display = 'none';
-            }, 500);
-        }, 3000);
-
-    } catch (error) {
-        statusDiv.style.backgroundColor = '#fee2e2';
-        statusDiv.style.color = '#b91c1c';
-        statusDiv.textContent = `Erro: ${error.message}`;
-        console.error(error);
-
-        setTimeout(() => {
-            statusDiv.style.opacity = '0';
-            setTimeout(() => {
-                statusDiv.style.display = 'none';
-            }, 500);
-        }, 3000);
-    }
-}
-
-// CORREÇÃO PRINCIPAL: Configurar o event listener corretamente
-function configurarEventListeners() {
+ function configurarEventListeners() {
     const setorSelect = document.getElementById("setorSelect");
     
     // Carregar a planilha inicial (primeira opção)
     const setorInicial = setorSelect.value;
     if (setorInicial) {
-        const NOME_DO_ARQUIVO = `${setorInicial}.xlsx`;
+        const NOME_DO_ARQUIVO = `${setorInicial}.pdf`;
         carregarEExibirPlanilha(NOME_DO_ARQUIVO);
     }
 
@@ -178,11 +124,8 @@ function configurarEventListeners() {
         
         if (!setorNome) return;
         
-        const NOME_DO_ARQUIVO = `${setorNome}.xlsx`;
+        const NOME_DO_ARQUIVO = `${setorNome}.pdf`;
         console.log("Alterando para o arquivo: ", NOME_DO_ARQUIVO);
         carregarEExibirPlanilha(NOME_DO_ARQUIVO);
     });
 }
-
-// Inicializar quando a página carregar
-document.addEventListener('DOMContentLoaded', configurarEventListeners);
