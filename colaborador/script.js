@@ -739,14 +739,24 @@ async function carregarRequisicoes() {
 
 
 
-function secao(secaoId, el) {
+function secao(secaoId) {
+  // 1. Esconde todas as seções
   document.querySelectorAll(".secao").forEach(div => div.style.display = "none");
-  document.getElementById(secaoId).style.display = "flex";
+  
+  // 2. Mostra a seção desejada
+  const secaoAlvo = document.getElementById(secaoId);
+  if (secaoAlvo) {
+      secaoAlvo.style.display = "flex";
+  }
 
+  // 3. Remove a classe ativa de todos os botões
   document.querySelectorAll(".button-bottom").forEach(btn => btn.classList.remove("button-active"));
-  el.classList.add("button-active");
+  
+  // 4. Descobre qual botão foi clicado usando o event do navegador
+  if (window.event && window.event.currentTarget) {
+      window.event.currentTarget.classList.add("button-active");
+  }
 }
-
 
 
 

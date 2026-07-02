@@ -39,10 +39,10 @@
     </div>
     <div class="navbar-bottom">
         <span onclick="secao('requisicoes')" class="button-bottom" id="requisicao"></span>
+        <span onclick="secao('treinamentos')" class="button-bottom" id="treinamento"></span>
+        <span onclick="secao('xadrez')" class="button-bottom" id="xadrez-btn"></span>
+        <span onclick="secao('program')" class="button-bottom" id="programacao"></span>
         <span onclick="secao('bancoHoras')" class="button-bottom" id="bancodehoras"></span>
-        <span onclick="secao('program')" class="button-bottom" id="velocidade"></span>
-        <span onclick="secao('velocidad')" class="button-bottom" id="programacao"></span>
-        <span onclick="secao('treinamentos')" class="button-bottom" id="treinamentos"></span>
 
     </div>
 
@@ -100,7 +100,7 @@
 
     <!-----------------------     Programação      -------------------------->
 
-    <div class="secao" id="velocidad" style="display: none;">
+    <div class="secao" id="program" style="display: none;">
 
         <div class="select-setor">
                 Setor: <select id="setorSelect">
@@ -110,8 +110,6 @@
                 </select>
 
             </div>
-        <div id="status"></div>
-        <div class="table-container" id="planilha-container"></div>
         <div id="programacao-container"></div>
 
     </div>
@@ -121,7 +119,7 @@
     <!-----------------------     Xadrez       ---------------------->
 
 
-    <div class="secao" id="program" style="display: none;">
+    <div class="secao" id="xadrez" style="display: none;">
 
       
         <div id="canva">
@@ -140,7 +138,8 @@
 
     <!------------------------    Treinamentos     ------------------------>
     <div class="secao" id="treinamentos" style="display: none;">
-        <div id="menu-colab">Carregando...</div>
+        <div id="menu-treinamentos">
+        </div>
     </div>
 
 
@@ -150,12 +149,12 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+    <script src="colab.js"></script>
     <script src="svg.js"></script>
     <script src="xadrez.js"></script>
     <script src="programacao.js"></script>
     <script src="treinamentos.js"></script>
-    <script src="colab.js"></script>
-    <script src="script.js"></script>
 
 </body>
 

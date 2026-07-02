@@ -1,131 +1,193 @@
-let rapidas = {};
-
-fetch('rapidas.pdf')
-    .then(response => response.arrayBuffer())
-    .then(data => pdfjsLib.getDocument({ data }).promise)
-    .then(pdfRapidas => {
-        const totalRapidas = pdfRapidas.numPages;
-        const promisesRapidas = [];
-        for (let i = 1; i <= totalRapidas; i++) {
-            promisesRapidas.push(pdfRapidas.getPage(i).then(page =>
-                page.getTextContent().then(content =>
-                    content.items.map(item => item.str).join(' ')
-                )
-            ));
+// Configuração centralizada de cada setor, mapeando Regex, Colunas e Arquivos específicos
+const CONFIG_SETORES = {
+    'rapidas': {
+        arquivo: 'rapidas.pdf',
+        regexLinha: /(LINHA\s+\d{1,2})/g,
+        // Código (5 dig) - Descrição - Ordem (7 dig) - Qtd Caixas - Qtd Unidades
+        regexProdutos: /(\d{5}\s*-\s*\d)\s+(.+?)\s+(\d{7})\s+([\d\.,]+)\s+([\d\.,]+)/g,
+        colunas: ['ORDEM', 'CÓDIGO', 'DESCRIÇÃO', 'QTD'],
+        processarMatch: (match) => ({
+            'ORDEM': match[3].trim(),
+            'CÓDIGO': match[1].replace(/\s+/g, ''),
+            'DESCRIÇÃO': match[2].trim(),
+            'QTD': match[4].trim() // Mantém a extração conforme o seu código original 1
+        })
+    },
+    'esmalte': {
+        arquivo: 'esmalte.pdf',
+        regexLinha: /(Ordens de PA Linha \d{1,2})/g,
+        // Código (4-5 dig) - Descrição - Ordem (7 dig) - Qtd
+        regexProdutos: /(\d{4,5}\s*-\s*\d)\s+(.+?)\s+(\d{7})\s+([\d\.,]+)/g,
+        colunas: ['ORDEM', 'CÓDIGO', 'DESCRIÇÃO', 'QTD'],
+        processarMatch: (match) => ({
+            'ORDEM': match[3].trim(),
+            'CÓDIGO': match[1].replace(/\s+/g, ''),
+            'DESCRIÇÃO': match[2].trim(),
+            'QTD': match[4].trim()
+        })
+    },
+    'lineares': {
+        arquivo: 'lineares.pdf',
+        regexLinha: /((?:Linha|LINHA)\s+\d{1,2}(?:\s*-\s*[A-ZÃÇÁÉÓÔÚa-z\s\/&]+)?)/g,
+        // Código - Descrição (Lookahead anti-quebra) - Ordem (7 dig) - Caixas (Opcional) - Unidades
+        regexProdutos: /(\d{3,6}(?:\s*-\s*\d)?)\s+((?:(?!(?:\d{3,6}(?:\s*-\s*\d)?)\s+).)+?)\s+(\d{7})(?:\s+([\d\.,]+))?\s+([\d\.,]+)/g,
+        colunas: ['ORDEM', 'CÓDIGO', 'DESCRIÇÃO', 'QTD_CX', 'QTD_UN'],
+        processarMatch: (match) => {
+            const descricaoLimpa = match[2].trim();
+            if (descricaoLimpa.includes("CÓDIGO") || descricaoLimpa.includes("DESCRIÇÃO")) {
+                return null; // Filtra cabeçalhos fantasmas do PDF
+            }
+            return {
+                'ORDEM': match[3].trim(),
+                'CÓDIGO': match[1].replace(/\s+/g, ''),
+                'DESCRIÇÃO': descricaoLimpa,
+                'QTD_CX': match[4] ? match[4].trim() : '-',
+                'QTD_UN': match[5].trim()
+            };
         }
-        return Promise.all(promisesRapidas);
-    })
-    .then(paginasRapidas => {
-        // 1. Junta o texto e normaliza múltiplos espaços em branco
-        let textoCompleto = paginasRapidas.join(' ').replace(/\s+/g, ' ');
+    }
+};
 
-        // 2. Encontra todas as ocorrências de "LINHA XX" para mapear os blocos de categoria
-        const regexLinha = /(LINHA\s+\d{1,2})/g;
-        let blocos = [];
-        let match;
+// Gerenciador do Elemento Select (Alternador de Setor)
+function configurarEventListeners() {
+    const setorSelect = document.getElementById("setorSelect");
+    if (!setorSelect) {
+        console.error("Elemento 'setorSelect' não foi encontrado na árvore do DOM.");
+        return;
+    }
 
-        while ((match = regexLinha.exec(textoCompleto)) !== null) {
-            blocos.push({
-                nome: match[1],
-                index: match.index
-            });
-        }
+    // Carrega o PDF do setor inicial selecionado por padrão no HTML
+    const setorInicial = setorSelect.value;
+    if (setorInicial) {
+        carregarEProcessarPDF(setorInicial);
+    }
 
-        // 3. Processa cada bloco individualmente
-        for (let i = 0; i < blocos.length; i++) {
-            const inicio = blocos[i].index;
-            const fim = (blocos[i + 1]) ? blocos[i + 1].index : textoCompleto.length;
+    // Monitora a mudança do seletor para rodar a extração correta
+    setorSelect.addEventListener('change', function() {
+        const setorNome = this.value;
+        if (!setorNome) return;
+        
+        console.log("Alterando para o setor: ", setorNome);
+        carregarEProcessarPDF(setorNome);
+    });
+}
 
-            let conteudoBloco = textoCompleto.substring(inicio, fim);
-            let nomeLinha = blocos[i].nome;
+// Motor único de extração assíncrona de PDF
+function carregarEProcessarPDF(setorKey) {
+    const config = CONFIG_SETORES[setorKey];
+    if (!config) {
+        console.error(`O setor "${setorKey}" não possui mapeamento configurado.`);
+        return;
+    }
 
-            rapidas[nomeLinha] = [];
+    let dadosSetor = {};
 
-            // 4. REGEX AJUSTADA: 
-            // (\d{5}\s*-\s*\d) -> Captura o código mesmo se tiver espaços como "23484 - 0"
-            // (.+?)            -> Pega a descrição do produto
-            // (\d{7})          -> Captura o Nº de Ordem com 7 dígitos
-            // ([\d\.,]+)       -> Quantidade de Caixas
-            // ([\d\.,]+)       -> Quantidade de Unidades
-            const regexProdutos = /(\d{5}\s*-\s*\d)\s+(.+?)\s+(\d{7})\s+([\d\.,]+)\s+([\d\.,]+)/g;
-            let matchProduto;
+    fetch(config.arquivo)
+        .then(response => response.arrayBuffer())
+        .then(data => pdfjsLib.getDocument({ data }).promise)
+        .then(pdf => {
+            const totalPaginas = pdf.numPages;
+            const promises = [];
+            for (let i = 1; i <= totalPaginas; i++) {
+                promises.push(pdf.getPage(i).then(page =>
+                    page.getTextContent().then(content =>
+                        content.items.map(item => item.str).join(' ')
+                    )
+                ));
+            }
+            return Promise.all(promises);
+        })
+        .then(paginasTexto => {
+            // Limpeza inicial do texto bruto contido nas páginas
+            let textoCompleto = paginasTexto.join(' ').replace(/\|/g, ' ').replace(/\s+/g, ' ');
 
-            while ((matchProduto = regexProdutos.exec(conteudoBloco)) !== null) {
-                // Remove espaços extras que possam ter ficado dentro do código P.A. extraído
-                const codigoLimpo = matchProduto[1].replace(/\s+/g, '');
+            // 1. Identificação dos blocos de Linha por Index
+            let blocos = [];
+            let matchLinha;
+            config.regexLinha.lastIndex = 0; // Força reinício do ponteiro global
 
-                rapidas[nomeLinha].push({
-                    'ORDEM': matchProduto[3].trim(),
-                    'CÓDIGO': codigoLimpo,
-                    'DESCRIÇÃO': matchProduto[2].trim(),
-                    'QTD': matchProduto[4].trim(),
-                    'QTD': matchProduto[5].trim()
-
+            while ((matchLinha = config.regexLinha.exec(textoCompleto)) !== null) {
+                blocos.push({
+                    nome: matchLinha[1].trim(),
+                    index: matchLinha.index
                 });
             }
 
-            // Se a linha não tiver produtos mapeados (ex: LINHA 08), remove do JSON para não poluir
-            if (rapidas[nomeLinha].length === 0) {
-                delete rapidas[nomeLinha];
+            // 2. Extração dos produtos contidos dentro de cada bloco delimitado
+            for (let i = 0; i < blocos.length; i++) {
+                const inicio = blocos[i].index;
+                const fim = (blocos[i + 1]) ? blocos[i + 1].index : textoCompleto.length;
+
+                let conteudoBloco = textoCompleto.substring(inicio, fim);
+                let nomeLinha = blocos[i].nome;
+
+                dadosSetor[nomeLinha] = [];
+
+                let matchProduto;
+                config.regexProdutos.lastIndex = 0; // Força reinício do ponteiro global
+
+                while ((matchProduto = config.regexProdutos.exec(conteudoBloco)) !== null) {
+                    const objetoProduto = config.processarMatch(matchProduto);
+                    if (objetoProduto) {
+                        dadosSetor[nomeLinha].push(objetoProduto);
+                    }
+                }
+
+                // Remove chaves de linhas vazias para evitar poluição visual
+                if (dadosSetor[nomeLinha].length === 0) {
+                    delete dadosSetor[nomeLinha];
+                }
             }
-        }
 
-        // Retorna o JSON formatado e pronto para uso
-        console.log("--- JSON GERADO COM SUCESSO ---");
-        console.log(JSON.stringify(rapidas, null, 4));
+            console.log(`--- JSON GERADO COM SUCESSO [${setorKey.toUpperCase()}] ---`);
+            console.log(JSON.stringify(dadosSetor, null, 4));
 
-        const programacaoContainer = document.getElementById('programacao-container');
+            // Envia para a função de renderização dinamicamente passando a estrutura de colunas do setor ativo
+            renderizarTabelasHTML(dadosSetor, config.colunas);
+        })
+        .catch(error => console.error(`Erro crítico no processamento do arquivo de ${setorKey}:`, error));
+}
 
-        programacaoContainer.innerHTML = `
-    ${Object.entries(rapidas).map(([nomeDaLinha, produtos]) => `
-        <table class="tabela-programacao" style="margin-bottom: 20px; width: 100%;">
+// Renderizador Dinâmico de Tabelas no Layout Adaptável
+function renderizarTabelasHTML(dados, colunas) {
+    const programacaoContainer = document.getElementById('programacao-container');
+    if (!programacaoContainer) return;
+
+    // Diferente do método original, esse limpa "=" o container para que dados de setores anteriores não fiquem acumulados embaixo
+    programacaoContainer.innerHTML = Object.entries(dados).map(([nomeDaLinha, produtos]) => `
+        <table class="tabela-programacao" style="margin-bottom: 20px; width: 100%; border-collapse: collapse;">
             <thead>
                 <tr>
-                    <th colspan="4" style="text-align: left; background-color: #070157; color: white; text-align: center; font-size: 1.5em;">${nomeDaLinha}</th>
+                    <th colspan="${colunas.length}" style="background-color: #070157; color: white; text-align: center; font-size: 1.5em; padding: 8px;">
+                        ${nomeDaLinha}
+                    </th>
                 </tr>
                 <tr>
-                    <th style="text-align: center; background-color: #1661c4; color: white;">ORDEM</th>
-                    <th style="text-align: center; background-color: #1661c4; color: white;">CÓDIGO</th>
-                    <th style="text-align: center; background-color: #1661c4; color: white;">DESCRIÇÃO</th>
-                    <th style="text-align: center; background-color: #1661c4; color: white;">QTD</th>
+                    ${colunas.map(col => `
+                        <th style="background-color: #1661c4; color: white; padding: 6px; text-align: ${col === 'DESCRIÇÃO' ? 'left' : 'center'};">
+                            ${col.replace('_', ' ')}
+                        </th>
+                    `).join('')}
                 </tr>
             </thead>
             <tbody>
                 ${produtos.map(produto => `
                     <tr>
-                        <td>${produto['ORDEM'] || ''}</td>
-                        <td>${produto['CÓDIGO'] || ''}</td>
-                        <td style="overflow: auto;">${produto['DESCRIÇÃO'] || ''}</td>
-                        <td>${produto['QTD'] || ''}</td>
+                        ${colunas.map(col => {
+                            let customStyle = "text-align: center;";
+                            
+                            // Ajustes finos de alinhamento e pesos visuais baseados na coluna mapeada
+                            if (col === 'DESCRIÇÃO') customStyle = "text-align: left;";
+                            if (col === 'QTD_UN' || col === 'QTD') customStyle += " font-weight: bold;";
+
+                            return `<td style="${customStyle} padding: 6px; border: 1px solid #ddd;">${produto[col] || ''}</td>`;
+                        }).join('')}
                     </tr>
                 `).join('')}
             </tbody>
         </table>
-    `).join('')}
-`;
-
-    })
-    .catch(error => console.error("Erro crítico no processamento:", error));
-
-
- function configurarEventListeners() {
-    const setorSelect = document.getElementById("setorSelect");
-    
-    // Carregar a planilha inicial (primeira opção)
-    const setorInicial = setorSelect.value;
-    if (setorInicial) {
-        const NOME_DO_ARQUIVO = `${setorInicial}.pdf`;
-        carregarEExibirPlanilha(NOME_DO_ARQUIVO);
-    }
-
-    // Event listener para quando o select mudar
-    setorSelect.addEventListener('change', function() {
-        const setorNome = this.value;
-        
-        if (!setorNome) return;
-        
-        const NOME_DO_ARQUIVO = `${setorNome}.pdf`;
-        console.log("Alterando para o arquivo: ", NOME_DO_ARQUIVO);
-        carregarEExibirPlanilha(NOME_DO_ARQUIVO);
-    });
+    `).join('');
 }
+
+// Inicializa os listeners assim que o DOM carregar completamente
+document.addEventListener("DOMContentLoaded", configurarEventListeners);

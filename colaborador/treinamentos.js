@@ -209,6 +209,3 @@ const inflamaveis = `
 
         </section>
 `
-
-const sectionTrain = document.getElementById('treinamentos');
-sectionTrain.innerHTML = inflamaveis;

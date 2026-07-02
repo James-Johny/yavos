@@ -1,7 +1,8 @@
 const req = document.getElementById('requisicao');
 const bh = document.getElementById('bancodehoras');
-const vel = document.getElementById('velocidade');
+const xdz = document.getElementById('xadrez-btn');
 const prg = document.getElementById('programacao');
+const trn = document.getElementById('treinamento');
 
 const svgReq = `
     <svg xmlns="http://www.w3.org/2000/svg" class="button-bottom" viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
@@ -100,13 +101,33 @@ const svgXad = `<svg xmlns="http://www.w3.org/2000/svg" class="button-bottom" vi
   <line x1="9" y1="3" x2="9" y2="21"></line>
   <line x1="15" y1="3" x2="15" y2="21"></line>
 </svg>Xadrez
-`
+`;
 
+const svgTrn = `<svg xmlns="http://www.w3.org/2000/svg" class="button-bottom" viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Base do livro -->
+  <path d="M3 4h8a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H3z"></path>
+  <path d="M21 4h-8a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h8z"></path>
+  
+  <!-- Linha central (divisão das páginas) -->
+  <line x1="12" y1="6" x2="12" y2="20"></line>
+  
+  <!-- Linhas horizontais simulando texto -->
+  <line x1="5" y1="8" x2="10" y2="8"></line>
+  <line x1="5" y1="11" x2="10" y2="11"></line>
+  <line x1="5" y1="14" x2="10" y2="14"></line>
+  
+  <line x1="14" y1="8" x2="19" y2="8"></line>
+  <line x1="14" y1="11" x2="19" y2="11"></line>
+  <line x1="14" y1="14" x2="19" y2="14"></line>
+</svg>
+Treinamentos
+`;
 
 req.innerHTML = svgReq;
 bh.innerHTML = svgBh;
 prg.innerHTML = svgPrg;
-vel.innerHTML = svgXad;
+xdz.innerHTML = svgXad;
+trn.innerHTML = svgTrn;
 
 
 
@@ -136,7 +157,15 @@ const navButton = (obj) => {
     obj.addEventListener('touchend', resetStyle);
 
 
-    const spans = document.querySelectorAll('.button-bottom');
+    
+}
+navButton(req);
+navButton(bh);
+navButton(xdz);
+navButton(prg);
+navButton(trn);
+
+const spans = document.querySelectorAll('.button-bottom');
 
     spans.forEach(span => {
         span.addEventListener('click', () => {
@@ -144,8 +173,3 @@ const navButton = (obj) => {
             span.classList.add('button-active');
         });
     });
-}
-navButton(req);
-navButton(bh);
-navButton(vel);
-navButton(prg);
