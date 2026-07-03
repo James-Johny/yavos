@@ -3,8 +3,8 @@ const CONFIG_SETORES = {
     'rapidas': {
         arquivo: 'rapidas.pdf',
         regexLinha: /(LINHA\s+\d{1,2})/g,
-        // Código (5 dig) - Descrição - Ordem (7 dig) - Qtd Caixas - Qtd Unidades
-        regexProdutos: /(\d{5}\s*-\s*\d)\s+(.+?)\s+(\d{7})\s+([\d\.,]+)\s+([\d\.,]+)/g,
+        // Impede que a descrição engula o início de um novo código de produto (\d{5}\s*-\s*\d)
+        regexProdutos: /(\d{5}\s*-\s*\d)\s+((?:(?!\d{5}\s*-\s*\d).)+?)\s+(\d{7})\s+([\d\.,]+)\s+([\d\.,]+)/g,
         colunas: ['ORDEM', 'CÓDIGO', 'DESCRIÇÃO', 'QTD'],
         processarMatch: (match) => ({
             'ORDEM': match[3].trim(),
@@ -63,10 +63,10 @@ function configurarEventListeners() {
     }
 
     // Monitora a mudança do seletor para rodar a extração correta
-    setorSelect.addEventListener('change', function() {
+    setorSelect.addEventListener('change', function () {
         const setorNome = this.value;
         if (!setorNome) return;
-        
+
         console.log("Alterando para o setor: ", setorNome);
         carregarEProcessarPDF(setorNome);
     });
@@ -174,14 +174,14 @@ function renderizarTabelasHTML(dados, colunas) {
                 ${produtos.map(produto => `
                     <tr>
                         ${colunas.map(col => {
-                            let customStyle = "text-align: center;";
-                            
-                            // Ajustes finos de alinhamento e pesos visuais baseados na coluna mapeada
-                            if (col === 'DESCRIÇÃO') customStyle = "text-align: left;";
-                            if (col === 'QTD_UN' || col === 'QTD') customStyle += " font-weight: bold;";
+        let customStyle = "text-align: center;";
 
-                            return `<td style="${customStyle} padding: 6px; border: 1px solid #ddd;">${produto[col] || ''}</td>`;
-                        }).join('')}
+        // Ajustes finos de alinhamento e pesos visuais baseados na coluna mapeada
+        if (col === 'DESCRIÇÃO') customStyle = "text-align: left;";
+        if (col === 'QTD_UN' || col === 'QTD') customStyle += " font-weight: bold;";
+
+        return `<td style="${customStyle} padding: 6px; border: 1px solid #ddd;">${produto[col] || ''}</td>`;
+    }).join('')}
                     </tr>
                 `).join('')}
             </tbody>
