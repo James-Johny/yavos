@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div id="pwa-install-banner"
+    <!--<div id="pwa-install-banner"
         style="display: none; top: 0; left: 0; flex-flow: column wrap; background: var(--purple1); color: white; padding: 15px; text-align: center; font-family: sans-serif; position: fixed; z-index: 9999; min-width: 100%; min-height: 100%;">
         <p style="margin: 100px 0 100px 0; font-size: 60px;">Instale o App para solicitar as Requisições mais
             rápido!</p>
@@ -27,7 +27,7 @@
             <button onclick="document.getElementById('pwa-install-banner').style.display='none'"
                 style="background: white; color: var(--primary); border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Depois</button><br>
         </div>
-    </div>
+    </div>-->
 
     <div id="loader">
         <div class="spinner"></div>
@@ -60,7 +60,7 @@
 
 
     <!-----------------------   Requisições   -------------------------->
-    <div class="secao" id="requisicoes" style="margin-bottom: 12rem; display: flex;"
+    <div class="secao" id="requisicoes" style="margin-bottom: 12rem; display: none;"
         onload="carregarRequisicoesColaborador()">
 
 
@@ -119,7 +119,7 @@
     <!-----------------------     Xadrez       ---------------------->
 
 
-    <div class="secao" id="xadrez" style="display: none;">
+    <div class="secao" id="xadrez" style="display: flex;">
 
       
         <div id="canva">

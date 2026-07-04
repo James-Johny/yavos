@@ -1,4 +1,4 @@
-const xadrez = '../xadrez.pdf';
+const xadrez = '../xadrez2.pdf';
 
 
 
@@ -8,7 +8,7 @@ const canvas = document.getElementById('pdf-canvas');
 const ctx = canvas.getContext('2d');
 
 
- 
+
 
 
 pdfjsLib.getDocument(xadrez).promise.then(pdf => {
@@ -27,11 +27,11 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
             const exibeXadrez = () => {
 
                 // 
-                
 
 
 
-        
+
+
 
 
                 const hora = new Date().getHours();
@@ -74,13 +74,29 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                 }
 
 
-                
+                let q, x, y, w, h;
 
-                const q = 196;
-                const x = [1325, 1954, 1671, 592, 868, 1135, 1404];
-                const y = [110, 526, 610, 889, 1440];
-                const w = [58, 260];
-                const h = [128, 115, 420, 235, 243];
+
+                if (xadrez === '../xadrez2.pdf') {
+                    q = 53;
+                    x = [1268, 1550, 1817, 2089, 461, 730, 1004];
+                    y = [105, 516, 605, 875, 1440];
+                    w = [58, 256];
+                    h = [145, 115, 430, 239, 243];
+                } else if (xadrez === '../xadrez3.pdf') {
+                    q = 53;
+                    x = [1268, 1550, 1817, 2089, 461, 730, 1004];
+                    y = [105, 516, 605, 875, 1440];
+                    w = [58, 256];
+                    h = [145, 115, 430, 239, 243];
+                } else {
+                    q = 196;
+                    x = [1325, 1954, 1671, 592, 868, 1135, 1404];
+                    y = [110, 526, 610, 889, 1440];
+                    w = [58, 260];
+                    h = [128, 115, 420, 235, 243];
+
+                }
 
 
 
@@ -88,7 +104,7 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
 
 
-                
+
 
 
 
@@ -143,7 +159,7 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                 quadro3.height = hQuadro3;
                 quadro3.getContext('2d').drawImage(canvas, xQuadro3, yQuadro3, wQuadro3, hQuadro3, 0, 0, wQuadro3, hQuadro3);
 
-              
+
 
 
 
@@ -195,10 +211,10 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                 // ESMALTE
                 newCtx.drawImage(quadro0, 0, hQuadro2);
                 newCtx.drawImage(esmalte, wQuadro0, hLineares);
-                
-              
 
-                
+
+
+
 
                 const canva = document.getElementById('canva');
                 canva.querySelectorAll('canvas:not(#pdf-canvas)').forEach(c => c.remove());
@@ -207,7 +223,7 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
 
             exibeXadrez();
-            
+
         });
     });
 });
