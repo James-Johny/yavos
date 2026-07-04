@@ -140,7 +140,7 @@ function carregarEProcessarPDF(setorKey) {
             }
 
             console.log(`--- JSON GERADO COM SUCESSO [${setorKey.toUpperCase()}] ---`);
-            console.log(JSON.stringify(dadosSetor, null, 4));
+            console.log(dadosSetor);
 
             // Envia para a função de renderização dinamicamente passando a estrutura de colunas do setor ativo
             renderizarTabelasHTML(dadosSetor, config.colunas);
