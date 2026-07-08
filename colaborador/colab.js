@@ -15,3 +15,35 @@ const menuLinks= `<ul class="links-colab" style="display: flex;">
     </ul>`;
 
     lista.insertAdjacentHTML('beforeend', menuLinks);
+
+
+
+
+
+    
+    // Função para gerar um ID único universal (UUID)
+function gerarIdentificadorDispositivo() {
+    return 'dev-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now();
+}
+
+function obterIdentificadorCelular() {
+    // 1. Tenta buscar o ID já salvo no navegador do celular
+    let dispositivoId = localStorage.getItem('dispositivo_mac_fake');
+
+    if (!dispositivoId) {
+        // 2. Se for o primeiro acesso, gera um ID inédito
+        dispositivoId = gerarIdentificadorDispositivo();
+        localStorage.setItem('dispositivo_mac_fake', dispositivoId);
+        
+        console.log("Primeiro acesso deste celular. ID gerado:", dispositivoId);
+        // Aqui você faria um fetch para salvar esse ID no seu banco de dados
+        // associado ao usuário (ex: "Dispositivo Autorizado do João")
+    } else {
+        console.log("Celular já conhecido. ID do dispositivo:", dispositivoId);
+    }
+
+    return dispositivoId;
+}
+
+// Executa ao carregar a página web no celular
+const idDoCelular = obterIdentificadorCelular();

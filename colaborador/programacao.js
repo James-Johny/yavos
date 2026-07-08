@@ -31,7 +31,7 @@ const CONFIG_SETORES = {
         regexLinha: /((?:Linha|LINHA)\s+\d{1,2}(?:\s*-\s*[A-ZÃÇÁÉÓÔÚa-z\s\/&]+)?)/g,
         // Código - Descrição (Lookahead anti-quebra) - Ordem (7 dig) - Caixas (Opcional) - Unidades
         regexProdutos: /(\d{3,6}(?:\s*-\s*\d)?)\s+((?:(?!(?:\d{3,6}(?:\s*-\s*\d)?)\s+).)+?)\s+(\d{7})(?:\s+([\d\.,]+))?\s+([\d\.,]+)/g,
-        colunas: ['ORDEM', 'CÓDIGO', 'DESCRIÇÃO', 'QTD_CX', 'QTD_UN'],
+        colunas: ['ORDEM', 'CÓDIGO', 'DESCRIÇÃO', 'QTD_CX'],
         processarMatch: (match) => {
             const descricaoLimpa = match[2].trim();
             if (descricaoLimpa.includes("CÓDIGO") || descricaoLimpa.includes("DESCRIÇÃO")) {
@@ -41,8 +41,7 @@ const CONFIG_SETORES = {
                 'ORDEM': match[3].trim(),
                 'CÓDIGO': match[1].replace(/\s+/g, ''),
                 'DESCRIÇÃO': descricaoLimpa,
-                'QTD_CX': match[4] ? match[4].trim() : '-',
-                'QTD_UN': match[5].trim()
+                'QTD_CX': match[4] ? match[4].trim() : '-'
             };
         }
     }
