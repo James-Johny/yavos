@@ -17,25 +17,103 @@ const menuLinks = `<ul class="links-colab" style="display: flex;">
 lista.insertAdjacentHTML('beforeend', menuLinks);
 
 
+// ===== CONTROLE DE LOGIN =====
 
+// Verifica se o usuário está logado ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    const matricula = localStorage.getItem('matriculaColaborador');
+    const nome = localStorage.getItem('nomeColaborador');
+    
+    if (matricula && nome) {
+        // Usuário está logado
+        mostrarConteudoProtegido();
+        atualizarInfoUsuario();
+    } else {
+        // Usuário não está logado
+        esconderConteudoProtegido();
+    }
+});
 
 function login() {
-    const matricula = document.getElementById('matricula').value;
-    localStorage.setItem('matriculaColaborador', matricula);
-
-
-
-    document.getElementById('login').style.display = 'none';
+    const matriculaColab = document.getElementById('matricula').value.trim();
+    
+    // Valida se o campo não está vazio
+    if (!matriculaColab) {
+        document.getElementById('mensagemErro').textContent = 'Por favor, insira sua matrícula.';
+        return;
+    }
+    
+    // Busca o colaborador
+    const colabsFilter = colaboradoresCSV.filter(colab => colab.matricula === matriculaColab);
+    
+    if (colabsFilter.length === 0) {
+        document.getElementById('mensagemErro').textContent = 'Matrícula não encontrada. Tente novamente.';
+        return;
+    }
+    
+    // Salva os dados do colaborador
+    const colab = colabsFilter[0];
+    localStorage.setItem('nomeColaborador', colab.nome);
+    localStorage.setItem('matriculaColaborador', colab.matricula);
+    
+    // Redireciona para a página principal
+    window.location.href = 'index.html';
 }
 
+function logout() {
+    localStorage.removeItem('nomeColaborador');
+    localStorage.removeItem('matriculaColaborador');
+    window.location.href = 'login.html';
+}
 
-const colabName = document.getElementById('userName');
-const colabMatricula = document.getElementById('userMatricula');
+// ===== FUNÇÕES DE EXIBIÇÃO =====
 
+function mostrarConteudoProtegido() {
+    const conteudo = document.getElementById('conteudo-protegido');
+    const login = document.getElementById('login');
+    
+    if (conteudo) conteudo.style.display = 'block';
+    if (login) login.style.display = 'none';
+}
 
+function esconderConteudoProtegido() {
+    const conteudo = document.getElementById('conteudo-protegido');
+    const login = document.getElementById('login');
+    
+    if (conteudo) conteudo.style.display = 'none';
+    if (login) login.style.display = 'block';
+}
 
-colabName.textContent = localStorage.getItem('nomeColaborador') || 'Nome do Colaborador';
-colabMatricula.textContent = localStorage.getItem('matriculaColaborador') || 'Matrícula do Colaborador';
+function atualizarInfoUsuario() {
+    const nome = localStorage.getItem('nomeColaborador').split(' ')[0];
+    const matricula = localStorage.getItem('matriculaColaborador');
+    
+    const colabName = document.getElementById('userName');
+    const colabMatricula = document.getElementById('userMatricula');
+    
+    if (colabName) {
+        colabName.textContent = nome || 'Nome do Colaborador';
+    }
+    
+    if (colabMatricula) {
+        colabMatricula.textContent = matricula || 'Matrícula do Colaborador';
+    }
+}
+
+// ===== VERIFICAÇÃO RÁPIDA (para usar em qualquer lugar) =====
+
+function isLogado() {
+    return localStorage.getItem('nomeColaborador') !== null && 
+           localStorage.getItem('matriculaColaborador') !== null;
+}
+
+// Exemplo de uso:
+// if (isLogado()) {
+//     // Faz algo para usuário logado
+// } else {
+//     // Redireciona para login
+//     window.location.href = 'login.html';
+// }
 
 
 // Função para gerar um ID único universal (UUID)

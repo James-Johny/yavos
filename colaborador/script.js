@@ -329,7 +329,7 @@ function buscarBancoHoras() {
 
 
   const todos = [...colaboradoresPDF];
-  let colaborador = null;
+  let colaborador = localStorage.getItem('nomeColaborador') ? null : null;
 
   if (/^\d+$/.test(entrada)) {
     colaborador = todos.find(c => c.matricula.includes(entrada));
@@ -357,6 +357,7 @@ function buscarBancoHoras() {
       </table>
   `;
 }
+
 
 function sugerirEPIs(inputId = "epiInput", sugestoesId = "sugestoesEPI") {
   const input = document.getElementById(inputId);

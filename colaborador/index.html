@@ -37,7 +37,7 @@
     </div>-->
 
 
-    <div id="">
+    <div id="conteudo-protegido" style="display: block;">
 
         <div id="loader">
             <div class="spinner"></div>
@@ -47,8 +47,7 @@
                 <span id="userName"></span>
                 <span id="userMatricula"></span>
             </div>-->
-            <input type="checkbox" id="menuCheckbox" />
-            <label for="menuCheckbox" onclick="window.location.href='index.html'">SAVOY</label>
+            <span id="savoy" onclick="window.location.href='index.html'">SAVOY</span>
 
         </div>
         <div class="navbar-bottom">
@@ -66,7 +65,7 @@
                 placeholder="Digite parte do nome ou matrícula"
                 oninput="sugerirColaboradorUnificado('buscaColaborador', 'sugestoesBancoHoras')">
             <div id="sugestoesBancoHoras" class="sugestoes"></div>
-            <button onclick="buscarBancoHoras()">Buscar</button>
+            <button onclick="buscarBancoHoras()" onload="buscarBancoHoras()">Buscar</button>
             <div id="versao"></div>
             <div id="resultado" class="resultado"></div>
         </div>

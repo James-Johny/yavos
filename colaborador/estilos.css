@@ -7,16 +7,60 @@
 
 /* ========== LOGIN ============= */
 
-
-div#menuToggle {
-  align-self: center;
+#savoy {
+  display: block;
+  font-size: 8rem;
   text-align: center;
+  background: none;
+  color: var(--secondary);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px var(--shadow1);
 }
 
+#savoy::first-letter {
+  color: var(--primary);
+  font-weight: bolder;
+  font-size: 8.1rem;
+}
+
+#userInfo {
+  position: absolute;
+  top: 0;
+  z-index: 999;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 2.5rem;
+  background: transparent;
+  width: min-content;
+  height: min-content;
+  padding: 0.5rem 1rem;
+}
+
+#userName {
+  font-weight: bold;
+  color: var(--primary);
+}
+#userMatricula {
+  color: var(--secondary);
+  font-style: italic;
+}
+
+#mensagemErro {
+  color: var(--cor-neutro);
+  font-size: 3rem;
+  margin-top: 1rem;
+}
 
 .login {
   position: fixed;
   top: 20rem;
+  left: 14dvw;
   width: 40rem;
   height: 30rem;
   display: flex;
@@ -68,6 +112,7 @@ div#menuToggle {
   padding: 0;
   background: var(--background);
 }
+
 
 /* ================== navbar bottom =====================*/
 
@@ -174,50 +219,6 @@ th {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-
-#menuToggle label {
-  display: inline-block;
-  font-size: 8rem;
-  width: 300px;
-  height: 100px;
-  line-height: 90px;
-  text-align: center;
-  background: none;
-  color: var(--secondary);
-  border-radius: 7px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: bold;
-  text-shadow: 2px 2px 4px var(--shadow1);
-  margin-bottom: 4rem;
-}
-
-#menuToggle label:hover {
-  transform: scale(1.05);
-  text-shadow: 0 0 12px rgba(3, 93, 171, 0.8);
-}
-
-#menuToggle label::first-letter {
-  color: var(--primary);
-  font-weight: bolder;
-  font-size: 8.1rem;
-}
-
-#menuToggle input {
-  display: none;
-}
-
-
-#menuToggle input:checked~ul {
-  transform: translateY(0);
-}
-
-#menuToggle {
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-}
 
 /* ========== 8. FORMULÁRIOS E BOTÕES COM GRADIENTE E GLOW ========== */
 input,
