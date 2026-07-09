@@ -13,6 +13,24 @@ div#menuToggle {
   text-align: center;
 }
 
+
+.login {
+  position: fixed;
+  top: 20rem;
+  width: 40rem;
+  height: 30rem;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  border-radius: 10px;
+  margin-top: 10rem;
+  z-index: 9999;
+  background: rgb(72, 180, 208, 0.4);
+}
+
 /* ========== 1. ANIMAÇÕES GLOBAIS ========== */
 * {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

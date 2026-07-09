@@ -6,7 +6,7 @@ const linkLOTO = 'https://forms.office.com/pages/responsepage.aspx?id=PK7qOeaHzk
 const linkApp = 'https://bit.ly/4eHnpDk';
 
 const lista = document.getElementById('menu-treinamentos');
-const menuLinks= `<ul class="links-colab" style="display: flex;">
+const menuLinks = `<ul class="links-colab" style="display: flex;">
     <li><a target="_blank" href="${linkBos}">BOS Tour</a></li>
     <li><a target="_blank" href="${linkQuimicos}">Quimícos</a></li>
     <li><a target="_blank" href="${linkInflamaveis}">Inflamáveis</a></li>
@@ -14,14 +14,31 @@ const menuLinks= `<ul class="links-colab" style="display: flex;">
     <li><a target="_blank" href="${linkLOTO}">LOTO</a></li>
     </ul>`;
 
-    lista.insertAdjacentHTML('beforeend', menuLinks);
+lista.insertAdjacentHTML('beforeend', menuLinks);
 
 
 
 
+function login() {
+    const matricula = document.getElementById('matricula').value;
+    localStorage.setItem('matriculaColaborador', matricula);
 
-    
-    // Função para gerar um ID único universal (UUID)
+
+
+    document.getElementById('login').style.display = 'none';
+}
+
+
+const colabName = document.getElementById('userName');
+const colabMatricula = document.getElementById('userMatricula');
+
+
+
+colabName.textContent = localStorage.getItem('nomeColaborador') || 'Nome do Colaborador';
+colabMatricula.textContent = localStorage.getItem('matriculaColaborador') || 'Matrícula do Colaborador';
+
+
+// Função para gerar um ID único universal (UUID)
 function gerarIdentificadorDispositivo() {
     return 'dev-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now();
 }
@@ -34,7 +51,7 @@ function obterIdentificadorCelular() {
         // 2. Se for o primeiro acesso, gera um ID inédito
         dispositivoId = gerarIdentificadorDispositivo();
         localStorage.setItem('dispositivo_mac_fake', dispositivoId);
-        
+
         console.log("Primeiro acesso deste celular. ID gerado:", dispositivoId);
         // Aqui você faria um fetch para salvar esse ID no seu banco de dados
         // associado ao usuário (ex: "Dispositivo Autorizado do João")
@@ -44,6 +61,8 @@ function obterIdentificadorCelular() {
 
     return dispositivoId;
 }
+
+
 
 // Executa ao carregar a página web no celular
 const idDoCelular = obterIdentificadorCelular();

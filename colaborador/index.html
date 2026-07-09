@@ -29,77 +29,91 @@
         </div>
     </div>-->
 
-    <div id="loader">
-        <div class="spinner"></div>
-    </div>
-    <div id="menuToggle">
-        <input type="checkbox" id="menuCheckbox" />
-        <label for="menuCheckbox" onclick="window.location.href='index.html'">SAVOY</label>
 
-    </div>
-    <div class="navbar-bottom">
-        <span onclick="secao('requisicoes')" class="button-bottom" id="requisicao"></span>
-        <span onclick="secao('treinamentos')" class="button-bottom" id="treinamento"></span>
-        <span onclick="secao('xadrez')" class="button-bottom" id="xadrez-btn"></span>
-        <span onclick="secao('program')" class="button-bottom" id="programacao"></span>
-        <span onclick="secao('bancoHoras')" class="button-bottom" id="bancodehoras"></span>
-
-    </div>
-
-    <!-----------------------     Banco de Horas      --------------------------->
-    <div id="bancoHoras" class="secao" style="display: none">
-        <input type="text" onfocus="this.value='';" id="buscaColaborador"
-            placeholder="Digite parte do nome ou matrícula"
-            oninput="sugerirColaboradorUnificado('buscaColaborador', 'sugestoesBancoHoras')">
-        <div id="sugestoesBancoHoras" class="sugestoes"></div>
-        <button onclick="buscarBancoHoras()">Buscar</button>
-        <div id="versao"></div>
-        <div id="resultado" class="resultado"></div>
-    </div>
-
-    <!-----------------------   Requisições   -------------------------->
-    <div class="secao" id="requisicoes" style="margin-bottom: 12rem; display: none;"
-        onload="carregarRequisicoesColaborador()">
+    <!--<div id="login" class="login">
+        <input type="text" id="matricula" placeholder="Digite sua matrícula">
+        <button onclick="login()">Entrar</button>
+        <div id="mensagemErro"></div>
+    </div>-->
 
 
+    <div id="">
 
-
-        <div id="resultadoBusca"></div>
-
-
-        <input type="text" onfocus="this.value='';" id="buscaRequisicao"
-            placeholder="Ex: Nome,Matricula (Fulano,111111)"
-            oninput="sugerirColaboradorUnificado('buscaRequisicao', 'sugestoesColaborador')">
-        <div id="sugestoesColaborador" class="sugestoes"></div>
-
-        <div class="qtd_desc">
-            <table style="border: none; width: 15rem; margin-left: 2rem; background-color: transparent;">
-                <tr style="background-color: transparent; text-align: right;">
-                    <td style="width: 15rem;"><span>Quantidade: </span></td>
-                    <td><input type="number" id="quantidade" onfocus="this.value='';" class="quantidade"
-                            placeholder="Quantidade" min="1" value="1" style="width: 2rem !important;"></td>
-                </tr>
-            </table>
-
-            <select id="descricao" name="descricao" class="descricao">
-                <option value="TROCA/DESGASTE NATURAL" class="desc">Troca/Desgaste Natural</option>
-                <option value="NECESSIDADE" class="desc necessidade">Necessidade</option>
-                <option value="PERDA" class="desc perda">Perda</option>
-                <option value="USO COLETIVO" class="desc coletivo">Uso Coletivo</option>
-            </select>
+        <div id="loader">
+            <div class="spinner"></div>
         </div>
-        <input type="text" placeholder="Digite o nome do EPI" id="epiInput" oninput="sugerirEPIs()">
-        <div id="sugestoesEPI" class="sugestoes"></div>
+        <div id="menuToggle">
+            <!--<div id="userInfo">
+                <span id="userName"></span>
+                <span id="userMatricula"></span>
+            </div>-->
+            <input type="checkbox" id="menuCheckbox" />
+            <label for="menuCheckbox" onclick="window.location.href='index.html'">SAVOY</label>
 
-        <ul id="itensRequisicao"></ul>
-        <button onclick="criarRequisicao()">Criar Requisição</button>
-        <div id="listaRequisicoes"></div>
-    </div>
+        </div>
+        <div class="navbar-bottom">
+            <span onclick="secao('requisicoes')" class="button-bottom" id="requisicao"></span>
+            <span onclick="secao('treinamentos')" class="button-bottom" id="treinamento"></span>
+            <span onclick="secao('xadrez')" class="button-bottom" id="xadrez-btn"></span>
+            <span onclick="secao('program')" class="button-bottom" id="programacao"></span>
+            <span onclick="secao('bancoHoras')" class="button-bottom" id="bancodehoras"></span>
 
-    <!-----------------------     Programação      -------------------------->
-    <div class="secao" id="program" style="display: none;">
+        </div>
 
-        <div class="select-setor">
+        <!-----------------------     Banco de Horas      --------------------------->
+        <div id="bancoHoras" class="secao" style="display: none">
+            <input type="text" onfocus="this.value='';" id="buscaColaborador"
+                placeholder="Digite parte do nome ou matrícula"
+                oninput="sugerirColaboradorUnificado('buscaColaborador', 'sugestoesBancoHoras')">
+            <div id="sugestoesBancoHoras" class="sugestoes"></div>
+            <button onclick="buscarBancoHoras()">Buscar</button>
+            <div id="versao"></div>
+            <div id="resultado" class="resultado"></div>
+        </div>
+
+        <!-----------------------   Requisições   -------------------------->
+        <div class="secao" id="requisicoes" style="margin-bottom: 12rem; display: none;"
+            onload="carregarRequisicoesColaborador()">
+
+
+
+
+            <div id="resultadoBusca"></div>
+
+
+            <input type="text" onfocus="this.value='';" id="buscaRequisicao"
+                placeholder="Ex: Nome,Matricula (Fulano,111111)"
+                oninput="sugerirColaboradorUnificado('buscaRequisicao', 'sugestoesColaborador')">
+            <div id="sugestoesColaborador" class="sugestoes"></div>
+
+            <div class="qtd_desc">
+                <table style="border: none; width: 15rem; margin-left: 2rem; background-color: transparent;">
+                    <tr style="background-color: transparent; text-align: right;">
+                        <td style="width: 15rem;"><span>Quantidade: </span></td>
+                        <td><input type="number" id="quantidade" onfocus="this.value='';" class="quantidade"
+                                placeholder="Quantidade" min="1" value="1" style="width: 2rem !important;"></td>
+                    </tr>
+                </table>
+
+                <select id="descricao" name="descricao" class="descricao">
+                    <option value="TROCA/DESGASTE NATURAL" class="desc">Troca/Desgaste Natural</option>
+                    <option value="NECESSIDADE" class="desc necessidade">Necessidade</option>
+                    <option value="PERDA" class="desc perda">Perda</option>
+                    <option value="USO COLETIVO" class="desc coletivo">Uso Coletivo</option>
+                </select>
+            </div>
+            <input type="text" placeholder="Digite o nome do EPI" id="epiInput" oninput="sugerirEPIs()">
+            <div id="sugestoesEPI" class="sugestoes"></div>
+
+            <ul id="itensRequisicao"></ul>
+            <button onclick="criarRequisicao()">Criar Requisição</button>
+            <div id="listaRequisicoes"></div>
+        </div>
+
+        <!-----------------------     Programação      -------------------------->
+        <div class="secao" id="program" style="display: none;">
+
+            <div class="select-setor">
                 Setor: <select id="setorSelect">
                     <option value="rapidas">Rápidas</option>
                     <option value="lineares">Lineares</option>
@@ -107,42 +121,42 @@
                 </select>
 
             </div>
-        <div id="programacao-container"></div>
+            <div id="programacao-container"></div>
 
-    </div>
-
-    <!-----------------------     Xadrez       ---------------------->
-    <div class="secao" id="xadrez" style="display: flex;">
-
-      
-        <div id="canva">
-                      <canvas id="pdf-canvas"></canvas>
         </div>
 
-        
+        <!-----------------------     Xadrez       ---------------------->
+        <div class="secao" id="xadrez" style="display: flex;">
+
+
+            <div id="canva">
+                <canvas id="pdf-canvas"></canvas>
+            </div>
 
 
 
-    </div>
 
-    <!------------------------    Treinamentos     ------------------------>
-    <div class="secao" id="treinamentos" style="display: none;">
-        <div id="menu-treinamentos">
+
         </div>
+
+        <!------------------------    Treinamentos     ------------------------>
+        <div class="secao" id="treinamentos" style="display: none;">
+            <div id="menu-treinamentos">
+            </div>
+        </div>
+
+
+        <!------------------------    Scripts   ----------------------->
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+        <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+        <script src="script.js"></script>
+        <script src="colab.js"></script>
+        <script src="svg.js"></script>
+        <script src="xadrez.js"></script>
+        <script src="programacao.js"></script>
+        <script src="treinamentos.js"></script>
     </div>
-
-
-    <!------------------------    Scripts   ----------------------->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
-    <script src="script.js"></script>
-    <script src="colab.js"></script>
-    <script src="svg.js"></script>
-    <script src="xadrez.js"></script>
-    <script src="programacao.js"></script>
-    <script src="treinamentos.js"></script>
-
 </body>
 
 </html>
