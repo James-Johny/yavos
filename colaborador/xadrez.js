@@ -1,4 +1,4 @@
-const xadrez = '../xadrez2.pdf';
+const xadrez = '../xadrez.pdf';
 
 
 
@@ -76,14 +76,14 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
                 let q, x, y, w, h;
 
-
+                dia = 0;
 
                 if (xadrez === '../xadrez.pdf') {
-                    q = 62;
-                    x = [2000, 2255, 450, 746, 1055, 1368, 1698];
-                    y = [216, 516, 682, 925, 1440];
+                    q = 212;
+                    x = [270, 642, 927, 1212, 1504, 1788, 2073];
+                    y = [35, 550, 565, 830, 1440];
                     w = [55, 265];
-                    h = [115, 115, 385, 219, 243];
+                    h = [130, 115, 430, 260, 243];
                 } else if (xadrez === '../xadrez2.pdf') {
                     q = 87;
                     x = [1065, 1305, 1546, 1787, 2038, 450, 766];
