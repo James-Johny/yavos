@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Verifica se o usuário aceitou ou cancelou
       const { outcome } = await deferredPrompt.userChoice;
-      console.log(`Resultado da instalação: ${outcome}`);
 
       // Limpa o prompt para não ser usado de novo
       deferredPrompt = null;
@@ -68,7 +67,6 @@ fetch("../listanomes.csv")
       const [matricula, nome, cdc, funcao] = linha.split(";").map(v => v.trim());
       return { matricula, nome, cdc, funcao }; 
     });
-    console.log("Colaboradores CSV carregados:", (colaboradoresCSV))
   })
   .catch(err => {
     console.error("Erro ao carregar listanomes.csv:", err);
@@ -178,7 +176,7 @@ fetch("../bancodehoras.pdf")
       }
     }
 
-    console.log(colaboradoresPDF);
+    
 
     document.getElementById("resultado").innerHTML = "<p>PDF carregado com sucesso. Digite uma matrícula para buscar.</p>";
   })
@@ -197,7 +195,6 @@ fetch("listaepis.csv")
       const partes = linha.split(";");
       return { codigo: partes[0]?.trim(), descricao: partes[1]?.trim() };
     });
-    console.log("EPIs carregados:", listaEPIs);
   });
 
 function corHora(valor) {
@@ -418,7 +415,7 @@ function adicionarItemEPI(epi) {
   const li = document.createElement("li");
   const qtd = document.getElementById("quantidade").value || "1";
   const desc = document.getElementById("descricao").value || "TROCA/DESGASTE";
-  console.log(epi);
+  
 
   switch (desc) {
     case "TROCA/DESGASTE":
@@ -453,16 +450,6 @@ function criarRequisicao() {
   }
 
 
-  /* if (/^\d+$/.test(entrada)) {
-     colaborador = todos.find(c => c.nome.toLowerCase() == entrada /*|| c.matricula.includes(entrada) );
-   } else {
-     colaboradorManual = entrada.toUpperCase().split(",").map(item => item.trim());
-     const [nome, matricula, cdc] = colaboradorManual;
-     colaborador = { nome, matricula, cdc };
-         console.log("MATRICULA: ", colaborador.matricula);
-     colaborador = todos.find(c => c.nome.toLowerCase() === entrada);
-   }
-*/
   if (!colaborador) {
     alert("Colaborador não encontrado.");
     return;
@@ -705,7 +692,6 @@ function pesquisarRequisicoes() {
 
 // ─── Carregar requisições do banco ────────────────────────────────────────────
 async function carregarRequisicoes() {
-  console.log('Executando carregarRequisicoes()');
 
   const { data: requisicoes, error } = await db
     .from('requisicoes')
@@ -720,7 +706,6 @@ async function carregarRequisicoes() {
   const container = document.getElementById('listaRequisicoes');
 
   requisicoes.forEach(req => {
-    console.log('Renderizando:', req);
 
     // itens vem como array do JSONB — garante compatibilidade
     const itens = Array.isArray(req.itens) ? req.itens : JSON.parse(req.itens || '[]');

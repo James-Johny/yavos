@@ -77,19 +77,19 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                 let q, x, y, w, h;
 
 
-                if (xadrez === '../xadrez.pdf') {
+                if (xadrez === '../xadrez.pdf') { // Quadro com 6 dias
                     q = 212;
                     x = [270, 642, 927, 1212, 1504, 1788, 2073];
                     y = [35, 550, 565, 830, 1440];
                     w = [55, 265];
                     h = [130, 115, 430, 260, 243];
-                } else if (xadrez === '../xadrez2.pdf') {
+                } else if (xadrez === '../xadrez2.pdf') { // Quadro com 8 dias
                     q = 87;
                     x = [1065, 1305, 1546, 1787, 2038, 450, 766];
                     y = [203, 526, 652, 875, 1440];
                     w = [53, 250];
                     h = [120, 115, 380, 220, 243];
-                } else {
+                } else { // Quadro com 9 dias
                     q = 196;
                     x = [1325, 1954, 1671, 592, 868, 1135, 1404];
                     y = [110, 526, 610, 889, 1440];
@@ -97,12 +97,6 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                     h = [128, 115, 420, 235, 243];
 
                 }
-
-
-
-                console.log("Hora: ", hora, "Turno: ", turno, "Dia: ", dia, day);
-
-
 
 
 

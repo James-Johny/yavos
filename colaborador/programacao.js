@@ -66,7 +66,7 @@ function configurarEventListeners() {
         const setorNome = this.value;
         if (!setorNome) return;
 
-        console.log("Alterando para o setor: ", setorNome);
+
         carregarEProcessarPDF(setorNome);
     });
 }
@@ -138,8 +138,7 @@ function carregarEProcessarPDF(setorKey) {
                 }
             }
 
-            console.log(`--- JSON GERADO COM SUCESSO [${setorKey.toUpperCase()}] ---`);
-            console.log(dadosSetor);
+
 
             // Envia para a função de renderização dinamicamente passando a estrutura de colunas do setor ativo
             renderizarTabelasHTML(dadosSetor, config.colunas);
