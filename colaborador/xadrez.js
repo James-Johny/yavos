@@ -76,7 +76,6 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
                 let q, x, y, w, h;
 
-                dia = 0;
 
                 if (xadrez === '../xadrez.pdf') {
                     q = 212;
