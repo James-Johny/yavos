@@ -77,7 +77,6 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                 let q, x, y, w, h;
 
 
-                dia = 0;
 
                 if (xadrez === '../xadrez.pdf') { // Quadro com 6 dias
                     q = 212;
@@ -93,10 +92,10 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                     h = [120, 115, 380, 220, 243];
                 } else if (xadrez === '../xadrez9.pdf') { // Quadro com 9 dias
                     q = 38;
-                    x = [828, 1954, 1671, 592, 868, 1135, 1404];
+                    x = [828, 1050, 1275, 1495, 1715, 1938, 2160];
                     y = [250, 526, 662, 875, 1440];
                     w = [48, 213];
-                    h = [128, 115, 420, 197, 243];
+                    h = [108, 115, 350, 197, 243];
 
                 }
 
