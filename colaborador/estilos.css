@@ -644,6 +644,13 @@ li
   font-weight: bold;
 }
 
+.data-criacao {
+  font-size: 1.8rem;
+  color: var(--primary);
+  font-style: italic;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
 .desc {
   background: linear-gradient(135deg, var(--purple2), var(--purple3));
   border-radius: 500px;

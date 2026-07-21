@@ -709,10 +709,12 @@ async function carregarRequisicoes() {
 
     // itens vem como array do JSONB — garante compatibilidade
     const itens = Array.isArray(req.itens) ? req.itens : JSON.parse(req.itens || '[]');
+    const dataCriacao = req.criado_em.split('T')[0]; // Formata a data para YYYY-MM-DD
+    const dataFormatada = dataCriacao.split('-').reverse().join('/'); // Converte para DD/MM/YYYY
 
     const html = `
       <div id="${req.id}" class="tarefa">
-        <h3>${req.titulo}</h3>
+        <h3>${req.titulo} - <span class="data-criacao">${dataFormatada}</span></h3>
         <ul id="itens-${req.id}">
           ${itens.map(item => `<li><label>${item}</label></li>`).join('')}
         </ul>
