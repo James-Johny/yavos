@@ -7,71 +7,71 @@ const db = createClient(
 
 // 2. Funções de Interface (Declaradas antes para garantir que existam)
 function exibirConteudo() {
-    console.log("Exibindo conteúdo protegido...");
-    const loginContainer = document.getElementById('login-container');
-    const conteudoProtegido = document.getElementById('conteudo-protegido');
-    const loader = document.getElementById('loader');
+  console.log("Exibindo conteúdo protegido...");
+  const loginContainer = document.getElementById('login-container');
+  const conteudoProtegido = document.getElementById('conteudo-protegido');
+  const loader = document.getElementById('loader');
 
-    if (loginContainer) loginContainer.style.display = 'none';
-    if (conteudoProtegido) conteudoProtegido.style.display = 'block';
-    if (loader) loader.style.display = 'none';
+  if (loginContainer) loginContainer.style.display = 'none';
+  if (conteudoProtegido) conteudoProtegido.style.display = 'block';
+  if (loader) loader.style.display = 'none';
 }
 
 async function logout() {
-    await db.auth.signOut();
-    window.location.reload();
+  await db.auth.signOut();
+  window.location.reload();
 }
 
 // 3. Função de Login
 async function login() {
-    const emailInput = document.getElementById('email');
-    const senhaInput = document.getElementById('senha');
-    const erroTxt = document.getElementById('login-erro');
+  const emailInput = document.getElementById('email');
+  const senhaInput = document.getElementById('senha');
+  const erroTxt = document.getElementById('login-erro');
 
-    if (!emailInput || !senhaInput) {
-        console.error("Elementos de input não encontrados!");
-        return;
+  if (!emailInput || !senhaInput) {
+    console.error("Elementos de input não encontrados!");
+    return;
+  }
+
+  const email = emailInput.value.trim();
+  const password = senhaInput.value;
+
+  console.log("Tentando login...");
+
+  try {
+    const { data, error } = await db.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      erroTxt.style.display = 'block';
+      erroTxt.innerText = "Acesso negado: " + error.message;
+    } else if (data.user) {
+      console.log("Sucesso!");
+      exibirConteudo();
     }
-
-    const email = emailInput.value.trim();
-    const password = senhaInput.value;
-
-    console.log("Tentando login..."); 
-
-    try {
-        const { data, error } = await db.auth.signInWithPassword({
-            email: email,
-            password: password,
-        });
-
-        if (error) {
-            erroTxt.style.display = 'block';
-            erroTxt.innerText = "Acesso negado: " + error.message;
-        } else if (data.user) {
-            console.log("Sucesso!");
-            exibirConteudo();
-        }
-    } catch (err) {
-        console.error("Erro no processo de login:", err);
-    }
+  } catch (err) {
+    console.error("Erro no processo de login:", err);
+  }
 }
 
 // 4. Verificação ao carregar a página
 document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const { data: { session } } = await db.auth.getSession();
-        
-        if (session) {
-            exibirConteudo();
-        } else {
-            const loader = document.getElementById('loader');
-            const loginContainer = document.getElementById('login-container');
-            if (loader) loader.style.display = 'none';
-            if (loginContainer) loginContainer.style.display = 'flex';
-        }
-    } catch (e) {
-        console.error("Erro ao verificar sessão:", e);
+  try {
+    const { data: { session } } = await db.auth.getSession();
+
+    if (session) {
+      exibirConteudo();
+    } else {
+      const loader = document.getElementById('loader');
+      const loginContainer = document.getElementById('login-container');
+      if (loader) loader.style.display = 'none';
+      if (loginContainer) loginContainer.style.display = 'flex';
     }
+  } catch (e) {
+    console.error("Erro ao verificar sessão:", e);
+  }
 });
 
 
@@ -96,7 +96,7 @@ fetch("listanomes.csv")
     console.error("Erro ao carregar listanomes.csv:", err);
   });
 
-  fetch("bancodehoras.pdf")
+fetch("bancodehoras.pdf")
   .then(res => res.arrayBuffer())
   .then(data => pdfjsLib.getDocument({ data }).promise)
   .then(pdf => {
@@ -114,7 +114,7 @@ fetch("listanomes.csv")
     return Promise.all(promises);
   })
 
-.then(paginas => {
+  .then(paginas => {
     version = paginas.join("\n");
     const regexVersion = /\s*(\d{2}\/\d{2}\/\d{4})/;
     const matchVersion = version.match(regexVersion);
@@ -126,7 +126,7 @@ fetch("listanomes.csv")
     }
   })
 
-    fetch("bancodehoras.pdf")
+fetch("bancodehoras.pdf")
   .then(res => res.arrayBuffer())
   .then(data => pdfjsLib.getDocument({ data }).promise)
   .then(pdf => {
@@ -266,99 +266,99 @@ function descreverCDC(cdc) {
 
   let setor = ''
   switch (cdc) {
-    case '76526':      setor = 'ADM PESSOAL'
+    case '76526': setor = 'ADM PESSOAL'
       break
-case '76521':      setor = 'ALMOX. NÃO PRODUTIVO - SVY'
+    case '76521': setor = 'ALMOX. NÃO PRODUTIVO - SVY'
       break
-case '76512':      setor = 'ALMOXARIFADO MP/EM - SVY'
+    case '76512': setor = 'ALMOXARIFADO MP/EM - SVY'
       break
-case '76532':      setor = 'APOIO E MOV. LINHAS-COSMET. - SVY'
+    case '76532': setor = 'APOIO E MOV. LINHAS-COSMET. - SVY'
       break
-case '76536':      setor = 'CALDEIRA - SVY'
+    case '76536': setor = 'CALDEIRA - SVY'
       break
-case '76506':      setor = 'CONTROLADORIA - SVY'
+    case '76506': setor = 'CONTROLADORIA - SVY'
       break
-case '76511':      setor = 'CONTROLE DE QUALIDADE - SVY'
+    case '76511': setor = 'CONTROLE DE QUALIDADE - SVY'
       break
-case '76507':      setor = 'DIR. INDUSTRIAL - SVY'
+    case '76507': setor = 'DIR. INDUSTRIAL - SVY'
       break
-case '76504':      setor = 'DIRETORIA MANUFATURA'
+    case '76504': setor = 'DIRETORIA MANUFATURA'
       break
-case '76514':      setor = 'ENGENHARIA - SVY'
+    case '76514': setor = 'ENGENHARIA - SVY'
       break
-case '76528':      setor = 'ENGENHARIA DE PROCESSO - SVY'
+    case '76528': setor = 'ENGENHARIA DE PROCESSO - SVY'
       break
-case '76554':      setor = 'ENTUFAMENTO/MONT.TAMPA ESM-SVY'
+    case '76554': setor = 'ENTUFAMENTO/MONT.TAMPA ESM-SVY'
       break
-case '76587':      setor = 'ENVASE AEROSÓIS - SVY'
+    case '76587': setor = 'ENVASE AEROSÓIS - SVY'
       break
-case '76581':      setor = 'ENVASE COLORAÇÃO - SVY'
+    case '76581': setor = 'ENVASE COLORAÇÃO - SVY'
       break
-case '76590':      setor = 'ENVASE COLORACAO WELLA - SVY'
+    case '76590': setor = 'ENVASE COLORACAO WELLA - SVY'
       break
-case '76582':      setor = 'ENVASE ESMALTES - SVY'
+    case '76582': setor = 'ENVASE ESMALTES - SVY'
       break
-case '76585':      setor = 'ENVASE LINHAS RÁPIDAS - SVY'
+    case '76585': setor = 'ENVASE LINHAS RÁPIDAS - SVY'
       break
-case '76591':      setor = 'ENVASE PROFESSIONAL WELLA - SNC'
+    case '76591': setor = 'ENVASE PROFESSIONAL WELLA - SNC'
       break
-case '76505':      setor = 'EXCELENCIA OPERACIONAL'
+    case '76505': setor = 'EXCELENCIA OPERACIONAL'
       break
-case '76573':      setor = 'FABRICAÇÃO ALCOOLICOS - SVY'
+    case '76573': setor = 'FABRICAÇÃO ALCOOLICOS - SVY'
       break
-case '76571':      setor = 'FABRICAÇÃO COLORAÇÃO - SVY'
+    case '76571': setor = 'FABRICAÇÃO COLORAÇÃO - SVY'
       break
-case '76570':      setor = 'FABRICACAO COLORACAO WELLA - SVY'
+    case '76570': setor = 'FABRICACAO COLORACAO WELLA - SVY'
       break
-case '76574':      setor = 'FABRICAÇÃO COSMÉTICOS - SVY'
+    case '76574': setor = 'FABRICAÇÃO COSMÉTICOS - SVY'
       break
-case '76572':      setor = 'FABRICAÇÃO ESMALTES - SVY'
+    case '76572': setor = 'FABRICAÇÃO ESMALTES - SVY'
       break
-case '76560':      setor = 'GER. EMBALAGENS PLÁSTICAS - SVY'
+    case '76560': setor = 'GER. EMBALAGENS PLÁSTICAS - SVY'
       break
-case '76510':      setor = 'GERÊNCIA COSMÉTICO - SVY'
+    case '76510': setor = 'GERÊNCIA COSMÉTICO - SVY'
       break
-case '76518':      setor = 'GERÊNCIA DE UTILIDADES - SVY'
+    case '76518': setor = 'GERÊNCIA DE UTILIDADES - SVY'
       break
-case '76509':      setor = 'GERÊNCIA LOGÍSTICA - SVY'
+    case '76509': setor = 'GERÊNCIA LOGÍSTICA - SVY'
       break
-case '76564':      setor = 'INJEÇÃO TAMPAS - SVY'
+    case '76564': setor = 'INJEÇÃO TAMPAS - SVY'
       break
-case '76530':      setor = 'INSPECAO DE QUALIDADE - SNC'
+    case '76530': setor = 'INSPECAO DE QUALIDADE - SNC'
       break
-case '76565':      setor = 'MANUT. INDUST. EMB PLÁSTICAS - SVY'
+    case '76565': setor = 'MANUT. INDUST. EMB PLÁSTICAS - SVY'
       break
-case '76520':      setor = 'MANUT. INDUSTRIAL COSMÉTICO - SVY'
+    case '76520': setor = 'MANUT. INDUSTRIAL COSMÉTICO - SVY'
       break
-case '76592':      setor = 'MANUTENCAO HAIR COLOR - SNC'
+    case '76592': setor = 'MANUTENCAO HAIR COLOR - SNC'
       break
-case '76537':      setor = 'MANUTENÇÃO UTILIDADES - SVY'
+    case '76537': setor = 'MANUTENÇÃO UTILIDADES - SVY'
       break
-case '76517':      setor = 'MEIO AMBIENTE - SVY'
+    case '76517': setor = 'MEIO AMBIENTE - SVY'
       break
-case '76540':      setor = 'OPERACAO CUSTOMIZACAO - SNC'
+    case '76540': setor = 'OPERACAO CUSTOMIZACAO - SNC'
       break
-case '76531':      setor = 'PATIO DE INFLAMAVEIS - SNC'
+    case '76531': setor = 'PATIO DE INFLAMAVEIS - SNC'
       break
-case '76523':      setor = 'PCP COSMÉTICO - SNC'
+    case '76523': setor = 'PCP COSMÉTICO - SNC'
       break
-case '76524':      setor = 'PESAGEM COSMÉTICOS - SVY'
+    case '76524': setor = 'PESAGEM COSMÉTICOS - SVY'
       break
-case '76525':      setor = 'PESAGEM SOPRO/INJEÇÃO - SVY'
+    case '76525': setor = 'PESAGEM SOPRO/INJEÇÃO - SVY'
       break
-case '76589':      setor = 'PROJETOS ESTRATEGICOS SNC'
+    case '76589': setor = 'PROJETOS ESTRATEGICOS SNC'
       break
-case '76515':      setor = 'RECEBIMENTO FISCAL FABRIL'
+    case '76515': setor = 'RECEBIMENTO FISCAL FABRIL'
       break
-case '76527':      setor = 'RH - SEN CANEDO'
+    case '76527': setor = 'RH - SEN CANEDO'
       break
-case '76538':      setor = 'SEGURANÇA DO TRABALHO - SNC'
+    case '76538': setor = 'SEGURANÇA DO TRABALHO - SNC'
       break
-case '76563':      setor = 'SERIGRAFIA FRASCOS - SVY'
+    case '76563': setor = 'SERIGRAFIA FRASCOS - SVY'
       break
-case '76513':      setor = 'SERVIÇOS ADMINISTRATIVOS - SVY'
+    case '76513': setor = 'SERVIÇOS ADMINISTRATIVOS - SVY'
       break
-case '76562':      setor = 'SOPRO - SNC - SVY'
+    case '76562': setor = 'SOPRO - SNC - SVY'
       break
 
     default:
@@ -393,14 +393,24 @@ function sugerirEPIs(inputId = "epiInput", sugestoesId = "sugestoesEPI") {
 
   encontrados.forEach(epi => {
     const btn = document.createElement("button");
+    const qtdCode = `<input type="number" id="quantidade" onfocus="this.value='';" class="quantidade" placeholder="Quantidade"
+                min="1" value="1">`;
+    const descCode = `<select id="descricao" name="descricao" class="descricao">
+                <option value="TROCA/DESGASTE NATURAL" class="desc">Troca/Desgaste Natural</option>
+                <option value="NECESSIDADE" class="desc necessidade">Necessidade</option>
+                <option value="PERDA" class="desc perda">Perda</option>
+                <option value="USO COLETIVO" class="desc coletivo">Uso Coletivo</option>
+            </select>`;
+
+
     btn.type = "button";
-    btn.textContent = `[ ${qtd} ] ${epi.codigo} - ${epi.descricao} #${desc}`;
+    btn.textContent = `${qtd} ${epi.codigo} - ${epi.descricao} #${desc}`;
     btn.onclick = () => {
       if (inputId === "epiInput") {
         adicionarItemEPI(epi);
       } else {
         const requisicaoId = inputId.replace("novoItem-", "");
-        adicionarItemComValor(requisicaoId, `[ ${qtd} ] ${epi.codigo} - ${epi.descricao} #${desc}`);
+        adicionarItemComValor(requisicaoId, `${qtd} ${epi.codigo} - ${epi.descricao} #${desc}`);
       }
 
       input.value = "";
@@ -415,24 +425,24 @@ function adicionarItemEPI(epi) {
   const lista = document.getElementById("itensRequisicao");
   const li = document.createElement("li");
   const qtd = document.getElementById("quantidade").value || "1";
-  const desc = document.getElementById("descricao").value  || "TROCA/DESGASTE NATURAL";
+  const desc = document.getElementById("descricao").value || "TROCA/DESGASTE";
   console.log(epi);
 
   switch (desc) {
-    case "TROCA/DESGASTE NATURAL":
-      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc">${desc}</span></label>`;
+    case "TROCA/DESGASTE":
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">${qtd}</span> ${epi.codigo} - ${epi.descricao} <span class="desc">${desc}</span></label>`;
       break;
     case "PERDA":
-      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc perda">${desc}</span></label>`;
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">${qtd}</span> ${epi.codigo} - ${epi.descricao} <span class="desc perda">${desc}</span></label>`;
       break;
     case "NECESSIDADE":
-      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc necessidade">${desc}</span></label>`;
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">${qtd}</span> ${epi.codigo} - ${epi.descricao} <span class="desc necessidade">${desc}</span></label>`;
       break;
     case "USO COLETIVO":
-      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc coletivo">${desc}</span></label>`;
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">${qtd}</span> ${epi.codigo} - ${epi.descricao} <span class="desc coletivo">${desc}</span></label>`;
       break;
     default:
-      li.innerHTML = `<label class="new-item"><span class="item-quantidade">[ ${qtd} ]</span> ${epi.codigo} - ${epi.descricao} <span class="desc">${desc}</span></label>`;
+      li.innerHTML = `<label class="new-item"><span class="item-quantidade">${qtd}</span> ${epi.codigo} - ${epi.descricao} <span class="desc">${desc}</span></label>`;
   }
   lista.appendChild(li);
 }
@@ -447,28 +457,23 @@ function criarRequisicao() {
     const [nome, matricula] = colaboradorManual;
     colaborador = { nome, matricula };
   } else {
-    colaborador = todos.find(c => c.nome.toLowerCase() === entrada);
+    colaborador = todos.find(c => c.nome?.toLowerCase() === entrada?.toLowerCase());
   }
 
 
-  /* if (/^\d+$/.test(entrada)) {
-     colaborador = todos.find(c => c.nome.toLowerCase() == entrada /*|| c.matricula.includes(entrada) );
-   } else {
-     colaboradorManual = entrada.toUpperCase().split(",").map(item => item.trim());
-     const [nome, matricula, cdc] = colaboradorManual;
-     colaborador = { nome, matricula, cdc };
-         console.log("MATRICULA: ", colaborador.matricula);
-     colaborador = todos.find(c => c.nome.toLowerCase() === entrada);
-   }
-*/
+  if (!colaborador) {
+    alert("Colaborador não encontrado.");
+    return;
+  }
+
   if (!colaborador) {
     alert("Colaborador não encontrado.");
     return;
   }
 
 
-  const titulo = ` ${colaborador.matricula} - ${colaborador.nome}`;
-  const id = `req-${Date.now()}`;
+  const titulo = `${colaborador.matricula} - ${colaborador.nome}`;
+  const id = `req-${colaborador.matricula}`;
   const itens = Array.from(document.querySelectorAll("#itensRequisicao li")).map(li => li.outerHTML);
   const editar = `<button onclick="toggleEditor('${id}')">Editar</button>`;
   const apagar = `<button onclick="removerRequisicao('${id}')">Remover</button>`;
@@ -530,7 +535,7 @@ function buscarRequisicoes() {
 
 function toggleEditor(id) {
   const editor = document.getElementById(`editor-${id}`);
-  const btnEdt = document.getElementById(`btnEditar-${id}`); 
+  const btnEdt = document.getElementById(`btnEditar-${id}`);
 
   editor.style.display = editor.style.display === "none" ? "block" : "none";
 
@@ -574,15 +579,6 @@ function adicionarItemComValor(requisicaoId, valor) {
   const listaRemover = document.getElementById(`remover-${requisicaoId}`);
   if (!listaVisual || !listaRemover) return;
 
-  const index = listaVisual.querySelectorAll("li").length;
-
-  const liVisual = document.createElement("li");
-  liVisual.innerHTML = `<label>${v}</label>`;
-  listaVisual.appendChild(liVisual);
-
-  const liRemover = document.createElement("li");
-  liRemover.innerHTML = `<label>${v}</label> <span class="spanButton" onclick="removerItem('${requisicaoId}', ${index})">🗑️</span>`;
-  listaRemover.appendChild(liRemover);
 
   const requisicoes = JSON.parse(localStorage.getItem("requisicoes") || "[]");
   const atualizadas = requisicoes.map(req => {
@@ -672,7 +668,7 @@ function detalharColaborador(matricula) {
   const detalherDiv = document.getElementById("detalhesColaborador");
   detalherDiv.style.display = "block";
   if (!colaborador) return;
-  
+
   detalherDiv.innerHTML = `
   <span  id="botaoFecharDetalhes" onclick="fecharDetalhesColaborador()"> &times;</span>
     <h3>Detalhes do Colaborador</h3>
@@ -685,7 +681,7 @@ function detalharColaborador(matricula) {
 
 
 
-function listarCDC() {  
+function listarCDC() {
   const cdcInput = document.querySelector("#cdc input");
   const cdcValor = cdcInput.value.trim();
   const resultadoDiv = document.getElementById("resultadoCDC");
@@ -699,7 +695,7 @@ function listarCDC() {
     resultadoDiv.innerHTML = `<p class="negativo">Nenhum colaborador encontrado para o CDC ${cdcValor}.</p>`;
     return;
   }
- resultadoDiv.innerHTML = `
+  resultadoDiv.innerHTML = `
   <div class="container-scroll">
     <table class="tabela-cdc">
       <thead>
@@ -795,7 +791,7 @@ async function removerRequisicao(id) {
 // ─── Pesquisar requisições (sem alteração, mantém comportamento original) ─────
 function pesquisarRequisicoes() {
   const pesquisaDiv = document.getElementById('pesquisaReq');
-  const exibirDiv  = document.getElementById('exibePesqReq');
+  const exibirDiv = document.getElementById('exibePesqReq');
 
   exibirDiv.style.display = 'none';
   pesquisaDiv.style.display = 'flex';
@@ -822,30 +818,35 @@ async function carregarRequisicoes() {
 
     // itens vem como array do JSONB — garante compatibilidade
     const itens = Array.isArray(req.itens) ? req.itens : JSON.parse(req.itens || '[]');
+    const dataCriacao = req.criado_em.split('T')[0]; // Formata a data para YYYY-MM-DD
+    const dataFormatada = dataCriacao.split('-').reverse().join('/'); // Converte para DD/MM/YYYY
 
     const html = `
       <div id="${req.id}" class="tarefa">
-        <h3>${req.titulo}</h3>
+        <h3>${req.titulo} - <span class="data-criacao">${dataFormatada}</span></h3>
         <ul id="itens-${req.id}">
           ${itens.map(item => `<li><label>${item}</label></li>`).join('')}
         </ul>
-        <div id="editor-${req.id}" style="display:none;">
-          <input class="adicionar" type="text" id="novoItem-${req.id}" placeholder="Adicionar novo item"
-            oninput="sugerirEPIs('novoItem-${req.id}','sugestoes-${req.id}')">
-          <div id="sugestoes-${req.id}" class="sugestoes" style="display:none;"></div>
-          <button class="adicionar" onclick="adicionarItem('${req.id}')">Adicionar</button>
-          <ul id="remover-${req.id}">
-            ${itens.map((item, index) => `
-              <li>
-                <label>${item}</label>
-                <span onclick="removerItem('${req.id}', ${index})" style="cursor: pointer; color: var(--cor-negativo);">🗑️ Remover</span>
-              </li>
-            `).join('')}
-          </ul>
-        </div>
-        <div class="editar">
-          <button style="background-color: var(--primary); color: var(--white1);" onclick="toggleEditor('${req.id}')" id="btnEditar-${req.id}">Editar</button>
-          <button style="background-color: var(--danger); color: var(--white1);" onclick="removerRequisicao('${req.id}')">Remover</button>
+        
+        <div id="conteudo-protegido">
+          <div id="editor-${req.id}" style="display:none;">
+            <input class="adicionar" type="text" id="novoItem-${req.id}" placeholder="Adicionar novo item"
+              oninput="sugerirEPIs('novoItem-${req.id}','sugestoes-${req.id}')">
+            <div id="sugestoes-${req.id}" class="sugestoes" style="display:none;"></div>
+            <button class="adicionar" onclick="adicionarItem('${req.id}')">Adicionar</button>
+            <ul id="remover-${req.id}">
+              ${itens.map((item, index) => `
+                <li>
+                  <label>${item}</label>
+                  <span onclick="removerItem('${req.id}', ${index})" style="cursor: pointer; color: var(--cor-negativo);">🗑️ Remover</span>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+          <div class="editar">
+            <button style="background-color: var(--primary); color: var(--white1);" onclick="toggleEditor('${req.id}')" id="btnEditar-${req.id}">Editar</button>
+            <button style="background-color: var(--danger); color: var(--white1);" onclick="removerRequisicao('${req.id}')">Remover</button>
+          </div>
         </div>
       </div>`;
 
@@ -877,11 +878,11 @@ const FORMATOS = {
     formatar: (partes) => {
       const qtd = Number(partes[4].slice(1, -3)).toString();
       return `PALLET: ${partes[0].slice(-10)}\n` +
-             `SKU: ${partes[1].slice(2)}\n` +
-             `Lote: ${partes[2].slice(2)}\n` +
-             `Validade: ${partes[3].slice(2)}\n` +
-             `Qtd: ${qtd}\n` +
-             `Ordem: ${partes[5].slice(7)}`;
+        `SKU: ${partes[1].slice(2)}\n` +
+        `Lote: ${partes[2].slice(2)}\n` +
+        `Validade: ${partes[3].slice(2)}\n` +
+        `Qtd: ${qtd}\n` +
+        `Ordem: ${partes[5].slice(7)}`;
     }
   },
   // ETIQUETA DE EMBARQUE
@@ -891,9 +892,9 @@ const FORMATOS = {
       const v = partes[1].slice(2, -2);
       const vf = v.replace(/(\d{4})(\d{2})/, "$2.$1")
       return `LOTE: ${partes[0].slice(2)}\n` +
-             `VALIDADE: ${vf}\n` +
-             `VOLUME: ${partes[2].slice(2)}\n` +
-             `SKU: ${partes[3].slice(2)}`;
+        `VALIDADE: ${vf}\n` +
+        `VOLUME: ${partes[2].slice(2)}\n` +
+        `SKU: ${partes[3].slice(2)}`;
     }
   },
   // ETIQUETA DE IDENTIFICAÇÃO
@@ -903,10 +904,10 @@ const FORMATOS = {
       const v = partes[3].slice(2);
       const vf = v.replace(/(\d{2})(\d{2})(\d{4})/, "$1.$2.$3")
       return `PALLET: ${Number(partes[0].slice(2))}\n` +
-             `PRODUTO: ${partes[1].slice(2)}\n` +
-             `LOTE SAP: ${partes[2].slice(2)}\n` +
-             `VALIDADE: ${vf}\n` +
-             `QUANTIDADE: ${Number(partes[4].slice(1, -3))}`;
+        `PRODUTO: ${partes[1].slice(2)}\n` +
+        `LOTE SAP: ${partes[2].slice(2)}\n` +
+        `VALIDADE: ${vf}\n` +
+        `QUANTIDADE: ${Number(partes[4].slice(1, -3))}`;
     }
   },
   // ORDEM DE PRODUÇAO
@@ -919,13 +920,13 @@ const FORMATOS = {
       const di = partes[7].slice(2);
       const dif = di.replace(/(\d{4})(\d{2})(\d{2})/, "$3.$2.$1")
       return `SKU: ${partes[0].slice(-10)}\n` +
-             `PRODUTO: ${partes[1].slice(2)}\n` +
-             `LOTE: ${partes[2].slice(2)}\n` +
-             `VALIDADE: ${vf}\n` +
-             `UN: ${partes[4].slice(2)}\n` +
-             `CX: ${partes[5].slice(2)}\n` +
-             `QUANTIDADE/CAIXA: ${partes[6].slice(2)}\n` +
-             `DATA DE IMPRESSÃO: ${dif}`;
+        `PRODUTO: ${partes[1].slice(2)}\n` +
+        `LOTE: ${partes[2].slice(2)}\n` +
+        `VALIDADE: ${vf}\n` +
+        `UN: ${partes[4].slice(2)}\n` +
+        `CX: ${partes[5].slice(2)}\n` +
+        `QUANTIDADE/CAIXA: ${partes[6].slice(2)}\n` +
+        `DATA DE IMPRESSÃO: ${dif}`;
     }
   },
   // ORDEM PRODUÇAO ESMALTE
@@ -938,15 +939,15 @@ const FORMATOS = {
       const di = partes[8].slice(2);
       const dif = di.replace(/(\d{4})(\d{2})(\d{2})/, "$3.$2.$1")
       return `SKU: ${partes[0].slice(2)}\n` +
-              `PRODUTO: ${partes[1].slice(2)}\n` +
-              `LOTE: ${partes[2].slice(2)}\n` +
-              `VALIDADE: ${vf}\n` +
-              `UN: ${partes[4].slice(2)}\n` +
-              `ZUI: ${partes[5].slice(2)}\n` +
-              `CX: ${partes[6].slice(2)}\n` +
-              `QTD/CAIXA: ${partes[7].slice(2)}\n` +
-              `DATA DE IMPRESSÃO: ${dif}\n` +
-              `DESCRIÇÃO: ${partes[9].slice(2)}\n`;
+        `PRODUTO: ${partes[1].slice(2)}\n` +
+        `LOTE: ${partes[2].slice(2)}\n` +
+        `VALIDADE: ${vf}\n` +
+        `UN: ${partes[4].slice(2)}\n` +
+        `ZUI: ${partes[5].slice(2)}\n` +
+        `CX: ${partes[6].slice(2)}\n` +
+        `QTD/CAIXA: ${partes[7].slice(2)}\n` +
+        `DATA DE IMPRESSÃO: ${dif}\n` +
+        `DESCRIÇÃO: ${partes[9].slice(2)}\n`;
     }
   }
 };
@@ -954,7 +955,7 @@ function processarDados(decodedText) {
   if (!decodedText.includes("]")) return "Código: " + decodedText;
 
   const partes = decodedText.split("]");
-  
+
   // Procura no mapa qual formato satisfaz a condição (check)
   const formatoEncontrado = Object.values(FORMATOS).find(f => f.check(partes));
 
@@ -967,7 +968,7 @@ function processarDados(decodedText) {
   }
 
   return "Padrão desconhecido: " + decodedText;
-  
+
 }
 
 
@@ -1138,7 +1139,7 @@ function exibirFotoNoCard(foto) {
   }
 }
 
-// 5. Funções de 
+/*
 function apagarTudo() {
   if (confirm("Deseja apagar todas as fotos?")) {
     const tx = dbImagens.transaction("fotos", "readwrite");
@@ -1146,10 +1147,10 @@ function apagarTudo() {
     tx.oncomplete = () => renderizarEstruturaEFotos();
   }
 }
-
+*/
 function apagarFoto(chave) {
   const tx = dbImagens.transaction("fotos", "readwrite");
-  alert( "Apagar?", tx.objectStore("fotos").delete(chave));
+  alert("Apagar?", tx.objectStore("fotos").delete(chave));
   tx.oncomplete = () => renderizarEstruturaEFotos();
 
 }
@@ -1183,7 +1184,7 @@ if ("serviceWorker" in navigator) {
 }
 
 
-  window.addEventListener("load", () => {
+window.addEventListener("load", () => {
   const loader = document.getElementById('loader');
   loader.classList.add('hidden');
 });

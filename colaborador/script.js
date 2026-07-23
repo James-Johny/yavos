@@ -393,7 +393,7 @@ function sugerirEPIs(inputId = "epiInput", sugestoesId = "sugestoesEPI") {
 
 
     btn.type = "button";
-    btn.textContent = `[ ${qtd} ] ${epi.codigo} - ${epi.descricao} #${desc}`;
+    btn.textContent = `${qtd} ${epi.codigo} - ${epi.descricao} #${desc}`;
     btn.onclick = () => {
       if (inputId === "epiInput") {
         adicionarItemEPI(epi);

@@ -13,35 +13,44 @@
 </head>
 
 <body>
-  
 
-  <div id="login-container" style="display: flex; flex-direction: row wrap; align-items: center; justify-content: center; height: 90dvh; width: 90dvw; font-family: sans-serif;">
-    <div style="display:flex; flex-flow: column nowrap; gap: 1rem; align-items: center; justify-content: center; background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 70%; height: 70%;">
-        <h2 style="color: #035dab; text-align: center; font-size: 3rem;">Acesso Restrito </h2>
-        <input type="email" id="email" placeholder="E-mail" style="width: 100%; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-        <input type="password" id="senha" placeholder="Senha" style="width: 100%; margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-        <button type="button" onclick="login()" style="width: 100%; padding: 10px; background: #035dab; color: white; border: none; border-radius: 4px; cursor: pointer;">Entrar</button>
-        <p id="login-erro" style="color: red; font-size: 12px; margin-top: 10px; text-align: center; display: none;">Acesso negado.</p>
+
+  <div id="login-container"
+    style="display: flex; flex-direction: row wrap; align-items: center; justify-content: center; height: 90dvh; width: 90dvw; font-family: sans-serif;">
+    <div
+      style="display:flex; flex-flow: column nowrap; gap: 1rem; align-items: center; justify-content: center; background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 70%; height: 70%;">
+      <h2 style="color: #035dab; text-align: center; font-size: 3rem;">Acesso Restrito </h2>
+      <input type="email" id="email" placeholder="E-mail"
+        style="width: 100%; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+      <input type="password" id="senha" placeholder="Senha"
+        style="width: 100%; margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+      <button type="button" onclick="login()"
+        style="width: 100%; padding: 10px; background: #035dab; color: white; border: none; border-radius: 4px; cursor: pointer;">Entrar</button>
+      <p id="login-erro" style="color: red; font-size: 12px; margin-top: 10px; text-align: center; display: none;">
+        Acesso negado.</p>
     </div>
   </div>
 
-  <div id="conteudo-protegido" style="display: none;">
-    <div id="loader"><div class="spinner"></div></div>
 
-  <div id="menuToggle">
-    <input type="checkbox" id="menuCheckbox" />
-    <label for="menuCheckbox">SAVOY</label>
-    <ul id="menu">
-      <ul>
-      <li><a href="#" onclick="mostrarSecao('bancoHoras')">Banco de Horas</a></li>
-      <li><a href="#" onclick="mostrarSecao('requisicoes')">Requisições</a></li>
-      <li><a href="#" onclick="mostrarSecao('codigos')">Leitor de Códigos</a></li>
-      <li><a href="#" onclick="mostrarSecao('hora-a-hora')">Hora A Hora</a></li>
-      <li><a href="#" onclick="mostrarSecao('cdc')">Colaboradores</a></li>
-      
-    </ul>
+  <div id="loader">
+    <div class="spinner"></div>
   </div>
 
+  <div id="conteudo-protegido" style="display: none;">
+    <div id="menuToggle">
+      <input type="checkbox" id="menuCheckbox" />
+      <label for="menuCheckbox">SAVOY</label>
+      <ul id="menu">
+        <ul>
+          <li><a href="#" onclick="mostrarSecao('bancoHoras')">Banco de Horas</a></li>
+          <li><a href="#" onclick="mostrarSecao('requisicoes')">Requisições</a></li>
+          <li><a href="#" onclick="mostrarSecao('codigos')">Leitor de Códigos</a></li>
+          <li><a href="#" onclick="mostrarSecao('hora-a-hora')">Hora A Hora</a></li>
+          <li><a href="#" onclick="mostrarSecao('cdc')">Colaboradores</a></li>
+
+        </ul>
+    </div>
+  </div>
   <div id="bancoHoras" class="secao">
     <input type="text" onfocus="this.value='';" id="buscaColaborador" placeholder="Digite parte do nome ou matrícula"
       oninput="sugerirColaboradorUnificado('buscaColaborador', 'sugestoesBancoHoras')">
@@ -53,7 +62,7 @@
 
   <div id="requisicoes" class="secao" onload="carregarRequisicoes();">
 
-    
+
 
 
     <input type="text" onfocus="this.value='';" id="buscaRequisicao" placeholder="Digite o nome do colaborador"
@@ -61,14 +70,15 @@
     <div id="sugestoesColaborador" class="sugestoes"></div>
 
     <div class="qtd_desc">
-    <input type="number" id="quantidade" onfocus="this.value='';" class="quantidade" placeholder="Quantidade" min="1" value="1">
-    <select id="descricao" name="descricao" class="descricao">
-      <option value="TROCA/DESGASTE NATURAL" class="desc">Troca/Desgaste Natural</option>
-      <option value="NECESSIDADE" class="desc necessidade">Necessidade</option>
-      <option value="PERDA" class="desc perda">Perda</option>
-      <option value="USO COLETIVO" class="desc coletivo">Uso Coletivo</option>
-    </select>
-  </div>
+      <input type="number" id="quantidade" onfocus="this.value='';" class="quantidade" placeholder="Quantidade" min="1"
+        value="1">
+      <select id="descricao" name="descricao" class="descricao">
+        <option value="TROCA/DESGASTE" class="desc">Troca/Desgaste</option>
+        <option value="NECESSIDADE" class="desc necessidade">Necessidade</option>
+        <option value="PERDA" class="desc perda">Perda</option>
+        <option value="USO COLETIVO" class="desc coletivo">Uso Coletivo</option>
+      </select>
+    </div>
     <input type="text" placeholder="Digite o nome do EPI" id="epiInput" oninput="sugerirEPIs()">
     <div id="sugestoesEPI" class="sugestoes"></div>
 
@@ -100,7 +110,8 @@
 
 
     <div class="controles">
-      <button id="apagarTudo" class="btn-danger" style="background-color: var(--danger);" onclick="apagarTudo()">Apagar Todas as Fotos</button>
+      <!--<button id="apagarTudo" class="btn-danger" style="background-color: var(--danger);" onclick="apagarTudo()">Apagar
+        Todas as Fotos</button>-->
       <button id="btnAbrir" onclick="iniciarCamera()" style="background-color: var(--primary);">Abrir Câmera</button>
       <button id="btnFecharCam" class="btn-danger" style="display:none; background-color: var(--danger);"
         onclick="pararCamera()">Fechar Câmera</button>
@@ -142,7 +153,8 @@
           <label class="radio-btn"><input type="radio" name="tipo" value="os"> O.S.</label>
         </div>
 
-        <button onclick="tirarFoto()" style="border:2px solid var(--primary);background-color: transparent; width: 150px; height: 150px; margin-top: 15px; opacity: 0.3; position: absolute; top: 1300px; right: 42%;"> </button>
+        <button onclick="tirarFoto()"
+          style="border:2px solid var(--primary);background-color: transparent; width: 150px; height: 150px; margin-top: 15px; opacity: 0.3; position: absolute; top: 1300px; right: 42%;"> </button>
       </div>
     </section>
 
@@ -173,10 +185,10 @@
     <div id="resultadoCDC" class="tabelaCDC"></div>
 
   </div>
-</div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
-  
+
 </body>
 
 </html>
