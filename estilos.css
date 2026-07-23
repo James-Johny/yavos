@@ -8,6 +8,76 @@
 /* ========== LOGIN ============= */
 
 
+#savoy {
+  display: block;
+  font-size: 8rem;
+  text-align: center;
+  background: none;
+  color: var(--secondary);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px var(--shadow1);
+}
+
+#savoy::first-letter {
+  color: var(--primary);
+  font-weight: bolder;
+  font-size: 8.1rem;
+}
+
+#userInfo {
+  position: absolute;
+  top: 0;
+  z-index: 999;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 2.5rem;
+  background: transparent;
+  width: min-content;
+  height: min-content;
+  padding: 0.5rem 1rem;
+}
+
+#userName {
+  font-weight: bold;
+  color: var(--primary);
+}
+#userMatricula {
+  color: var(--secondary);
+  font-style: italic;
+}
+
+#mensagemErro {
+  color: var(--cor-neutro);
+  font-size: 3rem;
+  margin-top: 1rem;
+}
+
+.login {
+  position: fixed;
+  top: 20rem;
+  left: 14dvw;
+  width: 40rem;
+  height: 30rem;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  border-radius: 10px;
+  margin-top: 10rem;
+  z-index: 9999;
+  background: rgb(72, 180, 208, 0.4);
+}
+
+
+
 div#menuToggle {
   align-self: center;
   text-align: center;
@@ -49,6 +119,48 @@ div#menuToggle {
   margin: 20px;
   padding: 0;
   background: var(--background);
+}
+
+/* ================== navbar bottom =====================*/
+
+.navbar-bottom {
+  z-index: 999;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 12rem;
+  background-color: var(--purple3);
+  display: flex;
+  flex-flow: wrap nowrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-around;
+  border-top: 2px solid white;
+  color: white;
+}
+
+span.button-active {
+  background: var(--primary);
+  filter: blur(0.5px) !important;
+  color: var(--purple3) !important;
+  cursor: default !important;
+  width: 13rem;
+}
+
+.button-bottom {
+  margin-top: 1rem;
+  margin-bottom: .5rem;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 8rem;
+  height: 100%;
+  border-radius: 0;
+  font-size: 2rem;
 }
 
 /* ========== 3. LOADER COM ANIMAÇÃO DE SPINNER ========== */
@@ -101,6 +213,18 @@ th {
   line-height: 1.6;
   letter-spacing: 0.5px;
 }
+
+
+.container-scroll {
+  max-height: 70rem;
+  overflow-y: auto;
+  border: 2px solid var(--purple1);
+  border-radius: 4px;
+  background: var(--white1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
 
 /* ========== 5. LAYOUTS PRINCIPAIS ========== */
 #versao {
@@ -345,32 +469,140 @@ button:active {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* ================== TREINAMENTOS =====================*/
+
+
+#treinamentos {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+  width: 100%;
+  margin-bottom: 10rem;
+  color: var(--cor-neutro);
+}
+
+#treinamentos ul {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  color: var(--cor-neutro);
+  text-align: left;
+}
+
+#treinamentos li {
+  background: transparent;
+  color: var(--white1);
+  border-radius: 15px;
+  padding: 10px 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  text-align: center;
+
+}
+
+#treinamentos a {
+  text-decoration: none;
+  color: var(--secondary);
+  font-size: 7.5rem;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+#treinamentos li:hover {
+  background: linear-gradient(135deg, var(--blue1), var(--primary));
+  color: var(--white1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+/* =================== XLSX ======================== */
+
+
+
+.select-setor {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4rem;
+  text-transform: uppercase;
+  gap: 1rem;
+}
+.select-setor select {
+  height: 4rem;
+  font-size: 3rem;
+  text-transform: uppercase;
+}
+
+#status {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  font-weight: 500;
+  background-color: #e2e8f0;
+  color: #334155;
+  display: inline-block;
+}
+
+.table-container {
+  overflow-x: auto;
+  width: 95dvw;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  background: white;
+  margin-bottom: 13rem;
+}
+
+.excel-table {
+  border-collapse: collapse;
+  font-family: 'Calibri', 'Segoe UI', sans-serif;
+  color: #000000;
+  width: min-content;
+}
+
+.excel-table td {
+  border: 1px solid #d4d4d4;
+  padding: 1px 2px;
+  min-width: 1rem;
+  max-width: 12rem;
+  height: min-content;
+  white-space: nowrap;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
 /* ========== 9. COMPONENTES ESPECÍFICOS ========== */
 .secao {
+  position: relative;
   display: flex;
   flex-flow: column wrap;
   align-items: center;
   margin-top: 20px;
+  margin-bottom: 10rem;
 }
 
-#itensRequisicao {
-  font-size: 2rem;
+
+.editar button {
+  border: 3px solid var(--black1);
+  width: 23rem;
+  box-shadow: none;
 }
 
-#listaRequisicoes {
-  display: flex;
-  flex-flow: column wrap;
-  margin-top: 0;
-  padding: 0;
-  border-left: 5px solid var(--purple1);
-  background: linear-gradient(135deg, var(--lista-requisições-bg), #e8d9f5);
-  border-radius: 8px;
-  color: var(--cor-neutro);
-  max-width: fit-content;
-  overflow-x: auto;
-  font-size: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.editar button:hover {
+  background: linear-gradient(135deg, var(--purple3), var(--purple2));
+  border: 3px solid var(--black1);
+  color: var(--white1);
+  box-shadow: 0 0 12px var(--primary);
 }
+
+
 
 .positivo {
   color: var(--cor-positivo);
@@ -404,8 +636,10 @@ button:active {
 
 /* ========== 10. TAREFAS E CARDS ========== */
 .tarefa {
+  display: flex;
+  flex-flow: column wrap;
   margin-top: 20px;
-  padding: 10px;
+  padding: 0;
   border: 1px solid #ccc;
   border-radius: 6px;
   background: linear-gradient(135deg, #fff, #f8f9fa);
@@ -413,6 +647,8 @@ button:active {
   width: 48rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .tarefa:hover {
@@ -430,6 +666,31 @@ button:active {
 .tarefa h3 {
   margin-bottom: 10px;
   font-size: 2.1rem;
+  border: 1px solid black;
+  border-radius: 500px;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, var(--purple2), var(--purple3));
+  color: var(--white1);
+  min-width: 95%;
+  text-align: center;
+}
+
+.qtd_desc {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.qtd_desc span {
+  font-size: 2.6rem;
+  color: var(--purple1);
+  font-weight: bold;
+}
+
+.qtd_desc span input.quantidade {
+  width: 1rem;
 }
 
 /* ========== 11. TABELAS GENÉRICAS ========== */
@@ -446,6 +707,9 @@ tr,
 td {
   margin: 3px;
   padding: 3px;
+}
+table td {
+  padding: 8px 12px;
 }
 
 table tr:nth-child(even) {
@@ -544,15 +808,54 @@ video {
   display: none;
 }
 
+
+.item-quantidade {
+  background-color: var(--purple3);
+  color: white;
+  border: 2px solid white;
+  align-self: center;
+  justify-self: center;
+  padding: 2px 16px;
+  cursor: default;
+  margin-left: 0;
+  max-width: 2rem;
+}
+
+.new-item {
+  display: grid;
+  grid-template-columns: 1fr 10fr 1fr;
+  max-width: 100%;
+  background-color: var(--white1);
+  padding: 8px 12px;
+  border: 3px solid var(--black2);
+  margin: 0;
+}
+
+.new-item label {
+  justify-self: space-between;
+}
+
+
+.new-item .desc {
+  font-size: 1rem;
+  font-style: italic;
+  width: min-max-content(10rem, 10rem);
+  max-height: 1.5rem;
+}
+
+
 /* ========== 15. SUGESTÕES AUTOCOMPLETE COM GLASSMORPHISM ========== */
 #sugestoesEPI {
   position: absolute;
   top: 6.5rem;
+  width: 100%;
 }
 
-#sugestoesColaborador {
+#sugestoesColaborador,
+#sugestoesBancoHoras {
   position: absolute;
   top: -5rem;
+  min-width: 100%;
 }
 
 .sugestoes {
@@ -597,12 +900,8 @@ video {
   cursor: default;
 }
 
-.new-item::after {
-  content: " ___________________________________________";
-}
-
 .descricao {
-  width: 41rem;
+  width: 30rem;
   margin-left: 8px;
   font-size: 2.6rem;
   color: var(--purple1);
@@ -617,6 +916,13 @@ video {
   font-weight: bold;
 }
 
+.data-criacao {
+  font-size: 1.8rem;
+  color: var(--primary);
+  font-style: italic;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
 .desc {
   background: linear-gradient(135deg, var(--purple2), var(--purple3));
   border-radius: 500px;
@@ -648,7 +954,7 @@ video {
 li {
   list-style: none;
   padding: 3px;
-  margin: 2px;
+  margin: 0;
   transition: all 0.2s ease;
 }
 
@@ -921,11 +1227,41 @@ span:hover {
   transition: all 0.2s ease;
 }
 
+/* ========== XADREZ ========== */
+
+
+#xadrez input,
+#xadrez button,
+#xadrez select,
+#xadrez {
+  font-size: 2rem;
+  margin-bottom: 11rem;
+}
+
+#xadrez {
+  background: var(--white1);
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  gap: 0;
+  justify-content: center;
+  width: 60rem;
+  padding: 20px;
+}
+
+#pdf-canvas {
+  display: none;
+
+}
+
+
+
 /* ========== 21. RESPONSIVIDADE ========== */
 @media screen and (min-width: 120px) {
   body {
     justify-items: center;
-    margin: 10px;
+    margin: 0;
+    padding: 0;
   }
 
   input,
@@ -933,11 +1269,25 @@ span:hover {
     font-size: 3rem;
     padding: 8px;
     max-width: 50rem;
-    width: 800px;
+    width: 90%;
+  }
+
+  .qtd_desc input.quandtidade {
+    max-width: 3rem;
+  }
+
+  .tarefa {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
   }
 
   .tarefa h3 {
     font-size: 2rem;
+    border: 1px solid black;
   }
 
   .sugestoes {
@@ -951,4 +1301,13 @@ span:hover {
     margin-left: 0;
     width: fit-content;
   }
+}
+
+.tarefa ul {
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.new-item .desc span {
+  font-size: .1rem;
 }
