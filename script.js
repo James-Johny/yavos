@@ -1138,7 +1138,15 @@ function exibirFotoNoCard(foto) {
   }
 }
 
-// 5. Funções de Apoio
+// 5. Funções de 
+function apagarTudo() {
+  if (confirm("Deseja apagar todas as fotos?")) {
+    const tx = dbImagens.transaction("fotos", "readwrite");
+    tx.objectStore("fotos").clear();
+    tx.oncomplete = () => renderizarEstruturaEFotos();
+  }
+}
+
 function apagarFoto(chave) {
   const tx = dbImagens.transaction("fotos", "readwrite");
   alert( "Apagar?", tx.objectStore("fotos").delete(chave));
