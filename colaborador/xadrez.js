@@ -1,4 +1,4 @@
-const xadrez = '../xadrez9.pdf';
+const xadrez = '../xadrez8.pdf';
 
 
 
@@ -76,7 +76,7 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
                 let q, x, y, w, h;
 
-
+    
 
                 if (xadrez === '../xadrez.pdf') { // Quadro com 6 dias
                     q = 212;
@@ -84,12 +84,19 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
                     y = [35, 550, 565, 830, 1440];
                     w = [55, 265];
                     h = [130, 115, 430, 260, 243];
-                } else if (xadrez === '../xadrez2.pdf') { // Quadro com 8 dias
-                    q = 87;
-                    x = [1065, 1305, 1546, 1787, 2038, 450, 766];
-                    y = [203, 526, 652, 875, 1440];
-                    w = [53, 250];
-                    h = [120, 115, 380, 220, 243];
+                } else if (xadrez === '../xadrez7.pdf') { // Quadro com 7 dias
+                    q = 63;
+                    x = [1065, 1305, 1546, 1827, 2038, 510, 766];
+                    y = [33, 526, 565, 845, 1440];
+                    w = [62, 265];
+                    h = [120, 115, 438, 245, 243];
+                } else if (xadrez === '../xadrez8.pdf') { // Quadro com 8 dias
+                    q = 80;
+                    x = [980, 1234, 1490, 1746, 2002, 460, 720];
+                    y = [148, 526, 626, 875, 1440];
+                    w = [57, 252];
+                    h = [125, 115, 405, 230, 243];
+
                 } else if (xadrez === '../xadrez9.pdf') { // Quadro com 9 dias
                     q = 38;
                     x = [828, 1050, 1275, 1495, 1715, 1938, 2160];
