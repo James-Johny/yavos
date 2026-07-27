@@ -20,10 +20,10 @@ lista.insertAdjacentHTML('beforeend', menuLinks);
 // ===== CONTROLE DE LOGIN =====
 
 // Verifica se o usuário está logado ao carregar a página
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const matricula = localStorage.getItem('matriculaColaborador');
     const nome = localStorage.getItem('nomeColaborador');
-    
+
     if (matricula && nome) {
         // Usuário está logado
         mostrarConteudoProtegido();
@@ -36,42 +36,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function login() {
     const matriculaColab = document.getElementById('matricula').value.trim();
-    
+
     // Valida se o campo não está vazio
     if (!matriculaColab) {
         document.getElementById('mensagemErro').textContent = 'Por favor, insira sua matrícula.';
         return;
     }
-    
+
     // Busca o colaborador
     const colabsFilter = colaboradoresCSV.filter(colab => colab.matricula === matriculaColab);
-    
+
     if (colabsFilter.length === 0) {
         document.getElementById('mensagemErro').textContent = 'Matrícula não encontrada. Tente novamente.';
         return;
     }
-    
+
     // Salva os dados do colaborador
     const colab = colabsFilter[0];
     localStorage.setItem('nomeColaborador', colab.nome);
     localStorage.setItem('matriculaColaborador', colab.matricula);
-    
+    localStorage.setItem('setorColaborador', descreverCDC(colab.cdc).split(" - ")[0].split(' ').slice(-1)[0]);
+
+
+
+
+
     // Redireciona para a página principal
     window.location.href = 'index.html';
+
+
+
 }
 
 function logout() {
     localStorage.removeItem('nomeColaborador');
     localStorage.removeItem('matriculaColaborador');
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
 }
 
 // ===== FUNÇÕES DE EXIBIÇÃO =====
 
 function mostrarConteudoProtegido() {
+    const idDoCelular = obterIdentificadorCelular();
     const conteudo = document.getElementById('conteudo-protegido');
     const login = document.getElementById('login');
-    
+
     if (conteudo) conteudo.style.display = 'block';
     if (login) login.style.display = 'none';
 }
@@ -79,56 +88,58 @@ function mostrarConteudoProtegido() {
 function esconderConteudoProtegido() {
     const conteudo = document.getElementById('conteudo-protegido');
     const login = document.getElementById('login');
-    
+
     if (conteudo) conteudo.style.display = 'none';
     if (login) login.style.display = 'block';
 }
 
 function atualizarInfoUsuario() {
-    const nome = localStorage.getItem('nomeColaborador').split(' ')[0];
+    const nome = localStorage.getItem('nomeColaborador').split(' ')[0] + " " + localStorage.getItem('nomeColaborador').split(' ')[1];
     const matricula = localStorage.getItem('matriculaColaborador');
-    
+    const setor = localStorage.getItem('setorColaborador');
+
     const colabName = document.getElementById('userName');
     const colabMatricula = document.getElementById('userMatricula');
-    
+    const colabSetor = document.getElementById('userSetor');
+
     if (colabName) {
         colabName.textContent = nome || 'Nome do Colaborador';
     }
-    
+
     if (colabMatricula) {
         colabMatricula.textContent = matricula || 'Matrícula do Colaborador';
+    }
+
+    if (colabSetor) {
+        colabSetor.textContent = setor || 'Setor não identificado'
     }
 }
 
 // ===== VERIFICAÇÃO RÁPIDA (para usar em qualquer lugar) =====
 
 function isLogado() {
-    return localStorage.getItem('nomeColaborador') !== null && 
-           localStorage.getItem('matriculaColaborador') !== null;
+    return localStorage.getItem('nomeColaborador') !== null &&
+        localStorage.getItem('matriculaColaborador') !== null;
 }
 
-// Exemplo de uso:
-// if (isLogado()) {
-//     // Faz algo para usuário logado
-// } else {
-//     // Redireciona para login
-//     window.location.href = 'login.html';
-// }
 
+//localStorage.clear('identificador_dispositivo');
 
 // Função para gerar um ID único universal (UUID)
 function gerarIdentificadorDispositivo() {
-    return 'dev-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now();
+
+    const colabMatricula = localStorage.getItem('matriculaColaborador');
+    return 'colab-' + colabMatricula + '-' + Date.now();
 }
 
 function obterIdentificadorCelular() {
     // 1. Tenta buscar o ID já salvo no navegador do celular
-    let dispositivoId = localStorage.getItem('dispositivo_mac_fake');
+    let dispositivoId = localStorage.getItem('identificador_dispositivo');
 
     if (!dispositivoId) {
         // 2. Se for o primeiro acesso, gera um ID inédito
         dispositivoId = gerarIdentificadorDispositivo();
-        localStorage.setItem('dispositivo_mac_fake', dispositivoId);
+        localStorage.setItem('identificador_dispositivo', dispositivoId);
 
         console.log("Primeiro acesso deste celular. ID gerado:", dispositivoId);
         // Aqui você faria um fetch para salvar esse ID no seu banco de dados
@@ -141,6 +152,3 @@ function obterIdentificadorCelular() {
 }
 
 
-
-// Executa ao carregar a página web no celular
-const idDoCelular = obterIdentificadorCelular();

@@ -30,23 +30,26 @@
     </div>-->
 
 
-    <!--<div id="login" class="login">
+    <div id="login" class="login">
+        <span id="savoy">SAVOY</span>
+        <span class="title-login">Bem vindo(a)</span>
         <input type="text" id="matricula" placeholder="Digite sua matrícula">
         <button onclick="login()">Entrar</button>
         <div id="mensagemErro"></div>
-    </div>-->
+    </div>
 
 
-    <!--<div id="conteudo-protegido" style="display: block;">-->
+    <div id="conteudo-protegido" style="display: block;">
 
         <div id="loader">
             <div class="spinner"></div>
         </div>
         <div id="menuToggle">
-            <!--<div id="userInfo">
-                <span id="userName"></span>
-                <span id="userMatricula"></span>
-            </div>-->
+            <div id="userInfo">
+                <span id="userName"></span> - 
+                <span id="userMatricula"></span> - <span id="userSetor"></span>
+                <span id="btn-logout"onclick="logout()">Sair</span>
+            </div>
             <span id="savoy" onclick="window.location.href='index.html'">SAVOY</span>
 
         </div>
@@ -155,7 +158,7 @@
         <script src="xadrez.js"></script>
         <script src="programacao.js"></script>
         <script src="treinamentos.js"></script>
-    
+    </div>
 </body>
 
 </html>
