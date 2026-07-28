@@ -20,13 +20,13 @@ lista.insertAdjacentHTML('beforeend', menuLinks);
 // ===== CONTROLE DE LOGIN =====
 
 // Verifica se o usuário está logado ao carregar a página
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
     const matricula = localStorage.getItem('matriculaColaborador');
     const nome = localStorage.getItem('nomeColaborador');
 
     if (matricula && nome) {
         // Usuário está logado
-        mostrarConteudoProtegido();
+        await mostrarConteudoProtegido(); // AJUSTADO: await adicionado
         atualizarInfoUsuario();
     } else {
         // Usuário não está logado
@@ -57,27 +57,22 @@ function login() {
     localStorage.setItem('matriculaColaborador', colab.matricula);
     localStorage.setItem('setorColaborador', descreverCDC(colab.cdc).split(" - ")[0].split(' ').slice(-1)[0]);
 
-
-
-
-
     // Redireciona para a página principal
     window.location.href = 'index.html';
-
-
-
 }
 
 function logout() {
     localStorage.removeItem('nomeColaborador');
     localStorage.removeItem('matriculaColaborador');
+    localStorage.removeItem('setorColaborador'); // Boa prática: limpa o setor também
     window.location.href = 'index.html';
 }
 
 // ===== FUNÇÕES DE EXIBIÇÃO =====
 
-function mostrarConteudoProtegido() {
-    const idDoCelular = obterIdentificadorCelular();
+// AJUSTADO: adicionado 'async' aqui para suportar o 'await'
+async function mostrarConteudoProtegido() {
+    const idDoCelular = await obterIdentificadorCelular();
     const conteudo = document.getElementById('conteudo-protegido');
     const login = document.getElementById('login');
 
@@ -94,7 +89,14 @@ function esconderConteudoProtegido() {
 }
 
 function atualizarInfoUsuario() {
-    const nome = localStorage.getItem('nomeColaborador').split(' ')[0] + " " + localStorage.getItem('nomeColaborador').split(' ')[1];
+    const nomeSalvo = localStorage.getItem('nomeColaborador') || '';
+    const partesNome = nomeSalvo.trim().split(' ');
+    
+    // AJUSTADO: Trata o nome para não exibir 'undefined' caso o usuário só tenha 1 nome cadastrado
+    const primeiroNome = partesNome[0] || '';
+    const sobrenome = partesNome[3] ? ` ${partesNome[2]}` : '';
+    const nomeExibicao = `${primeiroNome}${sobrenome}`;
+
     const matricula = localStorage.getItem('matriculaColaborador');
     const setor = localStorage.getItem('setorColaborador');
 
@@ -103,7 +105,7 @@ function atualizarInfoUsuario() {
     const colabSetor = document.getElementById('userSetor');
 
     if (colabName) {
-        colabName.textContent = nome || 'Nome do Colaborador';
+        colabName.textContent = nomeExibicao || 'Nome do Colaborador';
     }
 
     if (colabMatricula) {
@@ -111,7 +113,7 @@ function atualizarInfoUsuario() {
     }
 
     if (colabSetor) {
-        colabSetor.textContent = setor || 'Setor não identificado'
+        colabSetor.textContent = setor || 'Setor não identificado';
     }
 }
 
@@ -122,17 +124,22 @@ function isLogado() {
         localStorage.getItem('matriculaColaborador') !== null;
 }
 
-
-//localStorage.clear('identificador_dispositivo');
-
-// Função para gerar um ID único universal (UUID)
+// Função para gerar um ID único universal
 function gerarIdentificadorDispositivo() {
-
-    const colabMatricula = localStorage.getItem('matriculaColaborador');
+    const colabMatricula = localStorage.getItem('matriculaColaborador') || 'anon';
     return 'colab-' + colabMatricula + '-' + Date.now();
 }
 
-function obterIdentificadorCelular() {
+async function obterIdentificadorCelular() {
+    // Evita 'null' caso algum item não esteja salvo ainda
+    const matricula = localStorage.getItem('matriculaColaborador') || '';
+    const setor = localStorage.getItem('setorColaborador') || '';
+    const nome = localStorage.getItem('nomeColaborador') || 'Colaborador';
+
+    const colabID = `${matricula}${setor}`;
+    const primeiroNome = nome.trim().split(' ')[0];
+    const deviceName = `${primeiroNome}-${Date.now()}`;
+
     // 1. Tenta buscar o ID já salvo no navegador do celular
     let dispositivoId = localStorage.getItem('identificador_dispositivo');
 
@@ -142,13 +149,30 @@ function obterIdentificadorCelular() {
         localStorage.setItem('identificador_dispositivo', dispositivoId);
 
         console.log("Primeiro acesso deste celular. ID gerado:", dispositivoId);
-        // Aqui você faria um fetch para salvar esse ID no seu banco de dados
-        // associado ao usuário (ex: "Dispositivo Autorizado do João")
+
+        try {
+            const { data, error } = await supabase
+                .from('colaboradores')
+                .insert([
+                    {
+                        user_id: colabID,
+                        dispositivo_id: dispositivoId,
+                        nome_dispositivo: deviceName
+                    }
+                ]);
+
+            if (error) {
+                console.error("Erro ao registrar dispositivo no Supabase:", error.message);
+            } else {
+                console.log("Dispositivo salvo no banco de dados com sucesso!", data);
+            }
+        } catch (err) {
+            console.error("Exceção ao tentar salvar no Supabase:", err);
+        }
+
     } else {
         console.log("Celular já conhecido. ID do dispositivo:", dispositivoId);
     }
 
     return dispositivoId;
 }
-
-
