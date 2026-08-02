@@ -5,6 +5,7 @@ const db = createClient(
 );
 
 
+
 let textoPDF = "";
 let colaboradoresPDF = [];
 let colaboradoresCSV = [];
