@@ -1139,7 +1139,7 @@ function exibirFotoNoCard(foto) {
   }
 }
 
-/*
+
 function apagarTudo() {
   if (confirm("Deseja apagar todas as fotos?")) {
     const tx = dbImagens.transaction("fotos", "readwrite");
@@ -1147,7 +1147,7 @@ function apagarTudo() {
     tx.oncomplete = () => renderizarEstruturaEFotos();
   }
 }
-*/
+
 function apagarFoto(chave) {
   const tx = dbImagens.transaction("fotos", "readwrite");
   alert("Apagar?", tx.objectStore("fotos").delete(chave));
