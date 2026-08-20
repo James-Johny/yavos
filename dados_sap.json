@@ -1,0 +1,26 @@
+[
+  {
+    "empresa": "6000",
+    "centro": "6005",
+    "solicitante": "115456 MAICON",
+    "ramal": "4618",
+    "kostl": "76585",
+    "ablad": "almxr np",
+    "itens": [
+      {"material": "2101407", "quantidade": "1"},
+      {"material": "2101400", "quantidade": "1"},
+      {"material": "2119632", "quantidade": "1"}
+    ]
+  },
+  {
+    "empresa": "6000",
+    "centro": "6005",
+    "solicitante": "115059 DALHANE",
+    "ramal": "4618",
+    "kostl": "76582",
+    "ablad": "almxr np",
+    "itens": [
+      {"material": "2102256", "quantidade": "1"}
+    ]
+  }
+]
