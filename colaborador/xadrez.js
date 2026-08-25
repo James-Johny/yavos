@@ -1,4 +1,4 @@
-const xadrez = '../xadrez8.pdf';
+const xadrez = '../xadrez.pdf';
 
 
 
@@ -54,11 +54,11 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
 
 
-                if (turno === "C" && hora < 23) {
+                if (turno === "C" && hora < 23 ) {
                     if (day === 0) {
                         diaC = [6, "Sábado"];
                     } else if (day === 2) {
-                        diaC = [3, "Segunda"];
+                        diaC = [1, "Segunda"];
                     } else if (day === 3) {
                         diaC = [2, "Terça"];
                     } else if (day === 4) {
@@ -76,14 +76,14 @@ pdfjsLib.getDocument(xadrez).promise.then(pdf => {
 
                 let q, x, y, w, h;
 
-    
+                console.log("DIA: " + dia + " DAY: " + day);
 
                 if (xadrez === '../xadrez.pdf') { // Quadro com 6 dias
-                    q = 212;
-                    x = [270, 642, 927, 1212, 1504, 1788, 2073];
-                    y = [35, 550, 565, 830, 1440];
-                    w = [55, 265];
-                    h = [130, 115, 430, 260, 243];
+                    q = 180;
+                    x = [70, 622, 921, 1220, 1527, 1826, 2125];
+                    y = [40, 550, 598, 905, 1440];
+                    w = [58, 270];
+                    h = [138, 115, 452, 253, 243];
                 } else if (xadrez === '../xadrez7.pdf') { // Quadro com 7 dias
                     q = 63;
                     x = [1305, 1065, 1546, 1827, 2038, 766, 510];
