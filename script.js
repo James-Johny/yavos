@@ -1018,24 +1018,15 @@ document.getElementById("btnFechar").onclick = pararScanner;
 
 // ************ PARTE DO CÓDIGO PARA IMAGENS DO HORA-A-HORA ************* //
 
-
-let dbImagens;
 let streamAtivo = null;
 
-// 1. Inicializa Banco de Dados
-const reqDB = indexedDB.open("InspecaoTecnica_DB", 3);
-reqDB.onupgradeneeded = e => {
-  const db = e.target.result;
-  if (!db.objectStoreNames.contains("fotos")) {
-    db.createObjectStore("fotos", { keyPath: "chave" });
-  }
-};
-reqDB.onsuccess = e => {
-  dbImagens = e.target.result;
-  renderizarEstruturaEFotos(); // Só mostra o que tem foto ao carregar
-};
 
-// 2. Controle da Câmera (Melhor Resolução)
+// 1. Inicialização
+async function inicializar() {
+  await renderizarEstruturaEFotos();
+}
+
+// 2. Controle da Câmera
 async function iniciarCamera() {
   const video = document.getElementById('video');
   try {
@@ -1056,13 +1047,12 @@ function pararCamera() {
   document.getElementById('btnFecharCam').style.display = 'none';
 }
 
-// 3. Captura e Processamento
+// 3. Captura e Upload para Supabase
 function tirarFoto() {
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   const linha = document.querySelector('input[name="linha"]:checked').value;
   const tipo = document.querySelector('input[name="tipo"]:checked').value;
-
 
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
@@ -1070,43 +1060,47 @@ function tirarFoto() {
   ctx.drawImage(video, 0, 0);
 
   if (confirm(`Capturar imagem de ${tipo} da linha ${linha}?`)) {
-    canvas.toBlob(blob => {
+    canvas.toBlob(async blob => {
       const chave = (tipo === 'os') ? `${linha}-os-${Date.now()}` : `${linha}-${tipo}`;
-      const tx = dbImagens.transaction("fotos", "readwrite");
-      tx.objectStore("fotos").put({ chave, linha, tipo, data: blob });
-      tx.oncomplete = () => renderizarEstruturaEFotos();
+
+      const { error } = await db
+        .from("fotos")
+        .insert([{ chave, linha, tipo, data: blob }]);
+
+      if (error) {
+        alert("Erro ao salvar no Supabase: " + error.message);
+      } else {
+        renderizarEstruturaEFotos();
+      }
     }, 'image/jpeg', 0.85);
   }
 }
 
-
-// 4. Renderização Dinâmica (Só exibe linhas com foto)
-function renderizarEstruturaEFotos() {
+// 4. Renderização Dinâmica
+async function renderizarEstruturaEFotos() {
   const container = document.getElementById('container-linhas');
   container.innerHTML = "";
 
-  const store = dbImagens.transaction("fotos", "readonly").objectStore("fotos");
+  const { data: fotos, error } = await db.from("fotos").select("*");
+  if (error) {
+    alert("Erro ao carregar fotos: " + error.message);
+    return;
+  }
+
   const fotosMap = new Map();
+  fotos.forEach(foto => {
+    if (!fotosMap.has(foto.linha)) fotosMap.set(foto.linha, []);
+    fotosMap.get(foto.linha).push(foto);
+  });
 
-  store.openCursor().onsuccess = e => {
-    const cursor = e.target.result;
-    if (cursor) {
-      const foto = cursor.value;
-      if (!fotosMap.has(foto.linha)) fotosMap.set(foto.linha, []);
-      fotosMap.get(foto.linha).push(foto);
-      cursor.continue();
-    } else {
-      // Desenha apenas as linhas que possuem fotos no banco
-      Array.from(fotosMap.keys()).sort().forEach(linhaKey => {
-        const card = criarCardHTML(linhaKey);
-        container.appendChild(card);
+  Array.from(fotosMap.keys()).sort().forEach(linhaKey => {
+    const card = criarCardHTML(linhaKey);
+    container.appendChild(card);
 
-        fotosMap.get(linhaKey).forEach(foto => {
-          exibirFotoNoCard(foto);
-        });
-      });
-    }
-  };
+    fotosMap.get(linhaKey).forEach(foto => {
+      exibirFotoNoCard(foto);
+    });
+  });
 }
 
 function criarCardHTML(l) {
@@ -1124,7 +1118,7 @@ function criarCardHTML(l) {
 }
 
 function exibirFotoNoCard(foto) {
-  const url = URL.createObjectURL(foto.data);
+  const url = URL.createObjectURL(new Blob([foto.data], { type: 'image/jpeg' }));
   const btn = `<button class="btn-del" onclick="apagarFoto('${foto.chave}')">🗑️</button>`;
   const imgHtml = `${btn}<img src="${url}" onclick="abrirZoom('${url}')" style="width:100%; height:100%; object-fit:cover; cursor:pointer;">`;
 
@@ -1139,22 +1133,22 @@ function exibirFotoNoCard(foto) {
   }
 }
 
-
-function apagarTudo() {
+// 5. Exclusão
+async function apagarTudo() {
   if (confirm("Deseja apagar todas as fotos?")) {
-    const tx = dbImagens.transaction("fotos", "readwrite");
-    tx.objectStore("fotos").clear();
-    tx.oncomplete = () => renderizarEstruturaEFotos();
+    const { error } = await db.from("fotos").delete().neq("chave", "");
+    if (!error) renderizarEstruturaEFotos();
   }
 }
 
-function apagarFoto(chave) {
-  const tx = dbImagens.transaction("fotos", "readwrite");
-  alert("Apagar?", tx.objectStore("fotos").delete(chave));
-  tx.oncomplete = () => renderizarEstruturaEFotos();
-
+async function apagarFoto(chave) {
+  if (confirm("Apagar foto?")) {
+    const { error } = await db.from("fotos").delete().eq("chave", chave);
+    if (!error) renderizarEstruturaEFotos();
+  }
 }
 
+// 6. Zoom
 function abrirZoom(url) {
   document.getElementById('imgZoom').src = url;
   document.getElementById('modalZoom').style.display = "flex";
