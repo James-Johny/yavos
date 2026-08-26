@@ -1020,6 +1020,8 @@ document.getElementById("btnFechar").onclick = pararScanner;
 
 let streamAtivo = null;
 
+// Nome do bucket no Supabase (crie antes no painel)
+const BUCKET = "fotos";
 
 // 1. Inicialização
 async function inicializar() {
@@ -1047,7 +1049,7 @@ function pararCamera() {
   document.getElementById('btnFecharCam').style.display = 'none';
 }
 
-// 3. Captura e Upload para Supabase
+// 3. Captura e Upload para Supabase Storage
 function tirarFoto() {
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
@@ -1063,12 +1065,27 @@ function tirarFoto() {
     canvas.toBlob(async blob => {
       const chave = (tipo === 'os') ? `${linha}-os-${Date.now()}` : `${linha}-${tipo}`;
 
-      const { error } = await db
-        .from("fotos")
-        .insert([{ chave, linha, tipo, data: blob }]);
+      // Upload para Storage
+      const { error: uploadError } = await db.storage
+        .from(BUCKET)
+        .upload(`${chave}.jpg`, blob, { contentType: 'image/jpeg', upsert: true });
 
-      if (error) {
-        alert("Erro ao salvar no Supabase: " + error.message);
+      if (uploadError) {
+        alert("Erro ao salvar imagem: " + uploadError.message);
+        return;
+      }
+
+      // Obter URL pública
+      const { data: publicUrlData } = db.storage.from(BUCKET).getPublicUrl(`${chave}.jpg`);
+      const url = publicUrlData.publicUrl;
+
+      // Inserir metadados na tabela
+      const { error: insertError } = await db
+        .from("fotos")
+        .upsert([{ chave, linha, tipo, url }]); // upsert evita erro de chave duplicada
+
+      if (insertError) {
+        alert("Erro ao salvar metadados: " + insertError.message);
       } else {
         renderizarEstruturaEFotos();
       }
@@ -1118,9 +1135,8 @@ function criarCardHTML(l) {
 }
 
 function exibirFotoNoCard(foto) {
-  const url = URL.createObjectURL(new Blob([foto.data], { type: 'image/jpeg' }));
   const btn = `<button class="btn-del" onclick="apagarFoto('${foto.chave}')">🗑️</button>`;
-  const imgHtml = `${btn}<img src="${url}" onclick="abrirZoom('${url}')" style="width:100%; height:100%; object-fit:cover; cursor:pointer;">`;
+  const imgHtml = `${btn}<img src="${foto.url}" onclick="abrirZoom('${foto.url}')" style="width:100%; height:100%; object-fit:cover; cursor:pointer;">`;
 
   if (foto.tipo === 'os') {
     const div = document.createElement('div');
@@ -1136,15 +1152,16 @@ function exibirFotoNoCard(foto) {
 // 5. Exclusão
 async function apagarTudo() {
   if (confirm("Deseja apagar todas as fotos?")) {
-    const { error } = await db.from("fotos").delete().neq("chave", "");
-    if (!error) renderizarEstruturaEFotos();
+    await db.from("fotos").delete().neq("chave", "");
+    renderizarEstruturaEFotos();
   }
 }
 
 async function apagarFoto(chave) {
   if (confirm("Apagar foto?")) {
-    const { error } = await db.from("fotos").delete().eq("chave", chave);
-    if (!error) renderizarEstruturaEFotos();
+    await db.from("fotos").delete().eq("chave", chave);
+    await db.storage.from(BUCKET).remove([`${chave}.jpg`]); // remove também do Storage
+    renderizarEstruturaEFotos();
   }
 }
 
