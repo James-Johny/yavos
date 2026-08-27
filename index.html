@@ -15,8 +15,8 @@
 <body>
 
 
-  <div id="login-container"
-    style="display: flex; flex-direction: row wrap; align-items: center; justify-content: center; height: 90dvh; width: 90dvw; font-family: sans-serif;">
+  <!--div id="login-container"
+    style="display: flex; flex-flow: row wrap; align-items: center; justify-content: center; height: 90dvh; width: 90dvw; font-family: sans-serif;">
     <div
       style="display:flex; flex-flow: column nowrap; gap: 1rem; align-items: center; justify-content: center; background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 70%; height: 70%;">
       <h2 style="color: #035dab; text-align: center; font-size: 3rem;">Acesso Restrito </h2>
@@ -29,27 +29,27 @@
       <p id="login-erro" style="color: red; font-size: 12px; margin-top: 10px; text-align: center; display: none;">
         Acesso negado.</p>
     </div>
-  </div>
+  </div-->
 
 
   <div id="loader">
     <div class="spinner"></div>
   </div>
 
-  <div id="conteudo-protegido" style="display: none;">
-    <div id="menuToggle">
-      <input type="checkbox" id="menuCheckbox" />
-      <label for="menuCheckbox">SAVOY</label>
-      <ul id="menu">
-        <ul>
-          <li><a href="#" onclick="mostrarSecao('bancoHoras')">Banco de Horas</a></li>
-          <li><a href="#" onclick="mostrarSecao('requisicoes')">Requisições</a></li>
-          <li><a href="#" onclick="mostrarSecao('codigos')">Leitor de Códigos</a></li>
-          <li><a href="#" onclick="mostrarSecao('hora-a-hora')">Hora A Hora</a></li>
-          <li><a href="#" onclick="mostrarSecao('cdc')">Colaboradores</a></li>
-
-        </ul>
-    </div>
+  <!--div id="conteudo-protegido" style="display: none;"-->
+  <div id="menuToggle">
+    <input type="checkbox" id="menuCheckbox" />
+    <label for="menuCheckbox">SAVOY</label>
+    <ul id="menu">
+      <ul>
+      <li><a href="#" onclick="mostrarSecao('bancoHoras')">Banco de Horas</a></li>
+      <li><a href="#" onclick="mostrarSecao('requisicoes')">Requisições</a></li>
+      <li><a href="#" onclick="mostrarSecao('codigos')">Leitor de Códigos</a></li>
+      <li><a href="#" onclick="mostrarSecao('hora-a-hora')">Hora A Hora</a></li>
+      <li><a href="#" onclick="mostrarSecao('cdc')">Colaboradores</a></li>
+</ul>
+    </ul>
+  </div>
   </div>
   <div id="bancoHoras" class="secao">
     <input type="text" onfocus="this.value='';" id="buscaColaborador" placeholder="Digite parte do nome ou matrícula"
@@ -60,7 +60,7 @@
     <div id="resultado" class="resultado"></div>
   </div>
 
-  <div id="requisicoes" class="secao" onload="carregarRequisicoes();">
+  <div id="requisicoes" class="secao">
 
 
 
@@ -110,14 +110,16 @@
 
 
     <div class="controles">
-      <button id="apagarTudo" class="btn-danger" style="background-color: var(--danger);" onclick="apagarTudo()">Apagar
-        Todas as Fotos</button>
-      <button id="btnAbrir" onclick="iniciarCamera()" style="background-color: var(--primary);">Abrir Câmera</button>
+      <button id="apagarTudo" class="btn-danger" style="width: 23rem; background-color: var(--danger);"
+        onclick="apagarTudo()">Apagar
+        Fotos</button>
+      <button id="btnAbrir" onclick="iniciarCamera()" style="width: 23rem; background-color: var(--primary);">Abrir
+        Câmera</button>
       <button id="btnFecharCam" class="btn-danger" style="display:none; background-color: var(--danger);"
         onclick="pararCamera()">Fechar Câmera</button>
     </div>
 
-    <section id="area-camera" style="display:none;">
+    <section id="area-camera">
       <video id="video" autoplay playsinline></video>
       <div class="acoes-camera">
         <div class="radio-group">
@@ -169,25 +171,25 @@
     <canvas id="canvas" style="display:none;"></canvas>
 
 
-  </div>
+    <!--</div-->
 
-  <div id="cdc" class="secao">
-    <div class="container-cdc">
-      <select id="listaCDC">
-        <option value="">Selecione um CDC</option>
-        <!-- Opções serão preenchidas dinamicamente -->
-      </select>
+    <div id="cdc" class="secao">
+      <div class="container-cdc">
+        <select id="listaCDC">
+          <option value="">Selecione um CDC</option>
+          <!-- Opções serão preenchidas dinamicamente -->
+        </select>
+      </div>
+      <input type="text" placeholder="Digite o CDC">
+      <button onclick="listarCDC()">Buscar CDC</button>
+      <div id="detalhesColaborador">
+      </div>
+      <div id="resultadoCDC" class="tabelaCDC"></div>
+
     </div>
-    <input type="text" placeholder="Digite o CDC">
-    <button onclick="listarCDC()">Buscar CDC</button>
-    <div id="detalhesColaborador">
-    </div>
-    <div id="resultadoCDC" class="tabelaCDC"></div>
 
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
 
 </body>
 

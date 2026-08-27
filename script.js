@@ -1124,7 +1124,7 @@ function criarCardHTML(l) {
   const sec = document.createElement('section');
   sec.className = 'linha-card';
   sec.innerHTML = `
-        <h2>${l.replace('L', 'LINHA ')}</h2>
+        <h2 style="text-align: right;">${l.replace('L', 'LINHA ')}</h2>
         <div class="sub-secao">
             <div class="box" id="box-${l}-caderno"><h4>CADERNO</h4></div>
             <div class="box" id="box-${l}-quadro"><h4>QUADRO</h4></div>

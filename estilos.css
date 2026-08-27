@@ -769,14 +769,17 @@ video {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-#btnFechar {
+#btnFechar, .btn-danger {
   background: linear-gradient(135deg, rgb(220, 53, 70), rgb(180, 40, 55));
   color: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+
+
 #btnFechar:hover,
-#btnAcessar:hover {
+#btnAcessar:hover,
+.btn-danger:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 0 12px rgba(255, 255, 255, 0.3);
 }
