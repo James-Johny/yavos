@@ -1033,7 +1033,7 @@ async function iniciarCamera() {
   const video = document.getElementById('video');
   try {
     streamAtivo = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: "environment" }, width: { ideal: 1720 }, height: { ideal: 1080 } }
+      video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } }
     });
     video.srcObject = streamAtivo;
     document.getElementById('area-camera').style.display = 'block';
@@ -1049,7 +1049,7 @@ function pararCamera() {
   document.getElementById('btnFecharCam').style.display = 'none';
 }
 
-// 3. Captura e Upload para Supabase Storage
+// 3. Captura e Upload para Supabase Storage (com limpeza prévia)
 function tirarFoto() {
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
@@ -1063,9 +1063,28 @@ function tirarFoto() {
 
   if (confirm(`Capturar imagem de ${tipo} da linha ${linha}?`)) {
     canvas.toBlob(async blob => {
+      
+      // 1. Apaga registros e arquivos existentes para a mesma linha e tipo (exceto 'os' se quiser manter histórico)
+      if (tipo !== 'os') {
+        const { data: fotosAntigas } = await db
+          .from("fotos")
+          .select("chave")
+          .eq("linha", linha)
+          .eq("tipo", tipo);
+
+        if (fotosAntigas && fotosAntigas.length > 0) {
+          const chavesParaRemover = fotosAntigas.map(f => f.chave);
+          const arquivosParaRemover = chavesParaRemover.map(c => `${c}.jpg`);
+
+          // Remove do Storage e da Tabela
+          await db.storage.from(BUCKET).remove(arquivosParaRemover);
+          await db.from("fotos").delete().in("chave", chavesParaRemover);
+        }
+      }
+
+      // 2. Define a nova chave e faz o upload
       const chave = (tipo === 'os') ? `${linha}-os-${Date.now()}` : `${linha}-${tipo}`;
 
-      // Upload para Storage
       const { error: uploadError } = await db.storage
         .from(BUCKET)
         .upload(`${chave}.jpg`, blob, { contentType: 'image/jpeg', upsert: true });
@@ -1075,14 +1094,14 @@ function tirarFoto() {
         return;
       }
 
-      // Obter URL pública
+      // 3. Obter URL pública
       const { data: publicUrlData } = db.storage.from(BUCKET).getPublicUrl(`${chave}.jpg`);
       const url = publicUrlData.publicUrl;
 
-      // Inserir metadados na tabela
+      // 4. Inserir metadados atualizados na tabela
       const { error: insertError } = await db
         .from("fotos")
-        .upsert([{ chave, linha, tipo, url }]); // upsert evita erro de chave duplicada
+        .upsert([{ chave, linha, tipo, url }]);
 
       if (insertError) {
         alert("Erro ao salvar metadados: " + insertError.message);
@@ -1152,7 +1171,12 @@ function exibirFotoNoCard(foto) {
 // 5. Exclusão
 async function apagarTudo() {
   if (confirm("Deseja apagar todas as fotos?")) {
-    await db.from("fotos").delete().neq("chave", "");
+    const { data: fotos } = await db.from("fotos").select("chave");
+    if (fotos && fotos.length > 0) {
+      const arquivos = fotos.map(f => `${f.chave}.jpg`);
+      await db.storage.from(BUCKET).remove(arquivos);
+      await db.from("fotos").delete().neq("chave", "");
+    }
     renderizarEstruturaEFotos();
   }
 }
