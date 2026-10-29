@@ -161,12 +161,13 @@ fetch("../bancodehoras.pdf")
         // BUSCA A FUNÇÃO NO CSV:
         // Procuramos no array colaboradoresCSV alguém que tenha a mesma matrícula
         const dadosNoCSV = colaboradoresCSV.find(c => formatarMatricula(c.matricula) === matriculaLimpa);
+        const nomeCurto = match[2].trim().split(" ")[0]+" "+match[2].trim().split(" ").reverse()[0];
 
         colaboradoresPDF.push({
           cdc: formatarCDC(dadosSetor.cdc),
           setor: dadosSetor.setor,
           matricula: matriculaLimpa,
-          nome: match[2].trim(),
+          nome: nomeCurto,
           // Se achar no CSV, usa a função de lá. Se não, usa um texto padrão.
           funcao: dadosNoCSV ? dadosNoCSV.funcao : "Função não encontrada",
           saldoAnterior: match[3].trim(),
@@ -346,7 +347,6 @@ function buscarBancoHoras() {
     <table>
       <tr><td><strong>Colaborador:</strong></td> <td>${colaborador.nome}</td></tr>
       <tr><td><strong>Setor:</strong></td><td>${descreverCDC(colaborador.cdc) || "Local"}</td></tr>
-      <tr><td><strong>Função:</strong></td> <td>${colaborador.funcao || "Cargo"}</td></tr>
       <tr><td><strong>Matrícula:</strong> </td> <td>${colaborador.matricula}</td></tr>
       <tr><td><strong>Saldo Anterior:</strong> </td> <td><span class="${corHora(colaborador.saldoAnterior)}">${colaborador.saldoAnterior}</span></td></tr>
       <tr><td><strong>Horas Crédito:</strong> </td> <td><span class="${corHora(colaborador.horasCredito)}">${colaborador.horasCredito}</span></td></tr>
@@ -631,10 +631,10 @@ function sugerirColaboradorUnificado(inputId, sugestaoId) {
     const btn = document.createElement("button");
     btn.type = "button";
 
-    const funcaoDesc = c.funcao || 'Função não definida';
+    
     const cdcDesc = c.cdc ? descreverCDC(c.cdc) : 'CDC não definido';
     
-    btn.innerHTML = `${c.nome} - ${c.matricula || 'Sem matrícula'} <br> ${funcaoDesc} - ${cdcDesc}`;
+    btn.innerHTML = `${c.nome} - ${c.matricula || 'Sem matrícula'} <br> ${cdcDesc}`;
     
     btn.onclick = () => {
       input.value = c.nome || '';

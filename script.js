@@ -79,6 +79,7 @@ let textoPDF = "";
 let colaboradoresPDF = [];
 let colaboradoresCSV = [];
 let listaEPIs = [];
+let chamadaEsmalte = [];
 
 
 
@@ -185,11 +186,12 @@ fetch("bancodehoras.pdf")
         // Procuramos no array colaboradoresCSV alguém que tenha a mesma matrícula
         const dadosNoCSV = colaboradoresCSV.find(c => formatarMatricula(c.matricula) === matriculaLimpa);
 
+        const nomeCurto = match[2].trim().split(" ")[0]+" "+match[2].trim().split(" ").reverse()[0];
         colaboradoresPDF.push({
           cdc: formatarCDC(dadosSetor.cdc),
           setor: dadosSetor.setor,
           matricula: matriculaLimpa,
-          nome: match[2].trim(),
+          nome: nomeCurto,
           // Se achar no CSV, usa a função de lá. Se não, usa um texto padrão.
           funcao: dadosNoCSV ? dadosNoCSV.funcao : "Função não encontrada",
           saldoAnterior: match[3].trim(),
@@ -231,7 +233,22 @@ function mostrarSecao(secaoId) {
 }
 
 
+// Carrega CSV da chamada
 
+fetch("esmalte.csv")
+  .then(response => response.text())
+  .then(texto => {
+    const linhas = texto.split("\n").map(l => l.trim());
+    chamadaEsmalte = linhas.slice(1).map(linha => {
+      const colabs = linha.split(";");
+      return colabs.map(c => c.trim());
+    });
+    console.log("Chamada de esmalte carregada:", chamadaEsmalte);
+    const tabelaPronta = chamadaEsmalte.map(colabs => {
+      return `<li>${colabs.map(c => c).join("")}</li>`;
+    }).join("");
+    document.getElementById("tabelaChamada").innerHTML = tabelaPronta;
+  })
 
 
 
