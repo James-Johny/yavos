@@ -245,7 +245,7 @@ fetch("esmalte.csv")
     });
     console.log("Chamada de esmalte carregada:", chamadaEsmalte);
     const tabelaPronta = chamadaEsmalte.map(colabs => {
-      return `<li>${colabs.map(c => c).join("")}</li>`;
+      return `<li><input type="checkbox" id="${colabs.map(c => c)}"><label for="${colabs.map(c => c)}"> ${colabs.map(c => c).join("")}</label></li>`;
     }).join("");
     document.getElementById("tabelaChamada").innerHTML = tabelaPronta;
   })

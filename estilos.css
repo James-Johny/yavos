@@ -8,7 +8,56 @@
 /* ========== LOGIN ============= */
 
 #chamada {
+  background: linear-gradient(135deg, var(--white1), var(--background));
   display: flex;
+  flex-flow: column wrap;
+  font-size: 2rem;
+  align-items: center;
+  justify-content: center; 
+  text-align: left;
+  margin: 0;
+  padding: 1rem;
+}
+
+#chamada #tabelaChamada {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 0;
+}
+
+#chamada li {
+  margin-left:2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--purple1);
+}
+
+
+
+
+#chamada input[type="checkbox"] {
+  margin-right: 5px;
+  transform: scale(2.5);
+  cursor: pointer;
+  width: 2rem;
+}
+
+#chamada input[type="checkbox"]:checked + label {
+  color: var(--white1);
+  font-weight: bold;
+  background: var(--verde1);
+}
+
+#chamada label {
+  font-size: 2rem;
+  color: var(--purple1);
+  font-weight: bold;
+  cursor: pointer;
 }
 
 
