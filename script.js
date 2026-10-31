@@ -249,7 +249,7 @@ fetch("esmalte.csv")
     const tabelaEsmalte = chamadaEsmalte.map(colabs => {
       return `<li><input type="checkbox" id="${colabs.map(c => c)}"><label for="${colabs.map(c => c)}"> ${colabs.map(c => c).join("")}</label></li>`;
     }).join("");
-    document.getElementById("tabelaChamada").innerHTML += tabelaEsmalte;
+    document.getElementById("tabelaChamadaEsmalte").innerHTML += tabelaEsmalte;
   })
 
 fetch("rapidas.csv")
@@ -264,7 +264,7 @@ fetch("rapidas.csv")
     const tabelaRapidas = chamadaRapidas.map(colabs => {
       return `<li><input type="checkbox" id="${colabs.map(c => c)}"><label for="${colabs.map(c => c)}"> ${colabs.map(c => c).join("")}</label></li>`;
     }).join("");
-    document.getElementById("tabelaChamada").innerHTML += tabelaRapidas;
+    document.getElementById("tabelaChamadaRapidas").innerHTML += tabelaRapidas;
   })
 
 
@@ -280,7 +280,7 @@ fetch("coloracao.csv")
     const tabelaColoracao = chamadaColoracao.map(colabs => {
       return `<li><input type="checkbox" id="${colabs.map(c => c)}"><label for="${colabs.map(c => c)}"> ${colabs.map(c => c).join("")}</label></li>`;
     }).join("");
-    document.getElementById("tabelaChamada").innerHTML += tabelaColoracao;
+    document.getElementById("tabelaChamadaColoracao").innerHTML += tabelaColoracao;
   })
 
 

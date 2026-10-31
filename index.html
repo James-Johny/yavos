@@ -37,20 +37,20 @@
   </div>
 
   <div id="conteudo-protegido" style="display: none;">
-  <div id="menuToggle">
-    <input type="checkbox" id="menuCheckbox" />
-    <label for="menuCheckbox">SAVOY</label>
-    <ul id="menu">
-      <ul>
-      <li><a href="#" onclick="mostrarSecao('bancoHoras')">Banco de Horas</a></li>
-      <li><a href="#" onclick="mostrarSecao('requisicoes')">Requisições</a></li>
-      <li><a href="#" onclick="mostrarSecao('codigos')">Leitor de Códigos</a></li>
-      <li><a href="#" onclick="mostrarSecao('hora-a-hora')">Hora A Hora</a></li>
-      <li><a href="#" onclick="mostrarSecao('cdc')">Colaboradores</a></li>
-      <li><a href="#" onclick="mostrarSecao('chamada')">Chamada</a></li>
-    </ul>
-    </ul>
-  </div>
+    <div id="menuToggle">
+      <input type="checkbox" id="menuCheckbox" />
+      <label for="menuCheckbox">SAVOY</label>
+      <ul id="menu">
+        <ul>
+          <li><a href="#" onclick="mostrarSecao('bancoHoras')">Banco de Horas</a></li>
+          <li><a href="#" onclick="mostrarSecao('requisicoes')">Requisições</a></li>
+          <li><a href="#" onclick="mostrarSecao('codigos')">Leitor de Códigos</a></li>
+          <li><a href="#" onclick="mostrarSecao('hora-a-hora')">Hora A Hora</a></li>
+          <li><a href="#" onclick="mostrarSecao('cdc')">Colaboradores</a></li>
+          <li><a href="#" onclick="mostrarSecao('chamada')">Chamada</a></li>
+        </ul>
+      </ul>
+    </div>
   </div>
   <div id="bancoHoras" class="secao">
     <input type="text" onfocus="this.value='';" id="buscaColaborador" placeholder="Digite parte do nome ou matrícula"
@@ -172,38 +172,47 @@
     <canvas id="canvas" style="display:none;"></canvas>
 
 
+  </div>
+
+  <div id="cdc" class="secao">
+    <div class="container-cdc">
+      <select id="listaCDC">
+        <option value="">Selecione um CDC</option>
+        <!-- Opções serão preenchidas dinamicamente -->
+      </select>
     </div>
-
-    <div id="cdc" class="secao">
-      <div class="container-cdc">
-        <select id="listaCDC">
-          <option value="">Selecione um CDC</option>
-          <!-- Opções serão preenchidas dinamicamente -->
-        </select>
-      </div>
-      <input type="text" placeholder="Digite o CDC">
-      <button onclick="listarCDC()">Buscar CDC</button>
-      <div id="detalhesColaborador">
-      </div>
-      <div id="resultadoCDC" class="tabelaCDC"></div>
-
+    <input type="text" placeholder="Digite o CDC">
+    <button onclick="listarCDC()">Buscar CDC</button>
+    <div id="detalhesColaborador">
     </div>
+    <div id="resultadoCDC" class="tabelaCDC"></div>
 
-    <div id="chamada" class="secao">
-      <h2><a href="#" onclick="carregarChamada('esmalte')">Esmalte</a> - <a href="#" onclick="carregarChamada('rapidas')">Rápidas</a> - <a href="#" onclick="carregarChamada('coloracao')">Coloração</a></h2>
-      <ul id="tabelaChamada">
-        <li>nome1</li>
-        <li>nome2</li>
-        <li>nome3</li>
-        <li>nome4</li>
-        <li>nome5</li>
-        <li>nome6</li>
-        <li>nome7</li>
-      </ul>
-    </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="script.js"></script>
+  <div id="chamada" class="secao">
+    <h2><a href="#"
+        onclick="document.getElementById('tabelaChamadaEsmalte').style.display='block'; document.getElementById('tabelaChamadaRapidas').style.display='none'; document.getElementById('tabelaChamadaColoracao').style.display='none'">Esmalte</a>
+      - <a href="#"
+        onclick="document.getElementById('tabelaChamadaEsmalte').style.display='none'; document.getElementById('tabelaChamadaRapidas').style.display='block'; document.getElementById('tabelaChamadaColoracao').style.display='none'">Rápidas</a>
+      - <a href="#"
+        onclick="document.getElementById('tabelaChamadaEsmalte').style.display='none'; document.getElementById('tabelaChamadaRapidas').style.display='none'; document.getElementById('tabelaChamadaColoracao').style.display='block'">Coloração</a>
+    </h2>
+    <ul id="tabelaChamadaEsmalte" class="tabelaChamada">
+
+    </ul>
+
+    <ul id="tabelaChamadaRapidas" class="tabelaChamada" style="display:none;">
+    </ul>
+
+    <ul id="tabelaChamadaColoracao" class="tabelaChamada" style="display:none;">
+
+    </ul>
+  </div>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
 
 </body>
 
