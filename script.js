@@ -246,10 +246,10 @@ fetch("esmalte.csv")
       return colabs.map(c => c.trim());
     });
     console.log("Chamada de esmalte carregada:", chamadaEsmalte);
-    const tabelaPronta = chamadaEsmalte.map(colabs => {
+    const tabelaEsmalte = chamadaEsmalte.map(colabs => {
       return `<li><input type="checkbox" id="${colabs.map(c => c)}"><label for="${colabs.map(c => c)}"> ${colabs.map(c => c).join("")}</label></li>`;
     }).join("");
-    document.getElementById("tabelaChamada").innerHTML = tabelaPronta;
+    document.getElementById("tabelaChamada").innerHTML += tabelaEsmalte;
   })
 
 fetch("rapidas.csv")
@@ -261,10 +261,10 @@ fetch("rapidas.csv")
       return colabs.map(c => c.trim());
     });
     console.log("Chamada de rápidas carregada:", chamadaRapidas);
-    const tabelaPronta = chamadaRapidas.map(colabs => {
+    const tabelaRapidas = chamadaRapidas.map(colabs => {
       return `<li><input type="checkbox" id="${colabs.map(c => c)}"><label for="${colabs.map(c => c)}"> ${colabs.map(c => c).join("")}</label></li>`;
     }).join("");
-    document.getElementById("tabelaChamada").innerHTML = tabelaPronta;
+    document.getElementById("tabelaChamada").innerHTML += tabelaRapidas;
   })
 
 
@@ -277,10 +277,10 @@ fetch("coloracao.csv")
       return colabs.map(c => c.trim());
     });
     console.log("Chamada de coloração carregada:", chamadaColoracao);
-    const tabelaPronta = chamadaColoracao.map(colabs => {
+    const tabelaColoracao = chamadaColoracao.map(colabs => {
       return `<li><input type="checkbox" id="${colabs.map(c => c)}"><label for="${colabs.map(c => c)}"> ${colabs.map(c => c).join("")}</label></li>`;
     }).join("");
-    document.getElementById("tabelaChamada").innerHTML = tabelaPronta;
+    document.getElementById("tabelaChamada").innerHTML += tabelaColoracao;
   })
 
 
