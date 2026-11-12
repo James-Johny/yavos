@@ -41,7 +41,11 @@ class Colaborador {
         this.funcao = funcao;
     }
 
-  
+  linha(linha) {
+        this.linha = linha;
+
+        return `${this.nome.split(' ')[0]} alocado na linha ${linha.numero}.`;
+    }
 
 }
 

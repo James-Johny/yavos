@@ -99,6 +99,12 @@ fetch("listanomes.csv")
     console.error("Erro ao carregar listanomes.csv:", err);
   });
 
+
+
+
+
+
+
 fetch("bancodehoras.pdf")
   .then(res => res.arrayBuffer())
   .then(data => pdfjsLib.getDocument({ data }).promise)
@@ -128,6 +134,10 @@ fetch("bancodehoras.pdf")
       document.getElementById("versao").textContent = "Data de atualização não encontrada";
     }
   })
+
+
+
+
 
 fetch("bancodehoras.pdf")
   .then(res => res.arrayBuffer())
@@ -218,7 +228,26 @@ fetch("bancodehoras.pdf")
 const menuCheckbox = document.getElementById('menuCheckbox');
 const menuLinks = document.querySelectorAll('#menu a');
 
+fetch("MOD.pdf")
+.then(res => res.arrayBuffer())
+.then(data => pdfjsLib.getDocument({ data }).promise)
+.then(pdf => {
+  const total = pdf.numPages;
+  const promises = [];
+  for (let i = 1; i <= total; i++) {
+    promises.push(
+      pdf.getPage(i).then(page => {
+        return page.getTextContent();
+      })
+    );
+  }
+  return Promise.all(promises);
+})
 
+.then(paginas => {
+  const textoMOD = paginas.map(content => content.items.map(item => item.str).join(" ")).join("\n");
+console.log("Texto do MOD extraído:", textoMOD);
+})
 
 // Fecha menu ao clicar em uma opção
 menuLinks.forEach(link => {
