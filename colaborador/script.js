@@ -748,9 +748,361 @@ function secao(secaoId) {
 }
 
 
+// ============================================================
+// CHATBOT DE ATENDIMENTO AO COLABORADOR
+// ============================================================
 
+const Chatbot = (() => {
+  const estado = { passo: 'idle', dados: {} };
+  let form, input, messages;
 
+  function init() {
+    form     = document.getElementById('chat-form');
+    input    = document.getElementById('chat-input');
+    messages = document.getElementById('chat-messages');
 
+    if (!form || !input || !messages) {
+      console.warn('Chatbot: elementos não encontrados.');
+      return;
+    }
+
+    // ✅ BLOQUEIA O RELOAD DO FORMULÁRIO
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      enviarMensagem();
+      return false;
+    });
+
+    // ✅ TAMBÉM BLOQUEIA O ENTER DO TECLADO
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        enviarMensagem();
+      }
+    });
+
+    // Saudação personalizada
+    const nome = localStorage.getItem('nomeColaborador');
+    if (nome) {
+      addMsg(`Olá, <strong>${nome.split(' ')[0]}</strong>! Como posso te ajudar hoje?`);
+    }
+
+    console.log('Chatbot inicializado ✅');
+  }
+
+  function enviarMensagem() {
+    const texto = input.value.trim();
+    if (!texto) return;
+    input.value = '';
+    responder(texto);
+  }
+
+  function addMsg(html, tipo = 'bot') {
+    const div = document.createElement('div');
+    div.className = `msg ${tipo}`;
+    div.innerHTML = html;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  // ─── Detecta a intenção do usuário ────────────────────────
+  function detectarIntencao(texto) {
+    const t = texto.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+    // Se estamos no meio de um fluxo, respeita o passo
+    if (estado.passo === 'aguardando_matricula') return 'fornecer_matricula';
+    if (estado.passo === 'aguardando_epi')       return 'fornecer_epi';
+    if (estado.passo === 'aguardando_confirmacao') return 'fornecer_confirmacao';
+
+    // Comandos básicos
+    if (t.match(/^(ajuda|help|\?|menu)/))              return 'ajuda';
+    if (t.match(/^(oi|ola|bom dia|boa tarde|boa noite)/)) return 'saudacao';
+    if (t.match(/^(cancelar|sair|voltar|limpar)/))       return 'cancelar';
+
+    // Banco de horas
+    if (t.match(/banco de horas|horas|saldo|ponto|espelho/)) return 'banco_horas';
+
+    // Requisição de EPI
+    if (t.match(/epi|requisicao|requisitar|solicitar|pedir/)) return 'requisicao';
+
+    // Consultar setor / matrícula
+    if (t.match(/setor|matricula|meu cdc|onde eu trabalho/)) return 'consultar_setor';
+
+    // Listar requisições
+    if (t.match(/minhas requisicoes|lista|historico/))        return 'listar_requisicoes';
+
+    // Se digitou só números, provavelmente é matrícula
+    if (/^\d{3,}$/.test(texto.trim())) return 'fornecer_matricula';
+
+    return 'desconhecido';
+  }
+
+  // ─── Função principal ─────────────────────────────────────
+  async function responder(texto) {
+    addMsg(texto, 'user');
+    const intencao = detectarIntencao(texto);
+
+    // Se for matrícula no meio do fluxo, avança
+    if (intencao === 'fornecer_matricula') {
+      return await passoMatricula(texto);
+    }
+    if (intencao === 'fornecer_epi') {
+      return await passoEPI(texto);
+    }
+    if (intencao === 'fornecer_confirmacao') {
+      return await passoConfirmacao(texto);
+    }
+
+    // Senão, roteia pelo intent
+    switch (intencao) {
+      case 'ajuda':       return ajuda();
+      case 'saudacao':    return addMsg(`Olá! Como posso te ajudar? Digite <em>ajuda</em> para ver o que faço.`);
+      case 'cancelar':    return cancelar();
+      case 'banco_horas': return fluxoBancoHoras();
+      case 'requisicao':  return fluxoRequisicao();
+      case 'consultar_setor': return fluxoSetor();
+      case 'listar_requisicoes': return fluxoListarRequisicoes();
+      default:
+        return addMsg(`Não entendi 🤔. Digite <em>ajuda</em> para ver o que posso fazer.`);
+    }
+  }
+
+  // ─── Ajuda ────────────────────────────────────────────────
+  function ajuda() {
+    addMsg(`
+      <strong>O que posso fazer:</strong>
+      <ul>
+        <li>📊 <em>"banco de horas"</em> — consultar seu saldo</li>
+        <li>📦 <em>"pedir epi"</em> — abrir requisição</li>
+        <li>🏭 <em>"meu setor"</em> — ver seu CDC</li>
+        <li>📄 <em>"minhas requisições"</em> — listar abertas</li>
+      </ul>
+      Você também pode digitar direto sua matrícula.
+    `);
+  }
+
+  function cancelar() {
+    estado.passo = 'idle';
+    estado.dados = {};
+    addMsg('Tudo bem, cancelei. Digite <em>ajuda</em> para começar de novo.');
+  }
+
+  // ─── Fluxo: Banco de Horas ────────────────────────────────
+  function fluxoBancoHoras() {
+    // Se o colaborador já está logado no app (localStorage), usa direto
+    const matriculaLogada = localStorage.getItem('matriculaColaborador');
+    if (matriculaLogada) {
+      return mostrarBancoHoras(matriculaLogada);
+    }
+
+    estado.passo = 'aguardando_matricula';
+    estado.dados.fluxo = 'banco_horas';
+    addMsg('Claro! Qual é a sua <strong>matrícula</strong>?');
+  }
+
+  async function passoMatricula(texto) {
+    const matricula = texto.trim();
+
+    if (!/^\d+$/.test(matricula)) {
+      return addMsg('Matrícula inválida. Digite apenas números.');
+    }
+
+    if (estado.dados.fluxo === 'banco_horas') {
+      estado.passo = 'idle';
+      return mostrarBancoHoras(matricula);
+    }
+
+    // fallback: consultar setor
+    estado.passo = 'idle';
+    return mostrarSetor(matricula);
+  }
+
+  function mostrarBancoHoras(matricula) {
+    // Reaproveita a lógica de buscarBancoHoras
+    const todos = [...colaboradoresPDF];
+    const colaborador = todos.find(c => c.matricula === matricula);
+
+    if (!colaborador) {
+      return addMsg(`Não encontrei a matrícula <strong>${matricula}</strong> no banco de horas. Confira se digitou certo.`);
+    }
+
+    addMsg(`
+      <strong>📊 ${colaborador.nome}</strong><br>
+      Matrícula: ${colaborador.matricula}<br>
+      Setor: ${descreverCDC(colaborador.cdc)}<br>
+      <hr style="border-color:#444">
+      Saldo anterior: <span class="${corHora(colaborador.saldoAnterior)}">${colaborador.saldoAnterior}</span><br>
+      Créditos: <span class="${corHora(colaborador.horasCredito)}">${colaborador.horasCredito}</span><br>
+      Débitos: <span class="${corDebito(colaborador.horasDebito)}">${colaborador.horasDebito}</span><br>
+      <strong>Saldo atual: <span class="${corHora(colaborador.saldoAtual)}">${colaborador.saldoAtual}</span></strong>
+    `);
+  }
+
+  // ─── Fluxo: Requisição de EPI ─────────────────────────────
+  function fluxoRequisicao() {
+    const matriculaLogada = localStorage.getItem('matriculaColaborador');
+    if (matriculaLogada) {
+      estado.dados = { fluxo: 'requisicao', matricula: matriculaLogada, itens: [] };
+      estado.passo = 'aguardando_epi';
+      return addMsg(`Beleza! Vamos abrir uma requisição para <strong>${localStorage.getItem('nomeColaborador') || matriculaLogada}</strong>.<br><br>Digite o <strong>nome ou código do EPI</strong> (ex: "luva", "óculos"). Digite <em>fim</em> para concluir.`);
+    }
+
+    estado.dados = { fluxo: 'requisicao', itens: [] };
+    estado.passo = 'aguardando_matricula';
+    addMsg('Claro! Primeiro, qual é a sua <strong>matrícula</strong>?');
+  }
+
+  async function passoEPI(texto) {
+    const t = texto.trim();
+    if (t.toLowerCase() === 'fim') {
+      return finalizarRequisicao();
+    }
+
+    // Busca EPIs pela descrição ou código
+    const termo = t.toLowerCase();
+    const encontrados = listaEPIs.filter(epi =>
+      (epi.descricao || '').toLowerCase().includes(termo) ||
+      (epi.codigo || '').toLowerCase().includes(termo)
+    ).slice(0, 5);
+
+    if (!encontrados.length) {
+      return addMsg(`Não encontrei EPI com "<em>${t}</em>". Tente outro termo ou digite <em>fim</em> para concluir.`);
+    }
+
+    // Mostra opções clicáveis
+    const botoes = encontrados.map((epi, i) =>
+      `<button type="button" class="chat-opcao" data-idx="${i}">
+        ${epi.codigo} - ${epi.descricao}
+      </button>`
+    ).join('');
+
+    addMsg(`Encontrei estes EPIs. Clique em um para adicionar:<br>${botoes}`);
+
+    // Delega clique para adicionar
+    setTimeout(() => {
+      document.querySelectorAll('.chat-opcao').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const epi = encontrados[parseInt(btn.dataset.idx, 10)];
+          estado.dados.itens.push({
+            codigo: epi.codigo,
+            descricao: epi.descricao,
+            quantidade: 1,
+          });
+          addMsg(`✅ Adicionado: <strong>${epi.codigo} - ${epi.descricao}</strong> (1 unidade)<br>Digite outro EPI ou <em>fim</em> para concluir.`, 'bot');
+        });
+      });
+    }, 0);
+  }
+
+  async function finalizarRequisicao() {
+    const { matricula, itens } = estado.dados;
+
+    if (!itens.length) {
+      estado.passo = 'idle';
+      return addMsg('Nenhum item foi adicionado. Requisição cancelada.');
+    }
+
+    // Encontra o colaborador para montar o título
+    const todos = [...colaboradoresCSV, ...colaboradoresPDF];
+    const colab = todos.find(c => c.matricula === matricula);
+    if (!colab) {
+      estado.passo = 'idle';
+      return addMsg('Não encontrei esse colaborador. Requisição cancelada.');
+    }
+
+    const titulo = `${matricula} - ${colab.nome}`;
+    const id = `req-${matricula}-${Date.now()}`;
+
+    // Monta os itens no mesmo formato do HTML original
+    const itensHTML = itens.map(it =>
+      `<li><label class="new-item"><span class="item-quantidade">${it.quantidade}</span> ${it.codigo} - ${it.descricao} <span class="desc">TROCA/DESGASTE</span></label></li>`
+    );
+
+    // Salva no Supabase
+    try {
+      const { error } = await db
+        .from('requisicoes')
+        .insert({ id, titulo, itens: itensHTML });
+      if (error) throw error;
+    } catch (err) {
+      console.error('Erro ao salvar requisição via chat:', err);
+      return addMsg('❌ Não foi possível salvar a requisição. Tente novamente mais tarde.');
+    }
+
+    // Feedback final
+    addMsg(`✅ Requisição criada com sucesso!<br><strong>ID:</strong> ${id}<br><strong>Itens:</strong> ${itens.length}`);
+    estado.passo = 'idle';
+    estado.dados = {};
+
+    // Se a lista de requisições estiver na tela, recarrega
+    if (typeof carregarRequisicoes === 'function') {
+      const container = document.getElementById('listaRequisicoes');
+      if (container) {
+        container.innerHTML = '';
+        await carregarRequisicoes();
+      }
+    }
+  }
+
+  // ─── Fluxo: Consultar setor ───────────────────────────────
+  function fluxoSetor() {
+    const matriculaLogada = localStorage.getItem('matriculaColaborador');
+    if (matriculaLogada) {
+      return mostrarSetor(matriculaLogada);
+    }
+    estado.passo = 'aguardando_matricula';
+    estado.dados.fluxo = 'setor';
+    addMsg('Qual é a sua <strong>matrícula</strong>?');
+  }
+
+  function mostrarSetor(matricula) {
+    const todos = [...colaboradoresCSV, ...colaboradoresPDF];
+    const colab = todos.find(c => c.matricula === matricula);
+    if (!colab) return addMsg(`Matrícula <strong>${matricula}</strong> não encontrada.`);
+    addMsg(`
+      <strong>🏭 ${colab.nome}</strong><br>
+      Setor: ${descreverCDC(colab.cdc)}<br>
+      Função: ${colab.funcao || '—'}
+    `);
+  }
+
+  // ─── Fluxo: Listar requisições ────────────────────────────
+  async function fluxoListarRequisicoes() {
+    const matricula = localStorage.getItem('matriculaColaborador');
+    if (!matricula) {
+      return addMsg('Faça login no app primeiro para eu conseguir listar suas requisições.');
+    }
+    const { data, error } = await db
+      .from('requisicoes')
+      .select('*')
+      .like('id', `req-${matricula}%`)
+      .order('criado_em', { ascending: false })
+      .limit(5);
+
+    if (error || !data?.length) {
+      return addMsg('Você não tem requisições abertas.');
+    }
+
+    const linhas = data.map(r =>
+      `<li><strong>${r.titulo}</strong> — ${new Date(r.criado_em).toLocaleDateString('pt-BR')}</li>`
+    ).join('');
+    addMsg(`<strong>📄 Suas últimas requisições:</strong><ul>${linhas}</ul>`);
+  }
+
+  // ─── API pública ──────────────────────────────────────────
+  return { init };
+})();
+
+// Inicializa apenas quando o chat estiver VISÍVEL
+document.addEventListener('DOMContentLoaded', () => {
+  const chatWindow = document.getElementById('chat-window');
+  if (chatWindow && !chatWindow.classList.contains('hidden')) {
+    Chatbot.init();
+  }
+});
 
 
 

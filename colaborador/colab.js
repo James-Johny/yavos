@@ -83,28 +83,38 @@ function isLogado() {
 
 async function mostrarConteudoProtegido() {
   const idDoCelular = await obterIdentificadorCelular();
-  
-  // Se não foi retornado um ID de dispositivo válido, cancela a exibição
+
   if (!idDoCelular) {
     esconderConteudoProtegido();
     return false;
   }
 
-  const conteudo = document.getElementById('conteudo-protegido');
+  // Esconde o login
   const loginElem = document.getElementById('login');
+  if (loginElem) {
+    loginElem.style.display = 'none';
+    loginElem.classList.add('hidden');
+  }
 
-  if (conteudo) conteudo.style.display = 'block';
-  if (loginElem) loginElem.style.display = 'none';
+  // Mostra o chat
+  const chatWindow = document.getElementById('chat-window');
+  if (chatWindow) chatWindow.classList.remove('hidden');
+
+  // ✅ INICIALIZA O CHATBOT APÓS O CHAT ESTAR VISÍVEL
+  if (typeof Chatbot !== 'undefined' && Chatbot.init) {
+    Chatbot.init();
+  }
 
   return true;
 }
 
 function esconderConteudoProtegido() {
-  const conteudo = document.getElementById('conteudo-protegido');
   const loginElem = document.getElementById('login');
+  if (loginElem) loginElem.style.display = 'flex';
+  if (loginElem) loginElem.classList.remove('hidden');
 
-  if (conteudo) conteudo.style.display = 'none';
-  if (loginElem) loginElem.style.display = 'block';
+  const chatWindow = document.getElementById('chat-window');
+  if (chatWindow) chatWindow.classList.add('hidden');
 }
 
 function atualizarInfoUsuario() {
