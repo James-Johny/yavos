@@ -17,11 +17,12 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  background: var(--purple3);
-  color: #eee;
+  background: var(--background);
+  color: var(--white1);
   display: flex;
   flex-direction: column;
   z-index: 9999;
+  font-family: "CotySans", sans-serif;
 }
 
 .chat-window.hidden {
@@ -29,13 +30,27 @@
 }
 
 .chat-header {
-  background: var(--primary, #6a1b9a);
-  padding: 14px 20px;
+  background: var(--white1, #6a1b9a);
+  padding: 0 15px;
   font-weight: bold;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 18px;
+  font-size: 10px;
+}
+
+#chat-savoy {
+  display: block;
+  font-size: 3rem;
+  text-align: center;
+  background: none;
+  color: var(--secondary);
+  cursor: none;
+}
+
+#chat-savoy::first-letter {
+  color: var(--primary);
+  font-size: 3.1rem;
 }
 
 .chat-messages {
@@ -56,22 +71,23 @@
   line-height: 1.5;
 }
 
-.msg.bot { background:var(--purple1); align-self: flex-start; }
-.msg.user { background: var(--primary, var(--primary)); align-self: flex-end; }
+.msg.bot { background:var(--purple3); align-self: flex-start; }
+.msg.user { background: var(--primary, var(--primary)); align-self: flex-end; color:var(--purple3); }
 
 .msg ul { margin: 8px 0 0 20px; padding: 0; }
 .msg li { margin: 4px 0; }
 
 /* Botões de opção do chat (ex: escolher EPI) */
 .chat-opcao {
+  font-size: 1.5rem;
   display: block;
-  width: 100%;
-  margin: 4px 0;
-  padding: 8px 12px;
+  width: 30rem;
+  margin: 0.5rem 0;
+  padding: 0 1rem;
   background: var(--purple1, #6a1b9a);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
   text-align: left;
 }
@@ -82,27 +98,38 @@
 /* Campo de digitação */
 .chat-form {
   display: flex;
-  border-top: 1px solid #333;
-  background: #12121c;
+  border-top: 1px solid var(--purple3);
+  background: var(--white1);
 }
 
 .chat-form input {
   flex: 1;
-  padding: 16px;
+  padding: 0.5rem 1rem;
   border: none;
   background: transparent;
-  color: #eee;
+  color: var(--purple3);
   font-size: 15px;
   outline: none;
 }
 
+.chat-form input::placeholder {
+  color: var(--purple3);
+  opacity: 0.7;
+}
+
+.chat-form input:focus {
+  outline: none !important;
+}
+
 .chat-form button {
-  background: var(--primary, #6a1b9a);
-  color: white;
+  background: var(--purple3);
+  color: var(--white1);
   border: none;
-  padding: 0 24px;
+  border-radius: 50%;
+  padding: 0;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 25px;
+  margin-right: 8px;
 }
 
 /* ========== LOGIN ============= */
@@ -157,6 +184,23 @@
 
 .title-login {
   font-size: 5rem;
+  text-align: center;
+}
+
+#matricula {
+  margin-left: 4rem;
+  width: 39rem;
+  font-size: 3rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+#btn-matricula {
+  margin-left: 4rem;
+  width: 39rem;
+  font-size: 3rem;
+  text-align: center;
+  margin-top: 1rem;
 }
 
 #userName {

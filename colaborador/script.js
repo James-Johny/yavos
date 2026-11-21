@@ -786,7 +786,7 @@ const Chatbot = (() => {
     // Saudação personalizada
     const nome = localStorage.getItem('nomeColaborador');
     if (nome) {
-      addMsg(`Olá, <strong>${nome.split(' ')[0]}</strong>! Como posso te ajudar hoje?`);
+      addMsg(`Olá, <strong>${nome.split(' ')[0]}</strong>! Como posso te ajudar?`);
     }
 
     console.log('Chatbot inicializado ✅');
@@ -819,20 +819,20 @@ const Chatbot = (() => {
 
     // Comandos básicos
     if (t.match(/^(ajuda|help|\?|menu)/))              return 'ajuda';
-    if (t.match(/^(oi|ola|bom dia|boa tarde|boa noite)/)) return 'saudacao';
+    if (t.match(/^(oi|ola|bom dia|boa tarde|boa noite|olá)/)) return 'saudacao';
     if (t.match(/^(cancelar|sair|voltar|limpar)/))       return 'cancelar';
 
     // Banco de horas
-    if (t.match(/banco de horas|horas|saldo|ponto|espelho/)) return 'banco_horas';
+    if (t.match(/banco de horas|horas|saldo|ponto|espelho|banco|bh|hora/)) return 'banco_horas';
 
     // Requisição de EPI
-    if (t.match(/epi|requisicao|requisitar|solicitar|pedir/)) return 'requisicao';
+    if (t.match(/epi|requisicao|requisitar|solicitar|pedir|requisição|requisições/)) return 'requisicao';
 
     // Consultar setor / matrícula
-    if (t.match(/setor|matricula|meu cdc|onde eu trabalho/)) return 'consultar_setor';
+    if (t.match(/setor|matricula|meu cdc|onde eu trabalho|cdc/)) return 'consultar_setor';
 
     // Listar requisições
-    if (t.match(/minhas requisicoes|lista|historico/))        return 'listar_requisicoes';
+    if (t.match(/minhas requisicoes|lista|historico|requisições|requisicoes/))        return 'listar_requisicoes';
 
     // Se digitou só números, provavelmente é matrícula
     if (/^\d{3,}$/.test(texto.trim())) return 'fornecer_matricula';
@@ -877,7 +877,6 @@ const Chatbot = (() => {
       <ul>
         <li>📊 <em>"banco de horas"</em> — consultar seu saldo</li>
         <li>📦 <em>"pedir epi"</em> — abrir requisição</li>
-        <li>🏭 <em>"meu setor"</em> — ver seu CDC</li>
         <li>📄 <em>"minhas requisições"</em> — listar abertas</li>
       </ul>
       Você também pode digitar direto sua matrícula.
@@ -930,10 +929,10 @@ const Chatbot = (() => {
     }
 
     addMsg(`
-      <strong>📊 ${colaborador.nome}</strong><br>
+      <strong>${colaborador.nome}</strong><br>
       Matrícula: ${colaborador.matricula}<br>
       Setor: ${descreverCDC(colaborador.cdc)}<br>
-      <hr style="border-color:#444">
+      <hr style="border-color:var(--purple3)">
       Saldo anterior: <span class="${corHora(colaborador.saldoAnterior)}">${colaborador.saldoAnterior}</span><br>
       Créditos: <span class="${corHora(colaborador.horasCredito)}">${colaborador.horasCredito}</span><br>
       Débitos: <span class="${corDebito(colaborador.horasDebito)}">${colaborador.horasDebito}</span><br>
@@ -1033,7 +1032,7 @@ const Chatbot = (() => {
     }
 
     // Feedback final
-    addMsg(`✅ Requisição criada com sucesso!<br><strong>ID:</strong> ${id}<br><strong>Itens:</strong> ${itens.length}`);
+    addMsg(`✅ Requisição criada com sucesso!<br><strong>ID:</strong> ${id}<br><strong>Itens:</strong> <ul>${itensHTML.join('')}</ul>`);
     estado.passo = 'idle';
     estado.dados = {};
 
