@@ -34,7 +34,7 @@
   padding: 0 15px;
   font-weight: bold;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   font-size: 10px;
 }
@@ -183,21 +183,21 @@
 }
 
 .title-login {
-  font-size: 5rem;
+  font-size: 80px;
   text-align: center;
 }
 
 #matricula {
-  margin-left: 4rem;
-  width: 39rem;
+  margin-left: 0;
+  width: 100%;
   font-size: 3rem;
   text-align: center;
   margin-top: 1rem;
 }
 
 #btn-matricula {
-  margin-left: 4rem;
-  width: 39rem;
+  margin-left: 0;
+  width: 100%;
   font-size: 3rem;
   text-align: center;
   margin-top: 1rem;
@@ -221,8 +221,8 @@
 .login {
   position: fixed;
   top: -12rem;
-  width: 50rem;
-  height: 80rem;
+  width: 95dvw;
+  height: 95dvh;
   display: flex;
   flex-flow: column wrap;
   gap: 1rem;
@@ -230,7 +230,7 @@
   border-radius: 10px;
   margin-top: 10rem;
   z-index: 9999;
-  margin-left: 2.3rem;
+  margin-left: 0;
 }
 
 .login input, button, span {
