@@ -147,7 +147,7 @@
 
 #savoy {
   display: block;
-  font-size: 8rem;
+  font-size: 5rem;
   text-align: center;
   background: none;
   color: var(--secondary);
@@ -161,7 +161,7 @@
 #savoy::first-letter {
   color: var(--primary);
   font-weight: bolder;
-  font-size: 8.1rem;
+  font-size: 5.1rem;
 }
 
 #userInfo {
@@ -183,7 +183,7 @@
 }
 
 .title-login {
-  font-size: 80px;
+  font-size: 3rem;
   text-align: center;
 }
 
@@ -233,6 +233,9 @@
   margin-left: 0;
 }
 
+.login input::placeholder {
+  font-size: 2rem;
+}
 .login input, button, span {
   align-items: center;
   justify-content: center;
