@@ -7,36 +7,50 @@
 
 
 /* Janela do chat (Tela cheia) */
+
+.chat-profile-pic {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 120% 120%;
+  margin-right: 0.5rem;
+}
+
+
 .chat-btn-send {
   width: 4rem;
 }
 
 .chat-window {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
+  right: 2rem;
+  bottom: 4rem;
+  width: 70%;
+  height: 80vh;
   background: var(--background);
   color: var(--white1);
   display: flex;
   flex-direction: column;
   z-index: 9999;
   font-family: "CotySans", sans-serif;
+  border: 0.1rem solid var(--purple3);
+  border-radius: 0.1rem;
 }
-
+/*
 .chat-window.hidden {
   display: none !important;
-}
+}*/
 
 .chat-header {
   background: var(--white1, #6a1b9a);
   padding: 0 15px;
   font-weight: bold;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
   font-size: 10px;
+  border-bottom: 0.1rem solid var(--purple1);
 }
 
 #chat-savoy {
@@ -71,8 +85,8 @@
   line-height: 1.5;
 }
 
-.msg.bot { background:var(--purple3); align-self: flex-start; }
-.msg.user { background: var(--primary, var(--primary)); align-self: flex-end; color:var(--purple3); }
+.msg.bot { background:var(--primary); align-self: flex-start; color:var(--purple3); }
+.msg.user { background: var(--primary, var(--secondary)); align-self: flex-end; color:var(--purple3); }
 
 .msg ul { margin: 8px 0 0 20px; padding: 0; }
 .msg li { margin: 4px 0; }
