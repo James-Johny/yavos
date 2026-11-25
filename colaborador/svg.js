@@ -3,6 +3,7 @@ const bh = document.getElementById('bancodehoras');
 const xdz = document.getElementById('xadrez-btn');
 const prg = document.getElementById('programacao');
 const trn = document.getElementById('treinamento');
+const cb = document.getElementById('chatbot-svg');
 
 const svgReq = `
     <svg xmlns="http://www.w3.org/2000/svg" class="button-bottom" viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
@@ -123,53 +124,63 @@ const svgTrn = `<svg xmlns="http://www.w3.org/2000/svg" class="button-bottom" vi
 Treinamentos
 `;
 
+const svgCB = `<svg xmlns="http://www.w3.org/2000/svg" class="button-bottom" viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"></path>
+</svg>
+Chat
+`;
+
 req.innerHTML = svgReq;
 bh.innerHTML = svgBh;
 prg.innerHTML = svgPrg;
 xdz.innerHTML = svgXad;
 trn.innerHTML = svgTrn;
+cb.innerHTML = svgCB;
 
 
 
 
 const navButton = (obj) => {
 
-    const color= '#035dab';
-    const blur = 'blur(1px)';
-    const cursor = 'pointer';
+  const color = '#035dab';
+  const blur = 'blur(1px)';
+  const cursor = 'pointer';
 
-    const activateStyle = () => {
-        obj.style.color = color;
-        obj.style.cursor = cursor;
-        obj.style.filter = blur;
-    }
+  const activateStyle = () => {
+    obj.style.color = color;
+    obj.style.cursor = cursor;
+    obj.style.filter = blur;
+  }
 
-    const resetStyle = () => {
-        obj.style.color = 'currentColor';
-        obj.style.cursor = 'default';
-        obj.style.filter = 'none';
-    }
+  const resetStyle = () => {
+    obj.style.color = 'currentColor';
+    obj.style.cursor = 'default';
+    obj.style.filter = 'none';
+  }
 
-    obj.addEventListener('mouseover', activateStyle);
-    obj.addEventListener('touchstart', activateStyle);
+  obj.addEventListener('mouseover', activateStyle);
+  obj.addEventListener('touchstart', activateStyle);
 
-    obj.addEventListener('mouseout', resetStyle);
-    obj.addEventListener('touchend', resetStyle);
+  obj.addEventListener('mouseout', resetStyle);
+  obj.addEventListener('touchend', resetStyle);
 
 
-    
+
 }
 navButton(req);
+navButton(cb);
+navButton(trn);
 navButton(bh);
 navButton(xdz);
 navButton(prg);
-navButton(trn);
+
+
 
 const spans = document.querySelectorAll('.button-bottom');
 
-    spans.forEach(span => {
-        span.addEventListener('click', () => {
-            spans.forEach(s => s.classList.remove('button-active'));
-            span.classList.add('button-active');
-        });
-    });
+spans.forEach(span => {
+  span.addEventListener('click', () => {
+    spans.forEach(s => s.classList.remove('button-active'));
+    span.classList.add('button-active');
+  });
+});

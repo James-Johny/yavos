@@ -66,7 +66,7 @@ fetch("../listanomes.csv")
     const linhas = texto.split("\n").map(l => l.trim()).filter(l => l);
     colaboradoresCSV = linhas.slice(3).map(linha => {
       const [matricula, nome, cdc, funcao] = linha.split(";").map(v => v.trim());
-      return { matricula, nome, cdc, funcao }; 
+      return { matricula, nome, cdc, funcao };
     });
   })
   .catch(err => {
@@ -74,7 +74,7 @@ fetch("../listanomes.csv")
   });
 
 fetch("../bancodehoras.pdf")
-.then(res => res.arrayBuffer())
+  .then(res => res.arrayBuffer())
   .then(data => pdfjsLib.getDocument({ data }).promise)
   .then(pdf => {
     const total = pdf.numPages;
@@ -91,7 +91,7 @@ fetch("../bancodehoras.pdf")
     return Promise.all(promises);
   })
 
-.then(paginas => {
+  .then(paginas => {
     version = paginas.join("\n");
     const regexVersion = /\s*(\d{2}\/\d{2}\/\d{4})/;
     const matchVersion = version.match(regexVersion);
@@ -161,7 +161,7 @@ fetch("../bancodehoras.pdf")
         // BUSCA A FUNÇÃO NO CSV:
         // Procuramos no array colaboradoresCSV alguém que tenha a mesma matrícula
         const dadosNoCSV = colaboradoresCSV.find(c => formatarMatricula(c.matricula) === matriculaLimpa);
-        const nomeCurto = match[2].trim().split(" ")[0]+" "+match[2].trim().split(" ").reverse()[0];
+        const nomeCurto = match[2].trim().split(" ")[0] + " " + match[2].trim().split(" ").reverse()[0];
 
         colaboradoresPDF.push({
           cdc: formatarCDC(dadosSetor.cdc),
@@ -178,7 +178,7 @@ fetch("../bancodehoras.pdf")
       }
     }
 
-    
+
 
     document.getElementById("resultado").innerHTML = "<p>PDF carregado com sucesso. Digite uma matrícula para buscar.</p>";
   })
@@ -416,7 +416,7 @@ function adicionarItemEPI(epi) {
   const li = document.createElement("li");
   const qtd = document.getElementById("quantidade").value || "1";
   const desc = document.getElementById("descricao").value || "TROCA/DESGASTE";
-  
+
 
   switch (desc) {
     case "TROCA/DESGASTE":
@@ -598,7 +598,7 @@ function sugerirColaboradorUnificado(inputId, sugestaoId) {
 
   const input = document.getElementById(inputId);
   const sugestoesDiv = document.getElementById(sugestaoId);
-  
+
   if (!input || !sugestoesDiv) {
     console.error('Elementos não encontrados:', inputId, sugestaoId);
     return;
@@ -631,11 +631,11 @@ function sugerirColaboradorUnificado(inputId, sugestaoId) {
     const btn = document.createElement("button");
     btn.type = "button";
 
-    
+
     const cdcDesc = c.cdc ? descreverCDC(c.cdc) : 'CDC não definido';
-    
+
     btn.innerHTML = `${c.nome} - ${c.matricula || 'Sem matrícula'} <br> ${cdcDesc}`;
-    
+
     btn.onclick = () => {
       input.value = c.nome || '';
       sugestoesDiv.innerHTML = "";
@@ -649,7 +649,7 @@ function sugerirColaboradorUnificado(inputId, sugestaoId) {
 
 // ─── Salvar requisição no banco ───────────────────────────────────────────────
 async function salvarRequisicaoLocal(id, titulo, itens) {
-  const { error } = await db.rpc('salvar_ou_concatenar_requisicao' , {
+  const { error } = await db.rpc('salvar_ou_concatenar_requisicao', {
     p_id: id,
     p_titulo: titulo,
     p_novos_itens: itens
@@ -658,7 +658,7 @@ async function salvarRequisicaoLocal(id, titulo, itens) {
   if (error) {
     console.error('Erro ao salvar requisição:', error.message);
     alert('Não foi possível salvar a requisição. Verifique a conexão.');
-  
+
   }
 
 }
@@ -731,19 +731,19 @@ async function carregarRequisicoes() {
 function secao(secaoId) {
   // 1. Esconde todas as seções
   document.querySelectorAll(".secao").forEach(div => div.style.display = "none");
-  
+
   // 2. Mostra a seção desejada
   const secaoAlvo = document.getElementById(secaoId);
   if (secaoAlvo) {
-      secaoAlvo.style.display = "flex";
+    secaoAlvo.style.display = "flex";
   }
 
   // 3. Remove a classe ativa de todos os botões
   document.querySelectorAll(".button-bottom").forEach(btn => btn.classList.remove("button-active"));
-  
+
   // 4. Descobre qual botão foi clicado usando o event do navegador
   if (window.event && window.event.currentTarget) {
-      window.event.currentTarget.classList.add("button-active");
+    window.event.currentTarget.classList.add("button-active");
   }
 }
 
@@ -752,13 +752,37 @@ function secao(secaoId) {
 // CHATBOT DE ATENDIMENTO AO COLABORADOR
 // ============================================================
 
+function chat(action) {
+
+  const actions = {
+    'close': () => {
+      const chatContainer = document.getElementById('chat-window');
+      if (chatContainer) {
+        chatContainer.style.display = 'none';
+      }
+    },
+    'open': () => {
+      const chatContainer = document.getElementById('chat-window');
+      if (chatContainer) {
+        chatContainer.style.display = 'flex';
+      }
+    }
+  }
+
+  if (actions[action]) {
+    actions[action]();
+  }
+}
+
+
+
 const Chatbot = (() => {
   const estado = { passo: 'idle', dados: {} };
   let form, input, messages;
 
   function init() {
-    form     = document.getElementById('chat-form');
-    input    = document.getElementById('chat-input');
+    form = document.getElementById('chat-form');
+    input = document.getElementById('chat-input');
     messages = document.getElementById('chat-messages');
 
     if (!form || !input || !messages) {
@@ -786,7 +810,8 @@ const Chatbot = (() => {
     // Saudação personalizada
     const nome = localStorage.getItem('nomeColaborador');
     if (nome) {
-      addMsg(`Olá, <strong>${nome.split(' ')[0]}</strong>! Como posso te ajudar?`);
+      addMsg(`Olá, <strong>${nome.split(' ')[0]}</strong>! Sou sua assistente virtual.<br>Digite <em>"ajuda"</em> para ver o que posso fazer.`);
+      addMsg(`Ou digite <em>"sair"</em> para encerrar a conversa.`);
     }
 
     console.log('Chatbot inicializado ✅');
@@ -814,13 +839,13 @@ const Chatbot = (() => {
 
     // Se estamos no meio de um fluxo, respeita o passo
     if (estado.passo === 'aguardando_matricula') return 'fornecer_matricula';
-    if (estado.passo === 'aguardando_epi')       return 'fornecer_epi';
+    if (estado.passo === 'aguardando_epi') return 'fornecer_epi';
     if (estado.passo === 'aguardando_confirmacao') return 'fornecer_confirmacao';
 
     // Comandos básicos
-    if (t.match(/^(ajuda|help|\?|menu)/))              return 'ajuda';
+    if (t.match(/^(ajuda|help|\?|menu)/)) return 'ajuda';
     if (t.match(/^(oi|ola|bom dia|boa tarde|boa noite|olá)/)) return 'saudacao';
-    if (t.match(/^(cancelar|sair|voltar|limpar)/))       return 'cancelar';
+    if (t.match(/^(cancelar|voltar|limpar)/)) return 'cancelar';
 
     // Banco de horas
     if (t.match(/banco de horas|horas|saldo|ponto|espelho|banco|bh|hora/)) return 'banco_horas';
@@ -832,7 +857,10 @@ const Chatbot = (() => {
     if (t.match(/setor|matricula|meu cdc|onde eu trabalho|cdc/)) return 'consultar_setor';
 
     // Listar requisições
-    if (t.match(/minhas requisicoes|lista|historico|requisições|requisicoes/))        return 'listar_requisicoes';
+    if (t.match(/minhas requisicoes|lista|historico|requisições|requisicoes/)) return 'listar_requisicoes';
+
+    // Sair
+    if (t.match(/sair/)) return 'sair';
 
     // Se digitou só números, provavelmente é matrícula
     if (/^\d{3,}$/.test(texto.trim())) return 'fornecer_matricula';
@@ -858,13 +886,14 @@ const Chatbot = (() => {
 
     // Senão, roteia pelo intent
     switch (intencao) {
-      case 'ajuda':       return ajuda();
-      case 'saudacao':    return addMsg(`Olá! Como posso te ajudar? Digite <em>ajuda</em> para ver o que faço.`);
-      case 'cancelar':    return cancelar();
+      case 'ajuda': return ajuda();
+      case 'saudacao': return addMsg(`Olá! Como posso te ajudar? Digite <em>ajuda</em> para ver o que faço.`);
+      case 'cancelar': return cancelar();
       case 'banco_horas': return fluxoBancoHoras();
-      case 'requisicao':  return fluxoRequisicao();
+      case 'requisicao': return fluxoRequisicao();
       case 'consultar_setor': return fluxoSetor();
       case 'listar_requisicoes': return fluxoListarRequisicoes();
+      case 'sair': return addMsg(`Até mais! Se precisar, é só me chamar.`), chat('close');
       default:
         return addMsg(`Não entendi 🤔. Digite <em>ajuda</em> para ver o que posso fazer.`);
     }
@@ -933,9 +962,6 @@ const Chatbot = (() => {
       Matrícula: ${colaborador.matricula}<br>
       Setor: ${descreverCDC(colaborador.cdc)}<br>
       <hr style="border-color:var(--purple3)">
-      Saldo anterior: <span class="${corHora(colaborador.saldoAnterior)}">${colaborador.saldoAnterior}</span><br>
-      Créditos: <span class="${corHora(colaborador.horasCredito)}">${colaborador.horasCredito}</span><br>
-      Débitos: <span class="${corDebito(colaborador.horasDebito)}">${colaborador.horasDebito}</span><br>
       <strong>Saldo atual: <span class="${corHora(colaborador.saldoAtual)}">${colaborador.saldoAtual}</span></strong>
     `);
   }
@@ -1013,7 +1039,7 @@ const Chatbot = (() => {
     }
 
     const titulo = `${matricula} - ${colab.nome}`;
-    const id = `req-${matricula}-${Date.now()}`;
+    const id = `req-${matricula}`;
 
     // Monta os itens no mesmo formato do HTML original
     const itensHTML = itens.map(it =>
