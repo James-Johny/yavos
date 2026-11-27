@@ -361,11 +361,12 @@ span {
 }
 
 span.button-active {
-  background: var(--primary);
+  border-top: 0.2rem solid var(--purple1);
   filter: blur(0.5px) !important;
-  color: var(--purple3) !important;
+  color: var(--white1) !important;
   cursor: default !important;
-  width: 13rem;
+  width: 11rem;
+
 }
 
 .button-bottom {
@@ -464,8 +465,7 @@ input {
 
 input:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(72, 180, 208, 0.2), 0 0 12px var(--primary);
+  border-color: var(--purple3);
   transform: translateY(-2px);
 }
 
@@ -977,8 +977,8 @@ span:hover {
   button {
     font-size: 3rem;
     padding: 8px;
-    max-width: 50rem;
-    width: 90%;
+    max-width: 70rem;
+    width: 98%;
   }
 
   .qtd_desc input.quandtidade {

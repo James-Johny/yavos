@@ -753,25 +753,19 @@ function secao(secaoId) {
 // ============================================================
 
 function chat(action) {
+  const chatContainer = document.getElementById('chat-window');
+  if (!chatContainer) return;
 
   const actions = {
-    'close': () => {
-      const chatContainer = document.getElementById('chat-window');
-      if (chatContainer) {
-        chatContainer.style.display = 'none';
-      }
+    open: () => (chatContainer.style.display = 'flex'),
+    close: () => (chatContainer.style.display = 'none'),
+    toggle: () => {
+      const isHidden = getComputedStyle(chatContainer).display === 'none';
+      chatContainer.style.display = isHidden ? 'flex' : 'none';
     },
-    'open': () => {
-      const chatContainer = document.getElementById('chat-window');
-      if (chatContainer) {
-        chatContainer.style.display = 'flex';
-      }
-    }
-  }
+  };
 
-  if (actions[action]) {
-    actions[action]();
-  }
+  actions[action]?.();
 }
 
 
@@ -1084,13 +1078,14 @@ const Chatbot = (() => {
   }
 
   function mostrarSetor(matricula) {
-    const todos = [...colaboradoresCSV, ...colaboradoresPDF];
+    const todos = [...colaboradoresPDF, ...colaboradoresCSV];
     const colab = todos.find(c => c.matricula === matricula);
     if (!colab) return addMsg(`Matrícula <strong>${matricula}</strong> não encontrada.`);
     addMsg(`
-      <strong>🏭 ${colab.nome}</strong><br>
+      <strong>${colab.nome}</strong><br>
       Setor: ${descreverCDC(colab.cdc)}<br>
-      Função: ${colab.funcao || '—'}
+      Função: ${colab.funcao || '—'}<br>
+      Saldo atual: <span class="${corHora(colab.saldoAtual)}">${colab.saldoAtual}</span>
     `);
   }
 

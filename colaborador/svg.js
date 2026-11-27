@@ -124,8 +124,34 @@ const svgTrn = `<svg xmlns="http://www.w3.org/2000/svg" class="button-bottom" vi
 Treinamentos
 `;
 
-const svgCB = `<svg xmlns="http://www.w3.org/2000/svg" class="button-bottom" viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"></path>
+const svgCB = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="50 20 400 400" width="120" height="140" fill="none" stroke="#ffffff" stroke-width="8.5">
+  
+  <path d="M 160 190 C 132 222, 130 280, 148 312 C 166 330, 192 325, 206 312 M 306 312 C 320 325, 346 330, 364 312 C 382 280, 380 222, 352 190" />
+  <path d="M 265 102 C 195 100, 165 155, 160 225 M 265 102 C 325 105, 355 160, 355 230" />
+
+  
+  <path d="M 184 195 C 184 140, 328 140, 328 195 C 328 258, 296 302, 256 302 C 216 302, 184 258, 184 195" />
+  <path d="M 232 292 L 232 355 M 280 292 L 280 355" />
+
+  
+  <path d="M 135 460 C 138 395, 150 365, 185 352 L 222 338 L 256 460 L 290 338 L 327 352 C 362 365, 374 395, 377 460" />
+  <path d="M 222 338 L 204 378 L 256 460 M 290 338 L 308 378 L 256 460" />
+
+  
+  <path d="M 295 385 C 293 381, 285 381, 283 385 C 281 389, 285 391, 290 392 C 295 393, 298 396, 296 400 C 294 404, 285 404, 282 400" stroke-width="2" />
+
+  
+  <path d="M 205 196 Q 222 189 238 195 M 274 195 Q 290 189 307 196" />
+  <circle cx="222" cy="218" r="6" />
+  <circle cx="290" cy="218" r="6" />
+
+  
+  <path d="M 253 241 Q 256 244 259 241" stroke-width="2" />
+  <path d="M 240 264 Q 256 273 272 264" />
+
+  
+  <path d="M 326 226 L 334 226 L 334 246 L 326 246" stroke-width="2" />
+  <path d="M 329 246 C 326 265, 312 274, 295 276" stroke-width="2" />
 </svg>
 Chat
 `;
@@ -142,7 +168,7 @@ cb.innerHTML = svgCB;
 
 const navButton = (obj) => {
 
-  const color = '#035dab';
+  const color = '#05125e';
   const blur = 'blur(1px)';
   const cursor = 'pointer';
 
