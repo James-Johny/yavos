@@ -693,25 +693,42 @@ function pesquisarRequisicoes() {
 
 // ─── Carregar requisições do banco ────────────────────────────────────────────
 async function carregarRequisicoes() {
+  const container = document.getElementById('listaRequisicoes');
+  if (!container) return;
 
-  const { data: requisicoes, error } = await db
+  const matriculaLogada = localStorage.getItem('matriculaColaborador');
+  const MATRICULA_ADMIN = '115123';
+
+  // Sem matrícula logada: não carrega nada (evita vazar dados)
+  if (!matriculaLogada) {
+    container.innerHTML = '';
+    return;
+  }
+
+  // Monta a query
+  let query = db
     .from('requisicoes')
     .select('*')
     .order('criado_em', { ascending: true });
+
+  // Se NÃO for a matrícula admin, filtra só as do colaborador
+  if (matriculaLogada !== MATRICULA_ADMIN) {
+    query = query.like('id', `req-${matriculaLogada}%`);
+  }
+
+  const { data: requisicoes, error } = await query;
 
   if (error) {
     console.error('Erro ao carregar requisições:', error.message);
     return;
   }
 
-  const container = document.getElementById('listaRequisicoes');
+  container.innerHTML = '';
 
   requisicoes.forEach(req => {
-
-    // itens vem como array do JSONB — garante compatibilidade
     const itens = Array.isArray(req.itens) ? req.itens : JSON.parse(req.itens || '[]');
-    const dataCriacao = req.criado_em.split('T')[0]; // Formata a data para YYYY-MM-DD
-    const dataFormatada = dataCriacao.split('-').reverse().join('/'); // Converte para DD/MM/YYYY
+    const dataCriacao = req.criado_em.split('T')[0];
+    const dataFormatada = dataCriacao.split('-').reverse().join('/');
 
     const html = `
       <div id="${req.id}" class="tarefa">
@@ -724,7 +741,6 @@ async function carregarRequisicoes() {
     container.insertAdjacentHTML('beforeend', html);
   });
 }
-
 
 
 
